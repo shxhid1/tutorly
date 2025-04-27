@@ -1,19 +1,15 @@
 
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DocumentUploader from "@/components/features/DocumentUploader";
-import StudyModes from "@/components/features/StudyModes";
-import AITutor from "@/components/features/AITutor";
-import ProgressDashboard from "@/components/features/ProgressDashboard";
 import { Button } from "@/components/ui/button";
-import { BookOpenText, Sparkles, Brain, Calendar, BarChart3, LightbulbIcon, Zap } from "lucide-react";
+import { BookOpenText, Sparkles, Brain, Calendar, BarChart3, Zap, MessageSquare, FileText } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const Index = () => {
-  const [showUploader, setShowUploader] = useState(true);
-  const [showContent, setShowContent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   
@@ -33,14 +29,8 @@ const Index = () => {
     setIsLoading(true);
     // Simulate API call or processing
     setTimeout(() => {
-      setShowUploader(false);
-      setShowContent(true);
       setIsLoading(false);
-      toast({
-        title: "Welcome to your study dashboard!",
-        description: "Your personalized learning experience awaits.",
-        duration: 5000,
-      });
+      window.location.href = "/";
     }, 1000);
   };
   
@@ -82,13 +72,15 @@ const Index = () => {
                     <Zap className="mr-2 h-4 w-4" />
                     Get Started
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="lg" 
-                    className="spark-button-secondary text-base"
-                  >
-                    See Examples
-                  </Button>
+                  <Link to="/">
+                    <Button 
+                      variant="outline" 
+                      size="lg" 
+                      className="spark-button-secondary text-base"
+                    >
+                      Go to Dashboard
+                    </Button>
+                  </Link>
                 </div>
               </div>
               
@@ -157,95 +149,108 @@ const Index = () => {
             </div>
             
             <div className="mt-8 text-center">
-              <Button 
-                className="spark-button-primary button-click-effect"
-                onClick={handleStartStudying}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <span className="animate-pulse mr-2">Loading...</span>
-                  </>
-                ) : (
-                  <>
-                    <BookOpenText className="mr-2 h-4 w-4" />
-                    Start Studying (Demo)
-                  </>
-                )}
-              </Button>
+              <Link to="/">
+                <Button 
+                  className="spark-button-primary button-click-effect"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="animate-pulse mr-2">Loading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <BookOpenText className="mr-2 h-4 w-4" />
+                      Enter Dashboard
+                    </>
+                  )}
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
         
-        {/* Dashboard Section */}
-        {showContent && (
-          <section className="py-12 px-4 bg-white animate-fade-in">
-            <div className="container mx-auto max-w-7xl space-y-8">
-              <ProgressDashboard />
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="animate-slide-up">
-                  <StudyModes />
-                </div>
-                <div className="animate-slide-up delay-200">
-                  <AITutor />
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-        
-        {/* Testimonials Section (Only visible on landing page) */}
-        {showUploader && (
-          <section className="py-16 bg-white px-4">
-            <div className="container mx-auto max-w-5xl">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold mb-4">Loved by Students Everywhere</h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
-                  See what our users are saying about their learning experience
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <TestimonialCard 
-                  quote="SparkLearn completely changed how I study. I've improved my grades significantly!"
-                  author="Alex K."
-                  role="Computer Science Student"
-                />
-                <TestimonialCard 
-                  quote="The AI tutor feels like having a professor available 24/7. It's incredible!"
-                  author="Sarah M."
-                  role="Medical Student"
-                />
-                <TestimonialCard 
-                  quote="Flashcards generated from my notes have saved me countless hours of study time."
-                  author="James L."
-                  role="Law Student"
-                />
-              </div>
-            </div>
-          </section>
-        )}
-        
-        {/* CTA Section (Only visible on landing page) */}
-        {showUploader && (
-          <section className="py-16 bg-spark-light px-4">
-            <div className="container mx-auto max-w-5xl text-center">
-              <h2 className="text-3xl font-bold mb-6">Ready to Transform Your Learning?</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-                Join thousands of students who are already studying smarter, not harder.
+        {/* How it Works Section */}
+        <section className="py-16 bg-white px-4">
+          <div className="container mx-auto max-w-5xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">How It Works</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Get started with SparkLearn in three easy steps
               </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <HowItWorksCard 
+                step="1"
+                icon={<FileText className="w-10 h-10 text-white" />}
+                title="Upload Materials"
+                description="Upload your notes, textbooks, or any study materials in various formats"
+              />
+              <HowItWorksCard 
+                step="2"
+                icon={<Brain className="w-10 h-10 text-white" />}
+                title="AI Processing"
+                description="Our AI analyzes your materials and creates personalized study resources"
+              />
+              <HowItWorksCard 
+                step="3"
+                icon={<MessageSquare className="w-10 h-10 text-white" />}
+                title="Start Learning"
+                description="Chat with your AI tutor, create flashcards, and track your progress"
+              />
+            </div>
+          </div>
+        </section>
+        
+        {/* Testimonials Section */}
+        <section className="py-16 bg-spark-light px-4">
+          <div className="container mx-auto max-w-5xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Loved by Students Everywhere</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                See what our users are saying about their learning experience
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <TestimonialCard 
+                quote="SparkLearn completely changed how I study. I've improved my grades significantly!"
+                author="Alex K."
+                role="Computer Science Student"
+              />
+              <TestimonialCard 
+                quote="The AI tutor feels like having a professor available 24/7. It's incredible!"
+                author="Sarah M."
+                role="Medical Student"
+              />
+              <TestimonialCard 
+                quote="Flashcards generated from my notes have saved me countless hours of study time."
+                author="James L."
+                role="Law Student"
+              />
+            </div>
+          </div>
+        </section>
+        
+        {/* CTA Section */}
+        <section className="py-16 bg-gradient-to-br from-spark-primary/90 to-spark-secondary/90 text-white px-4">
+          <div className="container mx-auto max-w-5xl text-center">
+            <h2 className="text-3xl font-bold mb-6">Ready to Transform Your Learning?</h2>
+            <p className="text-lg text-white/90 max-w-2xl mx-auto mb-8">
+              Join thousands of students who are already studying smarter, not harder.
+            </p>
+            <Link to="/">
               <Button 
                 size="lg" 
-                className="spark-button-primary button-click-effect text-base" 
-                onClick={handleGetStarted}
+                className="bg-white text-spark-primary hover:bg-white/90 button-click-effect text-base font-medium" 
               >
                 <Zap className="mr-2 h-4 w-4" />
                 Get Started Now
               </Button>
-            </div>
-          </section>
-        )}
+            </Link>
+          </div>
+        </section>
       </main>
       
       <Footer />
@@ -264,6 +269,23 @@ const FeatureCard = ({ icon, title, description }) => (
       <p className="text-muted-foreground">{description}</p>
     </CardContent>
   </Card>
+);
+
+// How It Works Card Component
+const HowItWorksCard = ({ step, icon, title, description }) => (
+  <div className="flex flex-col items-center text-center">
+    <div className="relative mb-4">
+      <div className="absolute -z-10 w-20 h-20 bg-spark-primary/20 rounded-full transform -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"></div>
+      <div className="w-16 h-16 flex items-center justify-center rounded-full bg-spark-primary relative z-10">
+        {icon}
+        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white border-2 border-spark-primary flex items-center justify-center text-sm font-bold text-spark-primary">
+          {step}
+        </div>
+      </div>
+    </div>
+    <h3 className="text-xl font-semibold mb-2">{title}</h3>
+    <p className="text-muted-foreground">{description}</p>
+  </div>
 );
 
 // Testimonial Card Component
