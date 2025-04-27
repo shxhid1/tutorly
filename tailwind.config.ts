@@ -150,6 +150,10 @@ export default {
                 'shimmer': {
                     '0%': { backgroundPosition: '-200% 0' },
                     '100%': { backgroundPosition: '200% 0' }
+                },
+                'spin': {
+                    '0%': { transform: 'rotate(0deg)' },
+                    '100%': { transform: 'rotate(360deg)' }
                 }
 			},
 			animation: {
@@ -168,7 +172,8 @@ export default {
                 'fade-in-right': 'fade-in-right 0.4s ease-out',
                 'fade-in-up': 'fade-in-up 0.4s ease-out',
                 'fade-in-down': 'fade-in-down 0.4s ease-out',
-                'shimmer': 'shimmer 2s infinite linear'
+                'shimmer': 'shimmer 2s infinite linear',
+                'spin': 'spin 0.8s linear infinite'
 			},
             transitionProperty: {
                 'height': 'height',

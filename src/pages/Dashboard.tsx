@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { 
   BookOpen, 
   MessageSquare, 
@@ -28,6 +29,10 @@ import StudyModes from "@/components/features/StudyModes";
 
 const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState({
+    upload: false,
+    chat: false
+  });
   const [user, setUser] = useState({
     name: "Alex Johnson",
     filesUploaded: 5,
@@ -75,18 +80,33 @@ const Dashboard = () => {
   }, [toast]);
   
   const handleUpload = () => {
-    document.getElementById('document-uploader')?.scrollIntoView({ 
-      behavior: 'smooth' 
-    });
+    setLoading(prev => ({ ...prev, upload: true }));
+    // Simulate upload processing
+    setTimeout(() => {
+      setLoading(prev => ({ ...prev, upload: false }));
+      document.getElementById('document-uploader')?.scrollIntoView({ 
+        behavior: 'smooth' 
+      });
+    }, 800);
+  };
+  
+  const handleChat = () => {
+    setLoading(prev => ({ ...prev, chat: true }));
+    // Simulate chat redirect with loading
+    setTimeout(() => {
+      setLoading(prev => ({ ...prev, chat: false }));
+      // This would normally be handled by React Router
+      // but we're simulating a loading state
+    }, 400);
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-background">
       <Navbar />
       
       <main className="flex-1 pb-20 md:pb-0">
         {/* Welcome Section */}
-        <section className="py-8 md:py-12 px-4 bg-gradient-to-br from-spark-light via-white to-spark-blue">
+        <section className="py-8 md:py-12 px-4 bg-gradient-to-br from-spark-light via-white to-spark-blue dark:from-spark-primary/10 dark:via-background dark:to-spark-secondary/10">
           <div className="container max-w-6xl mx-auto">
             <div className="animate-fade-in">
               <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
@@ -97,19 +117,40 @@ const Dashboard = () => {
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button 
-                  className="spark-button-primary button-click-effect"
+                  className="spark-button-primary button-click-effect animated-button"
                   onClick={handleUpload}
+                  disabled={loading.upload}
                 >
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload New Material
+                  {loading.upload ? (
+                    <>
+                      <div className="loading-spinner mr-2"></div>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="mr-2 h-4 w-4" />
+                      Upload New Material
+                    </>
+                  )}
                 </Button>
                 <Link to="/chat">
                   <Button 
                     variant="outline"
-                    className="spark-button-secondary button-click-effect"
+                    className="spark-button-secondary button-click-effect animated-button dark:border-muted dark:bg-muted dark:text-foreground"
+                    onClick={handleChat}
+                    disabled={loading.chat}
                   >
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    Chat with AI Tutor
+                    {loading.chat ? (
+                      <>
+                        <div className="loading-spinner mr-2"></div>
+                        Opening...
+                      </>
+                    ) : (
+                      <>
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Chat with AI Tutor
+                      </>
+                    )}
                   </Button>
                 </Link>
               </div>
@@ -117,12 +158,12 @@ const Dashboard = () => {
           </div>
         </section>
         
-        {/* Study Features Section - NEW */}
-        <section className="py-8 px-4 bg-spark-light">
-          <div className="container max-w-6xl mx-auto">
+        {/* Study Features Section - Clear separation with titles */}
+        <section className="py-8 px-4 bg-spark-light dark:bg-accent/30">
+          <div className="container max-w-6xl mx-auto section-container">
             <h2 className="text-xl md:text-2xl font-semibold mb-5">Study Tools</h2>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               <StudyFeatureCard 
                 title="Flashcards"
                 description="Master key concepts with interactive flashcards"
@@ -158,9 +199,9 @@ const Dashboard = () => {
           </div>
         </section>
         
-        {/* Quick Stats */}
-        <section className="py-8 px-4">
-          <div className="container max-w-6xl mx-auto">
+        {/* Quick Stats with better spacing */}
+        <section className="py-10 px-4">
+          <div className="container max-w-6xl mx-auto section-container">
             <h2 className="text-xl md:text-2xl font-semibold mb-5">Your Stats</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <StatCard 
@@ -191,31 +232,33 @@ const Dashboard = () => {
           </div>
         </section>
         
-        {/* AI Tutor & Progress */}
-        <section className="py-6 px-4">
-          <div className="container max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Separator className="section-divider mx-auto max-w-6xl dark:bg-muted" />
+        
+        {/* AI Tutor & Progress - Fixed layout issues */}
+        <section className="py-8 px-4">
+          <div className="container max-w-6xl mx-auto section-container">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* AI Tutor */}
-              <div>
-                <div className="flex justify-between items-center mb-4">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center mb-2">
                   <h2 className="text-xl md:text-2xl font-semibold">AI Study Tutor</h2>
                   <Link to="/chat">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="animated-button dark:border-muted dark:bg-muted">
                       Open Full Chat
                     </Button>
                   </Link>
                 </div>
-                <div className="h-[350px]">
+                <div className="h-[350px] border border-spark-light rounded-lg overflow-hidden dark:border-muted">
                   <AITutor />
                 </div>
               </div>
               
               {/* Progress */}
-              <div>
-                <div className="flex justify-between items-center mb-4">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center mb-2">
                   <h2 className="text-xl md:text-2xl font-semibold">Your Progress</h2>
                   <Link to="/progress">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="animated-button dark:border-muted dark:bg-muted">
                       See Detailed Progress
                     </Button>
                   </Link>
@@ -227,10 +270,12 @@ const Dashboard = () => {
           </div>
         </section>
         
-        {/* Quick Access & Recent Activity */}
-        <section className="py-6 px-4">
-          <div className="container max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Separator className="section-divider mx-auto max-w-6xl dark:bg-muted" />
+        
+        {/* Quick Access & Recent Activity - Improved layout */}
+        <section className="py-8 px-4">
+          <div className="container max-w-6xl mx-auto section-container">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Quick Access */}
               <div className="space-y-6">
                 <h2 className="text-xl md:text-2xl font-semibold">Quick Access</h2>
@@ -270,8 +315,8 @@ const Dashboard = () => {
                 <div className="space-y-3">
                   {isLoading ? (
                     <div className="animate-pulse">
-                      <div className="h-16 bg-gray-200 rounded-lg mb-3"></div>
-                      <div className="h-16 bg-gray-200 rounded-lg"></div>
+                      <div className="h-16 bg-gray-200 rounded-lg mb-3 dark:bg-muted"></div>
+                      <div className="h-16 bg-gray-200 rounded-lg dark:bg-muted"></div>
                     </div>
                   ) : (
                     user.recentActivity.map((activity, index) => (
@@ -284,26 +329,29 @@ const Dashboard = () => {
           </div>
         </section>
         
+        <Separator className="section-divider mx-auto max-w-6xl dark:bg-muted" />
+        
         {/* Study Modes */}
-        <section className="py-6 px-4">
-          <div className="container max-w-6xl mx-auto">
+        <section className="py-8 px-4 bg-spark-gray/50 dark:bg-muted/20">
+          <div className="container max-w-6xl mx-auto section-container">
+            <h2 className="text-xl md:text-2xl font-semibold mb-5">Study Methods</h2>
             <StudyModes />
           </div>
         </section>
         
         {/* Bookmarks */}
-        <section className="py-6 px-4">
-          <div className="container max-w-6xl mx-auto">
+        <section className="py-8 px-4">
+          <div className="container max-w-6xl mx-auto section-container">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl md:text-2xl font-semibold">Your Bookmarks</h2>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="animated-button">
                 View All
               </Button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {isLoading ? (
                 Array.from({ length: 2 }).map((_, i) => (
-                  <div key={i} className="animate-pulse h-32 bg-gray-200 rounded-lg"></div>
+                  <div key={i} className="animate-pulse h-32 bg-gray-200 rounded-lg dark:bg-muted"></div>
                 ))
               ) : (
                 user.bookmarks.map((bookmark, index) => (
@@ -323,17 +371,17 @@ const Dashboard = () => {
 
 // Stat Card Component
 const StatCard = ({ title, value, icon, isLoading }) => (
-  <Card className="hover-glow transition-all duration-300">
+  <Card className="hover-glow transition-all duration-300 dark:bg-card">
     <CardContent className="p-4 md:p-6">
       {isLoading ? (
         <div className="animate-pulse flex flex-col items-center">
-          <div className="rounded-full bg-gray-200 h-10 w-10 mb-3"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-          <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+          <div className="rounded-full bg-gray-200 h-10 w-10 mb-3 dark:bg-muted"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2 mb-2 dark:bg-muted"></div>
+          <div className="h-6 bg-gray-200 rounded w-1/4 dark:bg-muted"></div>
         </div>
       ) : (
         <div className="flex flex-col items-center text-center">
-          <div className="p-2 rounded-full bg-spark-light mb-3">
+          <div className="p-2 rounded-full bg-spark-light mb-3 dark:bg-accent">
             {icon}
           </div>
           <p className="text-sm text-muted-foreground mb-1">{title}</p>
@@ -344,10 +392,10 @@ const StatCard = ({ title, value, icon, isLoading }) => (
   </Card>
 );
 
-// Study Feature Card Component
+// Study Feature Card Component with improved hover effects
 const StudyFeatureCard = ({ title, description, icon, href, color }) => (
   <Link to={href} className="group">
-    <Card className="hover-lift transform transition-all duration-300 group-hover:scale-105 h-full border-0 shadow-md overflow-hidden">
+    <Card className="hover-lift transform transition-all duration-300 group-hover:scale-105 h-full border-0 shadow-md overflow-hidden dark:bg-card feature-card">
       <div className={`${color} py-4 flex justify-center`}>
         <div className="p-3 rounded-full bg-white/20">
           {icon}
@@ -361,10 +409,10 @@ const StudyFeatureCard = ({ title, description, icon, href, color }) => (
   </Link>
 );
 
-// Quick Access Card Component
+// Quick Access Card Component with improved animations
 const QuickAccessCard = ({ title, icon, href, color }) => (
   <Link to={href} className="group">
-    <div className={`p-6 rounded-xl ${color} hover-lift transform transition-all duration-300 group-hover:scale-105 shadow-md button-click-effect`}>
+    <div className={`p-6 rounded-xl ${color} hover-lift transform transition-all duration-300 group-hover:scale-105 shadow-md button-click-effect animated-button`}>
       <div className="flex flex-col items-center text-center">
         <div className="p-2 rounded-full bg-white/20 mb-3">
           {icon}
@@ -377,7 +425,7 @@ const QuickAccessCard = ({ title, icon, href, color }) => (
 
 // Activity Item Component
 const ActivityItem = ({ activity }) => (
-  <Card className="hover-glow transition-all duration-300">
+  <Card className="hover-glow transition-all duration-300 dark:bg-card">
     <CardContent className="p-4 flex items-center gap-4">
       <div className={`p-2 rounded-full ${activity.type === 'file' ? 'bg-spark-blue' : 'bg-spark-peach'}`}>
         {activity.type === 'file' ? (
@@ -399,7 +447,7 @@ const ActivityItem = ({ activity }) => (
 
 // Bookmark Card Component
 const BookmarkCard = ({ bookmark }) => (
-  <Card className="hover-glow overflow-hidden transition-all duration-300">
+  <Card className="hover-glow overflow-hidden transition-all duration-300 dark:bg-card">
     <CardContent className="p-0">
       <div className={`p-4 border-t-4 ${bookmark.type === 'note' ? 'border-spark-primary' : 'border-spark-secondary'}`}>
         <div className="flex justify-between items-start">
@@ -407,7 +455,7 @@ const BookmarkCard = ({ bookmark }) => (
             <p className="font-medium line-clamp-2">{bookmark.name}</p>
             <p className="text-xs text-muted-foreground mt-1 capitalize">{bookmark.type}</p>
           </div>
-          <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Button variant="ghost" size="icon" className="h-8 w-8 animated-button">
             <Bookmark className="h-4 w-4 fill-spark-primary stroke-spark-primary" />
           </Button>
         </div>

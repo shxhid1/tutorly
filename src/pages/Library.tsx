@@ -70,9 +70,9 @@ const Library = () => {
     : materials;
     
   // Helper function to parse dates for comparison
-  const parseDateForSort = (dateStr) => {
+  const parseDateForSort = (dateStr: string) => {
     const [month, day, year] = dateStr.split(" ");
-    const monthMap = {
+    const monthMap: Record<string, number> = {
       "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "May": 4, "Jun": 5,
       "Jul": 6, "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
     };
@@ -82,7 +82,7 @@ const Library = () => {
   const renderMaterials = (items) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {items.map((material) => (
-        <Card key={material.id} className="hover-glow overflow-hidden">
+        <Card key={material.id} className="hover-glow overflow-hidden dark:bg-card">
           <CardContent className="p-0">
             <div className="p-4 flex items-start gap-3">
               <div className={`p-2 rounded-lg ${material.type === 'pdf' ? 'bg-spark-peach' : 'bg-spark-blue'}`}>
@@ -98,16 +98,16 @@ const Library = () => {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-8 w-8"
+                className="h-8 w-8 animated-button"
                 onClick={() => handleBookmark(material.id)}
               >
                 <Bookmark className={`h-4 w-4 ${material.bookmarked ? 'fill-spark-primary stroke-spark-primary' : 'stroke-muted-foreground'}`} />
               </Button>
             </div>
           </CardContent>
-          <CardFooter className="bg-muted/50 p-2 flex justify-between">
-            <Button variant="ghost" size="sm">Open</Button>
-            <Button variant="ghost" size="sm">Share</Button>
+          <CardFooter className="bg-muted/50 p-2 flex justify-between dark:bg-muted">
+            <Button variant="ghost" size="sm" className="animated-button">Open</Button>
+            <Button variant="ghost" size="sm" className="animated-button">Share</Button>
           </CardFooter>
         </Card>
       ))}
@@ -115,7 +115,7 @@ const Library = () => {
   );
   
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-background">
       <Navbar />
       
       <main className="flex-1 py-8 px-4 pb-20 md:pb-8">
@@ -134,12 +134,12 @@ const Library = () => {
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search materials..."
-                  className="pl-9"
+                  className="pl-9 dark:bg-muted dark:border-muted"
                   value={searchTerm}
                   onChange={handleSearch}
                 />
               </div>
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" className="animated-button dark:border-muted">
                 <Filter className="h-4 w-4" />
               </Button>
             </div>
@@ -147,13 +147,13 @@ const Library = () => {
           
           <Tabs defaultValue="all" className="w-full">
             <div className="flex items-center justify-between">
-              <TabsList>
+              <TabsList className="dark:bg-muted">
                 <TabsTrigger value="all">All Materials</TabsTrigger>
                 <TabsTrigger value="bookmarked">Bookmarked</TabsTrigger>
                 <TabsTrigger value="recent">Recent</TabsTrigger>
               </TabsList>
               
-              <Button size="sm" className="hidden md:flex">
+              <Button size="sm" className="hidden md:flex animated-button">
                 <Plus className="h-4 w-4 mr-1" />
                 New Folder
               </Button>
@@ -163,7 +163,7 @@ const Library = () => {
               {isLoading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="animate-pulse h-32 bg-gray-200 rounded-lg"></div>
+                    <div key={i} className="animate-pulse h-32 bg-gray-200 rounded-lg dark:bg-muted"></div>
                   ))}
                 </div>
               ) : filteredMaterials.length > 0 ? (
@@ -177,7 +177,7 @@ const Library = () => {
                       ? `We couldn't find any materials matching "${searchTerm}"` 
                       : "Your library is empty. Upload materials to get started."}
                   </p>
-                  <Button>
+                  <Button className="animated-button">
                     <Plus className="h-4 w-4 mr-2" />
                     Upload Materials
                   </Button>
@@ -187,7 +187,7 @@ const Library = () => {
             
             <TabsContent value="bookmarked" className="mt-6">
               {isLoading ? (
-                <div className="animate-pulse h-32 bg-gray-200 rounded-lg"></div>
+                <div className="animate-pulse h-32 bg-gray-200 rounded-lg dark:bg-muted"></div>
               ) : (
                 renderMaterials(materials.filter(m => m.bookmarked))
               )}
@@ -195,12 +195,12 @@ const Library = () => {
             
             <TabsContent value="recent" className="mt-6">
               {isLoading ? (
-                <div className="animate-pulse h-32 bg-gray-200 rounded-lg"></div>
+                <div className="animate-pulse h-32 bg-gray-200 rounded-lg dark:bg-muted"></div>
               ) : (
                 renderMaterials([...materials].sort((a, b) => {
                   const dateA = parseDateForSort(a.date);
                   const dateB = parseDateForSort(b.date);
-                  return dateB - dateA;  // Sort in descending order (newest first)
+                  return dateB.getTime() - dateA.getTime();  // Sort in descending order (newest first)
                 }))
               )}
             </TabsContent>

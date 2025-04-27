@@ -1,0 +1,133 @@
+
+/* Dark Mode Styles */
+.dark {
+  --background: #121212;
+  --foreground: #f1f1f1;
+  --card: #1e1e1e;
+  --card-foreground: #e1e1e1;
+  --muted: #333333;
+  --muted-foreground: #b0b0b0;
+  --primary: #9b87f5;
+  --secondary: #7E69AB;
+  --accent: rgba(155, 135, 245, 0.2);
+  --border: #333333;
+  
+  /* Apply dark mode color schemes */
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.dark .bg-white {
+  background-color: var(--background) !important;
+}
+
+.dark .bg-spark-light {
+  background-color: rgba(155, 135, 245, 0.1) !important;
+}
+
+.dark .bg-spark-gray {
+  background-color: #1e1e1e !important;
+}
+
+.dark .border-spark-light {
+  border-color: #333333 !important;
+}
+
+.dark .text-muted-foreground {
+  color: var(--muted-foreground) !important;
+}
+
+.dark .card {
+  background-color: var(--card);
+  border-color: #333333;
+}
+
+.dark .bg-gradient-to-br.from-spark-light.via-white.to-spark-blue {
+  background: linear-gradient(to bottom right, rgba(155, 135, 245, 0.2), #1e1e1e, rgba(61, 90, 254, 0.2)) !important;
+}
+
+/* Fix spacing issues */
+.section-container {
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  clear: both;
+}
+
+/* Better section separation */
+.section-divider {
+  margin: 1.5rem 0;
+  border-color: rgba(155, 135, 245, 0.2);
+}
+
+/* Improvement for card animations */
+.feature-card {
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.dark .feature-card:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* Spinner for loading states */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(155, 135, 245, 0.3);
+  border-radius: 50%;
+  border-top-color: #9b87f5;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  h1, h2 {
+    word-wrap: break-word;
+  }
+}
+
+/* Button animations */
+.animated-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.animated-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.5s ease;
+}
+
+.animated-button:active::after {
+  width: 300%;
+  height: 300%;
+}
+
+.dark .animated-button::after {
+  background-color: rgba(0, 0, 0, 0.2);
+}

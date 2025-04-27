@@ -6,7 +6,7 @@ const BottomNav = () => {
   const location = useLocation();
   
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-spark-light shadow-lg z-50">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-spark-light shadow-lg z-50 dark:bg-card dark:border-muted">
       <div className="flex items-center justify-around h-16">
         <NavItem 
           icon={<Home size={20} />} 
@@ -39,7 +39,7 @@ const BottomNav = () => {
 
 const NavItem = ({ icon, label, href, active }) => {
   return (
-    <Link to={href} className="flex flex-col items-center justify-center w-full py-1">
+    <Link to={href} className="flex flex-col items-center justify-center w-full py-1 animated-button">
       <div className={`p-1.5 ${active ? 'text-spark-primary' : 'text-muted-foreground'}`}>
         {icon}
       </div>

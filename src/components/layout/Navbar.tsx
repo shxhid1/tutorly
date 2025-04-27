@@ -14,13 +14,18 @@ import {
   CalendarDays,
   BarChart3,
   User,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -32,12 +37,12 @@ const Navbar = () => {
   }, [location.pathname]);
   
   return (
-    <header className="border-b border-spark-light bg-white sticky top-0 z-50 shadow-sm">
+    <header className="border-b border-spark-light bg-white sticky top-0 z-50 shadow-sm dark:bg-card dark:border-muted">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-4">
           <Link to="/" className="flex items-center gap-2 hover-lift">
             <BookOpenIcon className="h-6 w-6 text-spark-primary" />
-            <span className="text-xl font-bold">SparkLearn</span>
+            <span className="text-xl font-bold dark:text-foreground">SparkLearn</span>
           </Link>
           <div className="hidden md:flex items-center gap-6 ml-6">
             <NavLink href="/" icon={<Home className="h-4 w-4" />} label="Dashboard" active={location.pathname === '/'} />
@@ -53,12 +58,34 @@ const Navbar = () => {
               <input 
                 type="search"
                 placeholder="Search your materials..." 
-                className="pl-10 pr-4 py-2 rounded-full border border-spark-light focus:outline-none focus:ring-2 focus:ring-spark-primary text-sm w-56 lg:w-64 transition-all duration-300" 
+                className="pl-10 pr-4 py-2 rounded-full border border-spark-light focus:outline-none focus:ring-2 focus:ring-spark-primary text-sm w-56 lg:w-64 transition-all duration-300 dark:bg-muted dark:border-muted" 
               />
             </div>
           </div>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="hover:bg-spark-light transition-colors"
+                  onClick={toggleTheme}
+                >
+                  {theme === 'dark' ? (
+                    <Sun className="h-5 w-5" />
+                  ) : (
+                    <Moon className="h-5 w-5" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Toggle {theme === 'dark' ? 'Light' : 'Dark'} Mode</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           
-          <Button variant="ghost" size="icon" className="relative hover:bg-spark-light transition-colors">
+          <Button variant="ghost" size="icon" className="relative hover:bg-spark-light transition-colors dark:hover:bg-accent">
             <BellIcon className="h-5 w-5" />
             <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-spark-primary"></span>
           </Button>
@@ -73,7 +100,7 @@ const Navbar = () => {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="md:hidden hover:bg-spark-light transition-colors"
+            className="md:hidden hover:bg-spark-light transition-colors dark:hover:bg-accent"
             onClick={toggleMobileMenu}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
@@ -83,14 +110,14 @@ const Navbar = () => {
       
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-spark-light animate-fade-in">
+        <div className="md:hidden bg-white border-b border-spark-light animate-fade-in dark:bg-card dark:border-muted">
           <div className="container py-4 space-y-4">
-            <div className="flex items-center gap-2 bg-spark-gray rounded-lg px-3 py-2">
+            <div className="flex items-center gap-2 bg-spark-gray rounded-lg px-3 py-2 dark:bg-muted">
               <Search className="h-4 w-4 text-muted-foreground" />
               <input 
                 type="search"
                 placeholder="Search your materials..." 
-                className="bg-transparent border-none outline-none text-sm w-full" 
+                className="bg-transparent border-none outline-none text-sm w-full dark:bg-transparent" 
               />
             </div>
             <nav className="space-y-1">
@@ -123,7 +150,7 @@ const NavLink = ({ href, icon, label, active }) => (
 const MobileNavLink = ({ href, icon, label, active }) => (
   <Link 
     to={href} 
-    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg ${active ? 'bg-spark-light text-spark-primary' : 'hover:bg-spark-light'} transition-colors`}
+    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg ${active ? 'bg-spark-light text-spark-primary' : 'hover:bg-spark-light'} transition-colors dark:hover:bg-accent`}
   >
     {icon}
     <span className="font-medium">{label}</span>
