@@ -1,6 +1,7 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircleCheckBig, FlaskConical, Flash, ListChecks, ScrollText } from "lucide-react";
+import { CircleCheckBig, FlaskConical, Zap, ListChecks, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -20,7 +21,7 @@ const StudyModes = () => {
         <Tabs defaultValue="flashcards" className="w-full">
           <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-4">
             <TabsTrigger value="flashcards" className="flex items-center gap-2">
-              <Flash className="h-4 w-4" />
+              <Zap className="h-4 w-4" />
               <span>Flashcards</span>
             </TabsTrigger>
             <TabsTrigger value="quiz" className="flex items-center gap-2">
