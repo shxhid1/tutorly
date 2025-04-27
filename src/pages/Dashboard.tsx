@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -16,8 +17,14 @@ import {
   Upload, 
   Clock,
   Bookmark,
-  Zap
+  Zap,
+  FlaskConical,
+  ListChecks,
+  ScrollText
 } from "lucide-react";
+import AITutor from "@/components/features/AITutor";
+import ProgressDashboard from "@/components/features/ProgressDashboard";
+import StudyModes from "@/components/features/StudyModes";
 
 const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -98,12 +105,55 @@ const Dashboard = () => {
                 </Button>
                 <Button 
                   variant="outline"
-                  className="spark-button-secondary"
+                  className="spark-button-secondary button-click-effect"
+                  as={Link}
+                  to="/chat"
                 >
                   <MessageSquare className="mr-2 h-4 w-4" />
                   Chat with AI Tutor
                 </Button>
               </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Study Features Section - NEW */}
+        <section className="py-8 px-4 bg-spark-light">
+          <div className="container max-w-6xl mx-auto">
+            <h2 className="text-xl md:text-2xl font-semibold mb-5">Study Tools</h2>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <StudyFeatureCard 
+                title="Flashcards"
+                description="Master key concepts with interactive flashcards"
+                icon={<Zap className="h-6 w-6 text-white" />}
+                href="/flashcards"
+                color="bg-spark-primary"
+              />
+              
+              <StudyFeatureCard 
+                title="Quiz"
+                description="Test your knowledge with adaptive quizzes"
+                icon={<ListChecks className="h-6 w-6 text-white" />}
+                href="/quiz"
+                color="bg-spark-secondary"
+              />
+              
+              <StudyFeatureCard 
+                title="Summaries"
+                description="Get condensed versions of your material"
+                icon={<ScrollText className="h-6 w-6 text-white" />}
+                href="/summaries"
+                color="bg-blue-500"
+              />
+              
+              <StudyFeatureCard 
+                title="Micro-Lessons"
+                description="Bite-sized lessons for busy students"
+                icon={<FlaskConical className="h-6 w-6 text-white" />}
+                href="/micro-lessons"
+                color="bg-purple-500"
+              />
             </div>
           </div>
         </section>
@@ -137,6 +187,38 @@ const Dashboard = () => {
                 icon={<BarChart3 className="h-5 w-5 text-spark-primary" />} 
                 isLoading={isLoading}
               />
+            </div>
+          </div>
+        </section>
+        
+        {/* AI Tutor & Progress */}
+        <section className="py-6 px-4">
+          <div className="container max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* AI Tutor */}
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl md:text-2xl font-semibold">AI Study Tutor</h2>
+                  <Button variant="outline" size="sm" as={Link} to="/chat">
+                    Open Full Chat
+                  </Button>
+                </div>
+                <div className="h-[350px]">
+                  <AITutor />
+                </div>
+              </div>
+              
+              {/* Progress */}
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl md:text-2xl font-semibold">Your Progress</h2>
+                  <Button variant="outline" size="sm" as={Link} to="/progress">
+                    See Detailed Progress
+                  </Button>
+                </div>
+                
+                <ProgressDashboard />
+              </div>
             </div>
           </div>
         </section>
@@ -198,6 +280,13 @@ const Dashboard = () => {
           </div>
         </section>
         
+        {/* Study Modes */}
+        <section className="py-6 px-4">
+          <div className="container max-w-6xl mx-auto">
+            <StudyModes />
+          </div>
+        </section>
+        
         {/* Bookmarks */}
         <section className="py-6 px-4">
           <div className="container max-w-6xl mx-auto">
@@ -230,7 +319,7 @@ const Dashboard = () => {
 
 // Stat Card Component
 const StatCard = ({ title, value, icon, isLoading }) => (
-  <Card className="hover-glow">
+  <Card className="hover-glow transition-all duration-300">
     <CardContent className="p-4 md:p-6">
       {isLoading ? (
         <div className="animate-pulse flex flex-col items-center">
@@ -251,10 +340,27 @@ const StatCard = ({ title, value, icon, isLoading }) => (
   </Card>
 );
 
+// Study Feature Card Component
+const StudyFeatureCard = ({ title, description, icon, href, color }) => (
+  <Link to={href} className="group">
+    <Card className="hover-lift transform transition-all duration-300 group-hover:scale-105 h-full border-0 shadow-md overflow-hidden">
+      <div className={`${color} py-4 flex justify-center`}>
+        <div className="p-3 rounded-full bg-white/20">
+          {icon}
+        </div>
+      </div>
+      <CardContent className="p-4">
+        <h3 className="text-lg font-semibold mb-1 text-center">{title}</h3>
+        <p className="text-sm text-muted-foreground text-center">{description}</p>
+      </CardContent>
+    </Card>
+  </Link>
+);
+
 // Quick Access Card Component
 const QuickAccessCard = ({ title, icon, href, color }) => (
   <Link to={href} className="group">
-    <div className={`p-6 rounded-xl ${color} hover-lift transform transition-all duration-300 group-hover:scale-105 shadow-md`}>
+    <div className={`p-6 rounded-xl ${color} hover-lift transform transition-all duration-300 group-hover:scale-105 shadow-md button-click-effect`}>
       <div className="flex flex-col items-center text-center">
         <div className="p-2 rounded-full bg-white/20 mb-3">
           {icon}
@@ -267,7 +373,7 @@ const QuickAccessCard = ({ title, icon, href, color }) => (
 
 // Activity Item Component
 const ActivityItem = ({ activity }) => (
-  <Card className="hover-glow">
+  <Card className="hover-glow transition-all duration-300">
     <CardContent className="p-4 flex items-center gap-4">
       <div className={`p-2 rounded-full ${activity.type === 'file' ? 'bg-spark-blue' : 'bg-spark-peach'}`}>
         {activity.type === 'file' ? (
@@ -289,7 +395,7 @@ const ActivityItem = ({ activity }) => (
 
 // Bookmark Card Component
 const BookmarkCard = ({ bookmark }) => (
-  <Card className="hover-glow overflow-hidden">
+  <Card className="hover-glow overflow-hidden transition-all duration-300">
     <CardContent className="p-0">
       <div className={`p-4 border-t-4 ${bookmark.type === 'note' ? 'border-spark-primary' : 'border-spark-secondary'}`}>
         <div className="flex justify-between items-start">
@@ -305,14 +411,5 @@ const BookmarkCard = ({ bookmark }) => (
     </CardContent>
   </Card>
 );
-
-// Adding React Router Link component to prevent TypeScript errors
-const Link = ({ to, children, className }) => {
-  return (
-    <a href={to} className={className}>
-      {children}
-    </a>
-  );
-};
 
 export default Dashboard;

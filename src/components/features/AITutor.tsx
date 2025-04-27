@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BrainCircuit, MessageSquare, BookOpen, RefreshCw, Send, Sparkles, User, Loader2 } from "lucide-react";
+import { BrainCircuit, MessageSquare, BookOpen, RefreshCw, Send, Sparkles, User, Loader2, Maximize2, Minimize2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
@@ -12,7 +12,12 @@ type Message = {
   content: string;
 };
 
-const AITutor = () => {
+interface AITutorProps {
+  isFullscreen?: boolean;
+  toggleFullscreen?: () => void;
+}
+
+const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -74,7 +79,7 @@ const AITutor = () => {
   ];
   
   return (
-    <Card className="w-full h-[500px] flex flex-col hover-glow">
+    <Card className={`w-full ${isFullscreen ? 'h-full' : 'h-[500px]'} flex flex-col hover-glow transition-all duration-300`}>
       <CardHeader className="px-4 py-3 border-b flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -86,18 +91,35 @@ const AITutor = () => {
               Beta
             </Badge>
           </div>
-          <Tabs defaultValue="chat" className="w-auto">
-            <TabsList className="h-8 p-1">
-              <TabsTrigger value="chat" className="text-xs px-2 py-1 h-6">
-                <MessageSquare className="h-3 w-3 mr-1" />
-                Chat
-              </TabsTrigger>
-              <TabsTrigger value="quiz" className="text-xs px-2 py-1 h-6">
-                <BookOpen className="h-3 w-3 mr-1" />
-                Quiz Me
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="flex items-center gap-2">
+            {toggleFullscreen && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0" 
+                onClick={toggleFullscreen}
+                title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+              >
+                {isFullscreen ? (
+                  <Minimize2 className="h-4 w-4" />
+                ) : (
+                  <Maximize2 className="h-4 w-4" />
+                )}
+              </Button>
+            )}
+            <Tabs defaultValue="chat" className="w-auto">
+              <TabsList className="h-8 p-1">
+                <TabsTrigger value="chat" className="text-xs px-2 py-1 h-6">
+                  <MessageSquare className="h-3 w-3 mr-1" />
+                  Chat
+                </TabsTrigger>
+                <TabsTrigger value="quiz" className="text-xs px-2 py-1 h-6">
+                  <BookOpen className="h-3 w-3 mr-1" />
+                  Quiz Me
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
       </CardHeader>
       
@@ -170,7 +192,7 @@ const AITutor = () => {
                   key={index}
                   variant="outline"
                   size="sm"
-                  className="text-xs bg-white hover:bg-spark-light transition-colors"
+                  className="text-xs bg-white hover:bg-spark-light transition-colors button-click-effect"
                   onClick={() => {
                     setInput(question);
                   }}

@@ -11,6 +11,12 @@ import StudyPlans from "./pages/StudyPlans";
 import Progress from "./pages/Progress";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import Chat from "./pages/Chat";
+import Flashcards from "./pages/Flashcards";
+import Quiz from "./pages/Quiz";
+import Summaries from "./pages/Summaries";
+import MicroLessons from "./pages/MicroLessons";
+import "./css/animations.css";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +32,11 @@ const App = () => (
           <Route path="/study-plans" element={<StudyPlans />} />
           <Route path="/progress" element={<Progress />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/flashcards" element={<Flashcards />} />
+          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/summaries" element={<Summaries />} />
+          <Route path="/micro-lessons" element={<MicroLessons />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
