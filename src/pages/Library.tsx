@@ -68,6 +68,16 @@ const Library = () => {
         material.title.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : materials;
+    
+  // Helper function to parse dates for comparison
+  const parseDateForSort = (dateStr) => {
+    const [month, day, year] = dateStr.split(" ");
+    const monthMap = {
+      "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "May": 4, "Jun": 5,
+      "Jul": 6, "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
+    };
+    return new Date(parseInt(year), monthMap[month], parseInt(day));
+  };
   
   const renderMaterials = (items) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -187,7 +197,11 @@ const Library = () => {
               {isLoading ? (
                 <div className="animate-pulse h-32 bg-gray-200 rounded-lg"></div>
               ) : (
-                renderMaterials([...materials].sort((a, b) => new Date(b.date) - new Date(a.date)))
+                renderMaterials([...materials].sort((a, b) => {
+                  const dateA = parseDateForSort(a.date);
+                  const dateB = parseDateForSort(b.date);
+                  return dateB - dateA;  // Sort in descending order (newest first)
+                }))
               )}
             </TabsContent>
           </Tabs>

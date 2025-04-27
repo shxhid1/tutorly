@@ -103,15 +103,15 @@ const Dashboard = () => {
                   <Upload className="mr-2 h-4 w-4" />
                   Upload New Material
                 </Button>
-                <Button 
-                  variant="outline"
-                  className="spark-button-secondary button-click-effect"
-                  as={Link}
-                  to="/chat"
-                >
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  Chat with AI Tutor
-                </Button>
+                <Link to="/chat">
+                  <Button 
+                    variant="outline"
+                    className="spark-button-secondary button-click-effect"
+                  >
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Chat with AI Tutor
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -199,9 +199,11 @@ const Dashboard = () => {
               <div>
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl md:text-2xl font-semibold">AI Study Tutor</h2>
-                  <Button variant="outline" size="sm" as={Link} to="/chat">
-                    Open Full Chat
-                  </Button>
+                  <Link to="/chat">
+                    <Button variant="outline" size="sm">
+                      Open Full Chat
+                    </Button>
+                  </Link>
                 </div>
                 <div className="h-[350px]">
                   <AITutor />
@@ -212,9 +214,11 @@ const Dashboard = () => {
               <div>
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl md:text-2xl font-semibold">Your Progress</h2>
-                  <Button variant="outline" size="sm" as={Link} to="/progress">
-                    See Detailed Progress
-                  </Button>
+                  <Link to="/progress">
+                    <Button variant="outline" size="sm">
+                      See Detailed Progress
+                    </Button>
+                  </Link>
                 </div>
                 
                 <ProgressDashboard />
