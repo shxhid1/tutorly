@@ -1,48 +1,120 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BellIcon, BookOpenIcon, MenuIcon, Search } from "lucide-react";
+import { 
+  BellIcon, 
+  BookOpenIcon, 
+  MenuIcon, 
+  Search, 
+  X,
+  Home,
+  Library,
+  CalendarDays,
+  BarChart3,
+} from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Navbar = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
+  
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+  
   return (
-    <header className="border-b border-spark-light bg-white">
+    <header className="border-b border-spark-light bg-white sticky top-0 z-50 shadow-sm">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+          <a href="/" className="flex items-center gap-2 hover-lift">
             <BookOpenIcon className="h-6 w-6 text-spark-primary" />
             <span className="text-xl font-bold">SparkLearn</span>
-          </div>
+          </a>
           <div className="hidden md:flex items-center gap-6 ml-6">
-            <a href="#" className="text-sm font-medium hover:text-spark-primary transition-colors">Dashboard</a>
-            <a href="#" className="text-sm font-medium hover:text-spark-primary transition-colors">Library</a>
-            <a href="#" className="text-sm font-medium hover:text-spark-primary transition-colors">Study Plans</a>
-            <a href="#" className="text-sm font-medium hover:text-spark-primary transition-colors">Progress</a>
+            <NavLink href="#" icon={<Home className="h-4 w-4" />} label="Dashboard" />
+            <NavLink href="#" icon={<Library className="h-4 w-4" />} label="Library" />
+            <NavLink href="#" icon={<CalendarDays className="h-4 w-4" />} label="Study Plans" />
+            <NavLink href="#" icon={<BarChart3 className="h-4 w-4" />} label="Progress" />
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <div className="relative hidden sm:flex items-center">
-            <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
-            <input 
-              type="search"
-              placeholder="Search your materials..." 
-              className="pl-10 pr-4 py-2 rounded-full border border-spark-light focus:outline-none focus:ring-2 focus:ring-spark-primary text-sm w-64" 
-            />
+            <div className="relative group">
+              <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
+              <input 
+                type="search"
+                placeholder="Search your materials..." 
+                className="pl-10 pr-4 py-2 rounded-full border border-spark-light focus:outline-none focus:ring-2 focus:ring-spark-primary text-sm w-56 lg:w-64 transition-all duration-300" 
+              />
+            </div>
           </div>
-          <Button variant="ghost" size="icon" className="relative">
+          
+          <Button variant="ghost" size="icon" className="relative hover:bg-spark-light transition-colors">
             <BellIcon className="h-5 w-5" />
             <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-spark-primary"></span>
           </Button>
-          <Avatar>
+          
+          <Avatar className="hover-lift">
             <AvatarImage src="" />
             <AvatarFallback className="bg-spark-secondary text-white">SL</AvatarFallback>
           </Avatar>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <MenuIcon className="h-5 w-5" />
+          
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="md:hidden hover:bg-spark-light transition-colors"
+            onClick={toggleMobileMenu}
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
           </Button>
         </div>
       </div>
+      
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-b border-spark-light animate-fade-in">
+          <div className="container py-4 space-y-4">
+            <div className="flex items-center gap-2 bg-spark-gray rounded-lg px-3 py-2">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <input 
+                type="search"
+                placeholder="Search your materials..." 
+                className="bg-transparent border-none outline-none text-sm w-full" 
+              />
+            </div>
+            <nav className="space-y-1">
+              <MobileNavLink href="#" icon={<Home className="h-5 w-5" />} label="Dashboard" />
+              <MobileNavLink href="#" icon={<Library className="h-5 w-5" />} label="Library" />
+              <MobileNavLink href="#" icon={<CalendarDays className="h-5 w-5" />} label="Study Plans" />
+              <MobileNavLink href="#" icon={<BarChart3 className="h-5 w-5" />} label="Progress" />
+            </nav>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
+
+const NavLink = ({ href, icon, label }) => (
+  <a 
+    href={href} 
+    className="group flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-spark-primary transition-colors"
+  >
+    {icon}
+    <span>{label}</span>
+    <div className="h-0.5 w-0 group-hover:w-full bg-spark-primary transition-all duration-300"></div>
+  </a>
+);
+
+const MobileNavLink = ({ href, icon, label }) => (
+  <a 
+    href={href} 
+    className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-spark-light transition-colors"
+  >
+    {icon}
+    <span className="font-medium">{label}</span>
+  </a>
+);
 
 export default Navbar;

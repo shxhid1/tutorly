@@ -87,22 +87,124 @@
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
   }
+  
+  /* Animation for page transitions */
+  .page-transition-enter {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  
+  .page-transition-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 400ms, transform 400ms;
+  }
 }
 
 @layer components {
   .spark-card {
-    @apply bg-white rounded-xl shadow-md transition-all hover:shadow-lg p-6 border border-spark-light;
+    @apply bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg p-6 border border-spark-light;
   }
   
   .spark-button-primary {
-    @apply bg-spark-primary hover:bg-opacity-90 text-white rounded-lg px-6 py-2 transition-all shadow-sm hover:shadow-md;
+    @apply bg-spark-primary hover:bg-opacity-90 text-white rounded-lg px-6 py-2 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-1 active:translate-y-0 active:shadow-inner;
   }
   
   .spark-button-secondary {
-    @apply bg-white border border-spark-light hover:bg-spark-light text-spark-secondary rounded-lg px-6 py-2 transition-all;
+    @apply bg-white border border-spark-light hover:bg-spark-light text-spark-secondary rounded-lg px-6 py-2 transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0;
   }
   
   .spark-input {
-    @apply rounded-lg border border-spark-light bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-spark-primary;
+    @apply rounded-lg border border-spark-light bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-spark-primary transition-all duration-200;
+  }
+  
+  /* Feature card animations */
+  .feature-card {
+    @apply transform transition-all duration-300 hover:scale-105;
+  }
+  
+  /* Fade in animations */
+  .fade-in {
+    @apply animate-fade-in;
+  }
+  
+  .slide-up {
+    @apply animate-slide-up;
+  }
+  
+  /* Staggered children animations */
+  .staggered-fade-in > * {
+    @apply opacity-0;
+    animation: fadeIn 0.5s ease forwards;
+  }
+  
+  .staggered-fade-in > *:nth-child(1) { animation-delay: 0.1s; }
+  .staggered-fade-in > *:nth-child(2) { animation-delay: 0.2s; }
+  .staggered-fade-in > *:nth-child(3) { animation-delay: 0.3s; }
+  .staggered-fade-in > *:nth-child(4) { animation-delay: 0.4s; }
+  .staggered-fade-in > *:nth-child(5) { animation-delay: 0.5s; }
+  
+  /* Hover effect for links and interactive elements */
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+  }
+  
+  /* Hover effect for cards */
+  .hover-glow:hover {
+    box-shadow: 0 0 15px rgba(155, 135, 245, 0.3);
+    @apply transition-shadow duration-300;
+  }
+  
+  .button-click-effect {
+    @apply active:scale-95 transition-transform duration-200;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  
+  .animate-slide-up {
+    animation: slideIn 0.5s ease-out forwards;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+  }
+  
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+  
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+  
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+  
+  .delay-400 {
+    animation-delay: 400ms;
+  }
+  
+  .delay-500 {
+    animation-delay: 500ms;
   }
 }
