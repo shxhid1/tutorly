@@ -6,6 +6,7 @@ import BottomNav from "@/components/layout/BottomNav";
 import AITutor from "@/components/features/AITutor";
 
 const Chat = () => {
+  // Start in fullscreen by default
   const [isFullscreen, setIsFullscreen] = useState(true);
   
   return (

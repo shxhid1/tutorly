@@ -73,14 +73,6 @@ const Index = () => {
                     <Zap className="mr-2 h-4 w-4" />
                     Get Started
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="lg" 
-                    className="spark-button-secondary text-base"
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    Go to Dashboard
-                  </Button>
                 </div>
               </div>
               
@@ -152,7 +144,7 @@ const Index = () => {
               <Button 
                 className="spark-button-primary button-click-effect"
                 disabled={isLoading}
-                onClick={() => navigate("/dashboard")}
+                onClick={handleStartStudying}
               >
                 {isLoading ? (
                   <>

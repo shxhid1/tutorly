@@ -11,8 +11,8 @@ const BottomNav = () => {
         <NavItem 
           icon={<Home size={20} />} 
           label="Home" 
-          href="/" 
-          active={location.pathname === '/'} 
+          href="/dashboard" 
+          active={location.pathname === '/dashboard'} 
         />
         <NavItem 
           icon={<BookOpen size={20} />} 

@@ -71,11 +71,11 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
     }
   };
   
+  // Shorter, more concise suggested questions
   const suggestedQuestions = [
-    "Can you explain cellular respiration?",
-    "What's the difference between mitosis and meiosis?",
-    "Quiz me on photosynthesis",
-    "Summarize the Krebs cycle"
+    "Explain photosynthesis",
+    "Quiz me on cells",
+    "Define osmosis"
   ];
   
   return (
@@ -156,7 +156,7 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
                       ? "bg-spark-primary text-white rounded-tr-none"
                       : "bg-spark-light text-foreground rounded-tl-none"
                   }`}
-                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                  style={{ overflowWrap: 'break-word', maxWidth: '100%' }}
                 >
                   {message.content}
                 </div>

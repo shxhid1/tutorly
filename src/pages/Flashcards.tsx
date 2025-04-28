@@ -79,7 +79,7 @@ const Flashcards = () => {
                       onClick={() => toggleFlip(card.id)}
                     >
                       <Card 
-                        className={`h-64 w-full cursor-pointer transition-all duration-500 transform-style-3d ${flipped[card.id] ? 'rotate-y-180' : ''}`}
+                        className={`h-64 w-full cursor-pointer transition-all duration-500 transform-style-3d relative ${flipped[card.id] ? 'rotate-y-180' : ''}`}
                       >
                         <div className="absolute inset-0 backface-hidden">
                           <CardContent className="p-6 flex flex-col items-center justify-center h-full bg-spark-light rounded-md">
@@ -89,7 +89,7 @@ const Flashcards = () => {
                         </div>
                         <div className="absolute inset-0 rotate-y-180 backface-hidden">
                           <CardContent className="p-6 flex flex-col items-center justify-center h-full bg-spark-primary text-white rounded-md">
-                            <p className="text-center">{card.back}</p>
+                            <p className="text-center overflow-auto max-h-full">{card.back}</p>
                             <p className="text-sm opacity-70 text-center mt-4">Click to flip back</p>
                           </CardContent>
                         </div>
