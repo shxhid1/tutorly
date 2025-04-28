@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -101,25 +100,25 @@ const Dashboard = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-background">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
-      <main className="flex-1 pb-20 md:pb-0">
-        {/* Welcome Section */}
-        <section className="py-8 md:py-12 px-4 bg-gradient-to-br from-spark-light via-white to-spark-blue dark:from-spark-primary/10 dark:via-background dark:to-spark-secondary/10">
-          <div className="container max-w-6xl mx-auto">
-            <div className="animate-fade-in">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
+      <main className="flex-1 py-6 px-4 space-y-8 pb-20 md:pb-8">
+        <div className="container max-w-6xl mx-auto">
+          {/* Welcome Section - Improved spacing and mobile layout */}
+          <section className="rounded-xl bg-gradient-to-br from-spark-light via-white to-spark-blue p-6 dark:from-spark-primary/10 dark:via-background dark:to-spark-secondary/10">
+            <div className="animate-fade-in space-y-4">
+              <h1 className="text-2xl md:text-3xl font-bold">
                 Welcome back, {user.name}!
               </h1>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-muted-foreground">
                 Ready to continue your learning journey today?
               </p>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
-                  className="spark-button-primary button-click-effect animated-button"
                   onClick={handleUpload}
                   disabled={loading.upload}
+                  className="w-full sm:w-auto button-click-effect"
                 >
                   {loading.upload ? (
                     <>
@@ -133,10 +132,10 @@ const Dashboard = () => {
                     </>
                   )}
                 </Button>
-                <Link to="/chat">
+                <Link to="/chat" className="w-full sm:w-auto">
                   <Button 
                     variant="outline"
-                    className="spark-button-secondary button-click-effect animated-button dark:border-muted dark:bg-muted dark:text-foreground"
+                    className="w-full button-click-effect dark:border-muted dark:bg-muted dark:text-foreground"
                     onClick={handleChat}
                     disabled={loading.chat}
                   >
@@ -155,212 +154,106 @@ const Dashboard = () => {
                 </Link>
               </div>
             </div>
-          </div>
-        </section>
-        
-        {/* Study Features Section - Clear separation with titles */}
-        <section className="py-8 px-4 bg-spark-light dark:bg-accent/30">
-          <div className="container max-w-6xl mx-auto section-container">
-            <h2 className="text-xl md:text-2xl font-semibold mb-5">Study Tools</h2>
-            
+          </section>
+
+          {/* Main Features Grid - Better organization and spacing */}
+          <section className="py-8 space-y-6">
+            <h2 className="text-xl md:text-2xl font-semibold">Study Tools</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               <StudyFeatureCard 
-                title="Flashcards"
-                description="Master key concepts with interactive flashcards"
-                icon={<Zap className="h-6 w-6 text-white" />}
-                href="/flashcards"
+                title="AI Study Tutor"
+                description="Get personalized help with any topic"
+                icon={<MessageSquare className="h-6 w-6 text-white" />}
+                href="/chat"
                 color="bg-spark-primary"
               />
-              
               <StudyFeatureCard 
-                title="Quiz"
-                description="Test your knowledge with adaptive quizzes"
-                icon={<ListChecks className="h-6 w-6 text-white" />}
-                href="/quiz"
+                title="Flashcards"
+                description="Review key concepts effectively"
+                icon={<BookOpen className="h-6 w-6 text-white" />}
+                href="/flashcards"
                 color="bg-spark-secondary"
               />
-              
               <StudyFeatureCard 
-                title="Summaries"
-                description="Get condensed versions of your material"
-                icon={<ScrollText className="h-6 w-6 text-white" />}
-                href="/summaries"
+                title="Quizzes"
+                description="Test your understanding"
+                icon={<ListChecks className="h-6 w-6 text-white" />}
+                href="/quiz"
                 color="bg-blue-500"
               />
-              
               <StudyFeatureCard 
-                title="Micro-Lessons"
-                description="Bite-sized lessons for busy students"
-                icon={<FlaskConical className="h-6 w-6 text-white" />}
-                href="/micro-lessons"
+                title="Summaries"
+                description="Get quick topic overviews"
+                icon={<ScrollText className="h-6 w-6 text-white" />}
+                href="/summaries"
                 color="bg-purple-500"
               />
             </div>
-          </div>
-        </section>
-        
-        {/* Quick Stats with better spacing */}
-        <section className="py-10 px-4">
-          <div className="container max-w-6xl mx-auto section-container">
-            <h2 className="text-xl md:text-2xl font-semibold mb-5">Your Stats</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <StatCard 
-                title="Files Uploaded" 
-                value={isLoading ? "-" : user.filesUploaded} 
-                icon={<FileText className="h-5 w-5 text-spark-primary" />} 
-                isLoading={isLoading}
-              />
-              <StatCard 
-                title="Chats Used" 
-                value={isLoading ? "-" : user.chatsUsed} 
-                icon={<MessageSquare className="h-5 w-5 text-spark-primary" />} 
-                isLoading={isLoading}
-              />
-              <StatCard 
-                title="Study Plans" 
-                value="2" 
-                icon={<BookOpenText className="h-5 w-5 text-spark-primary" />} 
-                isLoading={isLoading}
-              />
-              <StatCard 
-                title="Progress" 
-                value="73%" 
-                icon={<BarChart3 className="h-5 w-5 text-spark-primary" />} 
-                isLoading={isLoading}
-              />
-            </div>
-          </div>
-        </section>
-        
-        <Separator className="section-divider mx-auto max-w-6xl dark:bg-muted" />
-        
-        {/* AI Tutor & Progress - Fixed layout issues */}
-        <section className="py-8 px-4">
-          <div className="container max-w-6xl mx-auto section-container">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* AI Tutor */}
-              <div className="space-y-4">
-                <div className="flex justify-between items-center mb-2">
-                  <h2 className="text-xl md:text-2xl font-semibold">AI Study Tutor</h2>
-                  <Link to="/chat">
-                    <Button variant="outline" size="sm" className="animated-button dark:border-muted dark:bg-muted">
-                      Open Full Chat
-                    </Button>
-                  </Link>
-                </div>
-                <div className="h-[350px] border border-spark-light rounded-lg overflow-hidden dark:border-muted">
-                  <AITutor />
-                </div>
+          </section>
+
+          {/* Progress and AI Chat Section - Improved layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* AI Tutor Section */}
+            <section className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl md:text-2xl font-semibold">AI Study Tutor</h2>
+                <Link to="/chat">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="button-click-effect dark:border-muted dark:bg-muted"
+                  >
+                    Open Full Chat
+                  </Button>
+                </Link>
               </div>
-              
-              {/* Progress */}
-              <div className="space-y-4">
-                <div className="flex justify-between items-center mb-2">
-                  <h2 className="text-xl md:text-2xl font-semibold">Your Progress</h2>
-                  <Link to="/progress">
-                    <Button variant="outline" size="sm" className="animated-button dark:border-muted dark:bg-muted">
-                      See Detailed Progress
-                    </Button>
-                  </Link>
-                </div>
-                
-                <ProgressDashboard />
+              <Card className="border dark:border-muted">
+                <CardContent className="p-4">
+                  <div className="h-[350px] overflow-hidden">
+                    <AITutor />
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* Progress Section */}
+            <section className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl md:text-2xl font-semibold">Your Progress</h2>
+                <Link to="/progress">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="button-click-effect dark:border-muted dark:bg-muted"
+                  >
+                    See Detailed Progress
+                  </Button>
+                </Link>
               </div>
-            </div>
+              <Card className="border dark:border-muted">
+                <CardContent className="p-4">
+                  <ProgressDashboard />
+                </CardContent>
+              </Card>
+            </section>
           </div>
-        </section>
-        
-        <Separator className="section-divider mx-auto max-w-6xl dark:bg-muted" />
-        
-        {/* Quick Access & Recent Activity - Improved layout */}
-        <section className="py-8 px-4">
-          <div className="container max-w-6xl mx-auto section-container">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Quick Access */}
-              <div className="space-y-6">
-                <h2 className="text-xl md:text-2xl font-semibold">Quick Access</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  <QuickAccessCard 
-                    title="Library" 
-                    icon={<BookOpen className="h-6 w-6 text-white" />} 
-                    href="/library"
-                    color="bg-spark-primary"
-                  />
-                  <QuickAccessCard 
-                    title="AI Tutor" 
-                    icon={<MessageSquare className="h-6 w-6 text-white" />} 
-                    href="/chat"
-                    color="bg-spark-secondary"
-                  />
-                  <QuickAccessCard 
-                    title="Study Plans" 
-                    icon={<BookOpenText className="h-6 w-6 text-white" />} 
-                    href="/study-plans"
-                    color="bg-blue-500"
-                  />
-                  <QuickAccessCard 
-                    title="Profile" 
-                    icon={<User className="h-6 w-6 text-white" />} 
-                    href="/profile"
-                    color="bg-purple-500"
-                  />
-                </div>
-              </div>
-              
-              {/* Recent Activity */}
-              <div>
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl md:text-2xl font-semibold">Recent Activity</h2>
-                </div>
-                <div className="space-y-3">
-                  {isLoading ? (
-                    <div className="animate-pulse">
-                      <div className="h-16 bg-gray-200 rounded-lg mb-3 dark:bg-muted"></div>
-                      <div className="h-16 bg-gray-200 rounded-lg dark:bg-muted"></div>
-                    </div>
-                  ) : (
-                    user.recentActivity.map((activity, index) => (
-                      <ActivityItem key={index} activity={activity} />
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        <Separator className="section-divider mx-auto max-w-6xl dark:bg-muted" />
-        
-        {/* Study Modes */}
-        <section className="py-8 px-4 bg-spark-gray/50 dark:bg-muted/20">
-          <div className="container max-w-6xl mx-auto section-container">
-            <h2 className="text-xl md:text-2xl font-semibold mb-5">Study Methods</h2>
-            <StudyModes />
-          </div>
-        </section>
-        
-        {/* Bookmarks */}
-        <section className="py-8 px-4">
-          <div className="container max-w-6xl mx-auto section-container">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl md:text-2xl font-semibold">Your Bookmarks</h2>
-              <Button variant="ghost" size="sm" className="animated-button">
-                View All
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+          {/* Recent Activity - Simplified and cleaner */}
+          <section className="py-8 space-y-4">
+            <h2 className="text-xl md:text-2xl font-semibold">Recent Activity</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {isLoading ? (
-                Array.from({ length: 2 }).map((_, i) => (
-                  <div key={i} className="animate-pulse h-32 bg-gray-200 rounded-lg dark:bg-muted"></div>
+                Array(2).fill(null).map((_, i) => (
+                  <div key={i} className="animate-pulse h-24 bg-muted rounded-lg" />
                 ))
               ) : (
-                user.bookmarks.map((bookmark, index) => (
-                  <BookmarkCard key={index} bookmark={bookmark} />
+                user.recentActivity.map((activity, index) => (
+                  <ActivityItem key={index} activity={activity} />
                 ))
               )}
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </main>
       
       <Footer />
@@ -369,95 +262,41 @@ const Dashboard = () => {
   );
 };
 
-// Stat Card Component
-const StatCard = ({ title, value, icon, isLoading }) => (
-  <Card className="hover-glow transition-all duration-300 dark:bg-card">
-    <CardContent className="p-4 md:p-6">
-      {isLoading ? (
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="rounded-full bg-gray-200 h-10 w-10 mb-3 dark:bg-muted"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2 mb-2 dark:bg-muted"></div>
-          <div className="h-6 bg-gray-200 rounded w-1/4 dark:bg-muted"></div>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center text-center">
-          <div className="p-2 rounded-full bg-spark-light mb-3 dark:bg-accent">
-            {icon}
-          </div>
-          <p className="text-sm text-muted-foreground mb-1">{title}</p>
-          <p className="text-2xl font-bold">{value}</p>
-        </div>
-      )}
-    </CardContent>
-  </Card>
-);
-
-// Study Feature Card Component with improved hover effects
+// Enhanced Feature Card Component with better hover effects
 const StudyFeatureCard = ({ title, description, icon, href, color }) => (
-  <Link to={href} className="group">
-    <Card className="hover-lift transform transition-all duration-300 group-hover:scale-105 h-full border-0 shadow-md overflow-hidden dark:bg-card feature-card">
-      <div className={`${color} py-4 flex justify-center`}>
-        <div className="p-3 rounded-full bg-white/20">
+  <Link to={href} className="group transition-transform hover:scale-105">
+    <Card className="h-full border-0 shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 dark:bg-card">
+      <div className={`${color} p-6 flex justify-center`}>
+        <div className="p-3 rounded-full bg-white/20 transform group-hover:scale-110 transition-transform">
           {icon}
         </div>
       </div>
-      <CardContent className="p-4">
-        <h3 className="text-lg font-semibold mb-1 text-center">{title}</h3>
-        <p className="text-sm text-muted-foreground text-center">{description}</p>
+      <CardContent className="p-4 text-center">
+        <h3 className="text-lg font-semibold mb-2">{title}</h3>
+        <p className="text-sm text-muted-foreground">{description}</p>
       </CardContent>
     </Card>
   </Link>
 );
 
-// Quick Access Card Component with improved animations
-const QuickAccessCard = ({ title, icon, href, color }) => (
-  <Link to={href} className="group">
-    <div className={`p-6 rounded-xl ${color} hover-lift transform transition-all duration-300 group-hover:scale-105 shadow-md button-click-effect animated-button`}>
-      <div className="flex flex-col items-center text-center">
-        <div className="p-2 rounded-full bg-white/20 mb-3">
-          {icon}
-        </div>
-        <p className="text-sm font-medium text-white">{title}</p>
-      </div>
-    </div>
-  </Link>
-);
-
-// Activity Item Component
+// Improved Activity Item Component
 const ActivityItem = ({ activity }) => (
-  <Card className="hover-glow transition-all duration-300 dark:bg-card">
+  <Card className="transition-all duration-300 hover:shadow-md dark:bg-card">
     <CardContent className="p-4 flex items-center gap-4">
-      <div className={`p-2 rounded-full ${activity.type === 'file' ? 'bg-spark-blue' : 'bg-spark-peach'}`}>
+      <div className={`p-2 rounded-full ${
+        activity.type === 'file' ? 'bg-spark-blue' : 'bg-spark-peach'
+      }`}>
         {activity.type === 'file' ? (
           <FileText className="h-4 w-4 text-blue-600" />
         ) : (
           <MessageSquare className="h-4 w-4 text-orange-600" />
         )}
       </div>
-      <div className="flex-1">
-        <p className="font-medium">{activity.name}</p>
+      <div className="flex-1 min-w-0">
+        <p className="font-medium truncate">{activity.name}</p>
         <div className="flex items-center text-xs text-muted-foreground">
           <Clock className="h-3 w-3 mr-1" />
           <span>{activity.time}</span>
-        </div>
-      </div>
-    </CardContent>
-  </Card>
-);
-
-// Bookmark Card Component
-const BookmarkCard = ({ bookmark }) => (
-  <Card className="hover-glow overflow-hidden transition-all duration-300 dark:bg-card">
-    <CardContent className="p-0">
-      <div className={`p-4 border-t-4 ${bookmark.type === 'note' ? 'border-spark-primary' : 'border-spark-secondary'}`}>
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <p className="font-medium line-clamp-2">{bookmark.name}</p>
-            <p className="text-xs text-muted-foreground mt-1 capitalize">{bookmark.type}</p>
-          </div>
-          <Button variant="ghost" size="icon" className="h-8 w-8 animated-button">
-            <Bookmark className="h-4 w-4 fill-spark-primary stroke-spark-primary" />
-          </Button>
         </div>
       </div>
     </CardContent>

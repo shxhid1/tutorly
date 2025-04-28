@@ -1,61 +1,65 @@
 
 /* Button click effect */
 .button-click-effect {
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .button-click-effect:active {
-  transform: scale(0.95);
+  transform: scale(0.97);
+}
+
+/* Loading spinner */
+.loading-spinner {
+  @apply inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite];
 }
 
 /* Hover lift effect */
 .hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.2s ease;
 }
 
 .hover-lift:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
-/* Hover glow effect */
+/* Card hover effect */
 .hover-glow {
-  transition: box-shadow 0.3s ease;
-}
-
-.hover-glow:hover {
-  box-shadow: 0 0 15px rgba(155, 135, 245, 0.2);
-}
-
-/* Card hover effects */
-.card-hover {
   transition: all 0.3s ease;
 }
 
-.card-hover:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(155, 135, 245, 0.1);
 }
 
-/* Flashcard perspective and 3D transforms */
-.perspective-1000 {
-  perspective: 1000px;
+/* Feature card animations */
+.feature-card {
+  transition: all 0.3s ease;
 }
 
-.transform-style-3d {
-  transform-style: preserve-3d;
+.feature-card:hover {
+  transform: translateY(-4px);
 }
 
-.backface-hidden {
-  backface-visibility: hidden;
+/* Staggered fade-in animation */
+.staggered-fade-in > * {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fade-in-up 0.5s ease forwards;
 }
 
-.rotate-y-180 {
-  transform: rotateY(180deg);
-}
-
-/* Staggered animations for lists */
 .staggered-fade-in > *:nth-child(1) { animation-delay: 0.1s; }
 .staggered-fade-in > *:nth-child(2) { animation-delay: 0.2s; }
 .staggered-fade-in > *:nth-child(3) { animation-delay: 0.3s; }
 .staggered-fade-in > *:nth-child(4) { animation-delay: 0.4s; }
+
+/* Section transitions */
+.section-container {
+  opacity: 0;
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.section-divider {
+  width: calc(100% - 2rem);
+  margin: 2rem auto;
+  opacity: 0.1;
+}
