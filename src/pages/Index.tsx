@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DocumentUploader from "@/components/features/DocumentUploader";
@@ -12,6 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   // Animation states
   const [animateFeatures, setAnimateFeatures] = useState(false);
@@ -30,7 +31,7 @@ const Index = () => {
     // Simulate API call or processing
     setTimeout(() => {
       setIsLoading(false);
-      window.location.href = "/";
+      navigate("/dashboard");
     }, 1000);
   };
   
@@ -72,15 +73,14 @@ const Index = () => {
                     <Zap className="mr-2 h-4 w-4" />
                     Get Started
                   </Button>
-                  <Link to="/">
-                    <Button 
-                      variant="outline" 
-                      size="lg" 
-                      className="spark-button-secondary text-base"
-                    >
-                      Go to Dashboard
-                    </Button>
-                  </Link>
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="spark-button-secondary text-base"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    Go to Dashboard
+                  </Button>
                 </div>
               </div>
               
@@ -149,23 +149,22 @@ const Index = () => {
             </div>
             
             <div className="mt-8 text-center">
-              <Link to="/">
-                <Button 
-                  className="spark-button-primary button-click-effect"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <span className="animate-pulse mr-2">Loading...</span>
-                    </>
-                  ) : (
-                    <>
-                      <BookOpenText className="mr-2 h-4 w-4" />
-                      Enter Dashboard
-                    </>
-                  )}
-                </Button>
-              </Link>
+              <Button 
+                className="spark-button-primary button-click-effect"
+                disabled={isLoading}
+                onClick={() => navigate("/dashboard")}
+              >
+                {isLoading ? (
+                  <>
+                    <span className="animate-pulse mr-2">Loading...</span>
+                  </>
+                ) : (
+                  <>
+                    <BookOpenText className="mr-2 h-4 w-4" />
+                    Enter Dashboard
+                  </>
+                )}
+              </Button>
             </div>
           </div>
         </section>
@@ -240,15 +239,14 @@ const Index = () => {
             <p className="text-lg text-white/90 max-w-2xl mx-auto mb-8">
               Join thousands of students who are already studying smarter, not harder.
             </p>
-            <Link to="/">
-              <Button 
-                size="lg" 
-                className="bg-white text-spark-primary hover:bg-white/90 button-click-effect text-base font-medium" 
-              >
-                <Zap className="mr-2 h-4 w-4" />
-                Get Started Now
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              className="bg-white text-spark-primary hover:bg-white/90 button-click-effect text-base font-medium" 
+              onClick={() => navigate("/dashboard")}
+            >
+              <Zap className="mr-2 h-4 w-4" />
+              Get Started Now
+            </Button>
           </div>
         </section>
       </main>

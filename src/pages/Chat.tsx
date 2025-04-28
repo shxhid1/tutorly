@@ -1,12 +1,12 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
 import AITutor from "@/components/features/AITutor";
 
 const Chat = () => {
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(true);
   
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -19,14 +19,18 @@ const Chat = () => {
             Chat with your AI tutor about any topic in your study materials
           </p>
           
-          <div className={`${isFullscreen ? 'fixed inset-0 z-50 p-4 bg-white' : ''}`}>
+          <div className={`${isFullscreen ? 'fixed inset-0 z-50 p-4 bg-white dark:bg-background' : ''}`}>
             <AITutor isFullscreen={isFullscreen} toggleFullscreen={() => setIsFullscreen(!isFullscreen)} />
           </div>
         </div>
       </main>
       
-      <Footer />
-      <BottomNav />
+      {!isFullscreen && (
+        <>
+          <Footer />
+          <BottomNav />
+        </>
+      )}
     </div>
   );
 };

@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -27,6 +28,7 @@ import ProgressDashboard from "@/components/features/ProgressDashboard";
 import StudyModes from "@/components/features/StudyModes";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState({
     upload: false,
@@ -83,20 +85,21 @@ const Dashboard = () => {
     // Simulate upload processing
     setTimeout(() => {
       setLoading(prev => ({ ...prev, upload: false }));
-      document.getElementById('document-uploader')?.scrollIntoView({ 
-        behavior: 'smooth' 
-      });
+      navigate('/library');
     }, 800);
   };
   
   const handleChat = () => {
     setLoading(prev => ({ ...prev, chat: true }));
-    // Simulate chat redirect with loading
+    // Navigate to chat page
     setTimeout(() => {
       setLoading(prev => ({ ...prev, chat: false }));
-      // This would normally be handled by React Router
-      // but we're simulating a loading state
+      navigate('/chat');
     }, 400);
+  };
+  
+  const handleFeatureClick = (path) => {
+    navigate(path);
   };
   
   return (
@@ -132,26 +135,24 @@ const Dashboard = () => {
                     </>
                   )}
                 </Button>
-                <Link to="/chat" className="w-full sm:w-auto">
-                  <Button 
-                    variant="outline"
-                    className="w-full button-click-effect dark:border-muted dark:bg-muted dark:text-foreground"
-                    onClick={handleChat}
-                    disabled={loading.chat}
-                  >
-                    {loading.chat ? (
-                      <>
-                        <div className="loading-spinner mr-2"></div>
-                        Opening...
-                      </>
-                    ) : (
-                      <>
-                        <MessageSquare className="mr-2 h-4 w-4" />
-                        Chat with AI Tutor
-                      </>
-                    )}
-                  </Button>
-                </Link>
+                <Button 
+                  variant="outline"
+                  className="w-full sm:w-auto button-click-effect dark:border-muted dark:bg-muted dark:text-foreground"
+                  onClick={handleChat}
+                  disabled={loading.chat}
+                >
+                  {loading.chat ? (
+                    <>
+                      <div className="loading-spinner mr-2"></div>
+                      Opening...
+                    </>
+                  ) : (
+                    <>
+                      <MessageSquare className="mr-2 h-4 w-4" />
+                      Chat with AI Tutor
+                    </>
+                  )}
+                </Button>
               </div>
             </div>
           </section>
@@ -160,34 +161,42 @@ const Dashboard = () => {
           <section className="py-8 space-y-6">
             <h2 className="text-xl md:text-2xl font-semibold">Study Tools</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              <StudyFeatureCard 
-                title="AI Study Tutor"
-                description="Get personalized help with any topic"
-                icon={<MessageSquare className="h-6 w-6 text-white" />}
-                href="/chat"
-                color="bg-spark-primary"
-              />
-              <StudyFeatureCard 
-                title="Flashcards"
-                description="Review key concepts effectively"
-                icon={<BookOpen className="h-6 w-6 text-white" />}
-                href="/flashcards"
-                color="bg-spark-secondary"
-              />
-              <StudyFeatureCard 
-                title="Quizzes"
-                description="Test your understanding"
-                icon={<ListChecks className="h-6 w-6 text-white" />}
-                href="/quiz"
-                color="bg-blue-500"
-              />
-              <StudyFeatureCard 
-                title="Summaries"
-                description="Get quick topic overviews"
-                icon={<ScrollText className="h-6 w-6 text-white" />}
-                href="/summaries"
-                color="bg-purple-500"
-              />
+              <div onClick={() => handleFeatureClick('/chat')} className="cursor-pointer">
+                <StudyFeatureCard 
+                  title="AI Study Tutor"
+                  description="Get personalized help with any topic"
+                  icon={<MessageSquare className="h-6 w-6 text-white" />}
+                  href="/chat"
+                  color="bg-spark-primary"
+                />
+              </div>
+              <div onClick={() => handleFeatureClick('/flashcards')} className="cursor-pointer">
+                <StudyFeatureCard 
+                  title="Flashcards"
+                  description="Review key concepts effectively"
+                  icon={<BookOpen className="h-6 w-6 text-white" />}
+                  href="/flashcards"
+                  color="bg-spark-secondary"
+                />
+              </div>
+              <div onClick={() => handleFeatureClick('/quiz')} className="cursor-pointer">
+                <StudyFeatureCard 
+                  title="Quizzes"
+                  description="Test your understanding"
+                  icon={<ListChecks className="h-6 w-6 text-white" />}
+                  href="/quiz"
+                  color="bg-blue-500"
+                />
+              </div>
+              <div onClick={() => handleFeatureClick('/summaries')} className="cursor-pointer">
+                <StudyFeatureCard 
+                  title="Summaries"
+                  description="Get quick topic overviews"
+                  icon={<ScrollText className="h-6 w-6 text-white" />}
+                  href="/summaries"
+                  color="bg-purple-500"
+                />
+              </div>
             </div>
           </section>
 
@@ -197,15 +206,14 @@ const Dashboard = () => {
             <section className="space-y-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl md:text-2xl font-semibold">AI Study Tutor</h2>
-                <Link to="/chat">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="button-click-effect dark:border-muted dark:bg-muted"
-                  >
-                    Open Full Chat
-                  </Button>
-                </Link>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="button-click-effect dark:border-muted dark:bg-muted"
+                  onClick={() => navigate('/chat')}
+                >
+                  Open Full Chat
+                </Button>
               </div>
               <Card className="border dark:border-muted">
                 <CardContent className="p-4">
@@ -220,15 +228,14 @@ const Dashboard = () => {
             <section className="space-y-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl md:text-2xl font-semibold">Your Progress</h2>
-                <Link to="/progress">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="button-click-effect dark:border-muted dark:bg-muted"
-                  >
-                    See Detailed Progress
-                  </Button>
-                </Link>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="button-click-effect dark:border-muted dark:bg-muted"
+                  onClick={() => navigate('/progress')}
+                >
+                  See Detailed Progress
+                </Button>
               </div>
               <Card className="border dark:border-muted">
                 <CardContent className="p-4">
@@ -264,19 +271,17 @@ const Dashboard = () => {
 
 // Enhanced Feature Card Component with better hover effects
 const StudyFeatureCard = ({ title, description, icon, href, color }) => (
-  <Link to={href} className="group transition-transform hover:scale-105">
-    <Card className="h-full border-0 shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 dark:bg-card">
-      <div className={`${color} p-6 flex justify-center`}>
-        <div className="p-3 rounded-full bg-white/20 transform group-hover:scale-110 transition-transform">
-          {icon}
-        </div>
+  <Card className="h-full border-0 shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 dark:bg-card">
+    <div className={`${color} p-6 flex justify-center`}>
+      <div className="p-3 rounded-full bg-white/20 transform group-hover:scale-110 transition-transform">
+        {icon}
       </div>
-      <CardContent className="p-4 text-center">
-        <h3 className="text-lg font-semibold mb-2">{title}</h3>
-        <p className="text-sm text-muted-foreground">{description}</p>
-      </CardContent>
-    </Card>
-  </Link>
+    </div>
+    <CardContent className="p-4 text-center">
+      <h3 className="text-lg font-semibold mb-2">{title}</h3>
+      <p className="text-sm text-muted-foreground">{description}</p>
+    </CardContent>
+  </Card>
 );
 
 // Improved Activity Item Component

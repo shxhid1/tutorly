@@ -14,18 +14,14 @@ import {
   CalendarDays,
   BarChart3,
   User,
-  Moon,
-  Sun,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useTheme } from "@/contexts/ThemeContext";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const location = useLocation();
-  const { theme, toggleTheme } = useTheme();
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -62,28 +58,6 @@ const Navbar = () => {
               />
             </div>
           </div>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="hover:bg-spark-light transition-colors"
-                  onClick={toggleTheme}
-                >
-                  {theme === 'dark' ? (
-                    <Sun className="h-5 w-5" />
-                  ) : (
-                    <Moon className="h-5 w-5" />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Toggle {theme === 'dark' ? 'Light' : 'Dark'} Mode</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
           
           <Button variant="ghost" size="icon" className="relative hover:bg-spark-light transition-colors dark:hover:bg-accent">
             <BellIcon className="h-5 w-5" />

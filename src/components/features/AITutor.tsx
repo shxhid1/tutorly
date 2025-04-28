@@ -151,11 +151,12 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
                 </div>
                 
                 <div 
-                  className={`px-4 py-2 rounded-xl ${
+                  className={`px-4 py-2 rounded-xl break-words ${
                     message.role === "user" 
                       ? "bg-spark-primary text-white rounded-tr-none"
                       : "bg-spark-light text-foreground rounded-tl-none"
                   }`}
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
                 >
                   {message.content}
                 </div>
@@ -192,7 +193,7 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
                   key={index}
                   variant="outline"
                   size="sm"
-                  className="text-xs bg-white hover:bg-spark-light transition-colors button-click-effect"
+                  className="text-xs bg-white hover:bg-spark-light transition-colors button-click-effect dark:bg-muted dark:hover:bg-accent"
                   onClick={() => {
                     setInput(question);
                   }}
@@ -219,7 +220,7 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
             <input
               type="text"
               placeholder="Ask anything about your material..."
-              className="w-full rounded-full border border-spark-light pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-spark-primary transition-all"
+              className="w-full rounded-full border border-spark-light pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-spark-primary transition-all dark:bg-muted dark:border-muted"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}

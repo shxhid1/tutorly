@@ -28,8 +28,9 @@ const App = () => (
       <TooltipProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/home" element={<Navigate to="/" replace />} />
+            <Route path="/" element={<Index />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/home" element={<Navigate to="/dashboard" replace />} />
             <Route path="/landing" element={<Index />} />
             <Route path="/library" element={<Library />} />
             <Route path="/study-plans" element={<StudyPlans />} />
