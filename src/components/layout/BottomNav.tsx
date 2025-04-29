@@ -30,7 +30,7 @@ const BottomNav = () => {
         <NavItem 
           icon={<Upload size={20} />} 
           label="Upload" 
-          href="/#document-uploader" 
+          href="/library" 
           active={false} 
         />
         <NavItem 

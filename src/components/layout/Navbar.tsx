@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -53,15 +54,13 @@ const Navbar = () => {
         <div className="flex items-center gap-2 sm:gap-4">
           {!isLandingPage && (
             <>
-              <div className="relative hidden sm:flex items-center">
-                <div className="relative group">
-                  <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
-                  <input 
-                    type="search"
-                    placeholder="Search your materials..." 
-                    className="pl-10 pr-4 py-2 rounded-full border border-spark-light focus:outline-none focus:ring-2 focus:ring-spark-primary text-sm w-56 lg:w-64 transition-all duration-300 dark:bg-muted dark:border-muted" 
-                  />
-                </div>
+              <div className="relative hidden sm:block">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <input 
+                  type="search"
+                  placeholder="Search your materials..." 
+                  className="pl-10 pr-4 py-2 rounded-full border border-spark-light focus:outline-none focus:ring-2 focus:ring-spark-primary text-sm w-56 lg:w-64 transition-all duration-300 dark:bg-muted dark:border-muted" 
+                />
               </div>
               
               <Button variant="ghost" size="icon" className="relative hover:bg-spark-light transition-colors dark:hover:bg-accent">

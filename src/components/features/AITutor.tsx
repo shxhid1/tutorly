@@ -73,8 +73,8 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
   
   // Shorter, more concise suggested questions
   const suggestedQuestions = [
-    "Explain photosynthesis",
-    "Quiz me on cells",
+    "Explain cellular respiration",
+    "Quiz me on photosynthesis",
     "Define osmosis"
   ];
   
@@ -156,7 +156,7 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
                       ? "bg-spark-primary text-white rounded-tr-none"
                       : "bg-spark-light text-foreground rounded-tl-none"
                   }`}
-                  style={{ overflowWrap: 'break-word', maxWidth: '100%' }}
+                  style={{ overflowWrap: 'anywhere', maxWidth: '100%' }}
                 >
                   {message.content}
                 </div>
