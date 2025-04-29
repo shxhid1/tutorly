@@ -49,6 +49,7 @@ const Chat = () => {
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" /> Back to Dashboard
                 </Button>
+                <h2 className="text-xl font-medium">AI Study Tutor</h2>
               </div>
             )}
             <AITutor isFullscreen={isFullscreen} toggleFullscreen={() => setIsFullscreen(!isFullscreen)} />

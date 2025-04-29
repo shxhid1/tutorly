@@ -22,16 +22,28 @@ interface FlashcardItem {
 }
 
 interface CreateFlashcardDialogProps {
-  onSave: (setName: string, cards: FlashcardItem[]) => void;
+  onSave?: (setName: string, cards: FlashcardItem[]) => void;
+  onAddCard?: (front: string, back: string) => void;
   trigger?: React.ReactNode;
+  id?: string;
+  singleCard?: boolean;
+  setId?: string;
 }
 
-const CreateFlashcardDialog = ({ onSave, trigger }: CreateFlashcardDialogProps) => {
+const CreateFlashcardDialog = ({ 
+  onSave, 
+  onAddCard,
+  trigger, 
+  id,
+  singleCard = false,
+  setId 
+}: CreateFlashcardDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [setName, setSetName] = useState("");
   const [cards, setCards] = useState<FlashcardItem[]>([
     { front: "", back: "" }
   ]);
+  const [singleCardData, setSingleCardData] = useState<FlashcardItem>({ front: "", back: "" });
   const { toast } = useToast();
 
   const handleAddCard = () => {
@@ -56,10 +68,37 @@ const CreateFlashcardDialog = ({ onSave, trigger }: CreateFlashcardDialogProps) 
     setCards(updatedCards);
   };
 
+  const handleSingleCardChange = (field: "front" | "back", value: string) => {
+    setSingleCardData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate
+    if (singleCard && onAddCard) {
+      // Validate single card
+      if (!singleCardData.front.trim() || !singleCardData.back.trim()) {
+        toast({
+          title: "Incomplete flashcard",
+          description: "Please fill in both sides of the flashcard",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Add the single card
+      onAddCard(singleCardData.front, singleCardData.back);
+      
+      // Reset form and close
+      setSingleCardData({ front: "", back: "" });
+      setIsOpen(false);
+      return;
+    }
+    
+    // Handle full set creation
     if (!setName.trim()) {
       toast({
         title: "Set name required",
@@ -81,22 +120,19 @@ const CreateFlashcardDialog = ({ onSave, trigger }: CreateFlashcardDialogProps) 
     }
 
     // Save the flashcards
-    onSave(setName, cards);
+    if (onSave) {
+      onSave(setName, cards);
+    }
     
     // Reset form
     setSetName("");
     setCards([{ front: "", back: "" }]);
     setIsOpen(false);
-    
-    toast({
-      title: "Flashcards created",
-      description: `Created ${cards.length} new flashcards in "${setName}"`,
-    });
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild id={id}>
         {trigger || (
           <Button className="spark-button-primary button-click-effect">
             <Plus className="mr-2 h-4 w-4" /> Create New Set
@@ -107,86 +143,119 @@ const CreateFlashcardDialog = ({ onSave, trigger }: CreateFlashcardDialogProps) 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5 text-spark-primary" />
-            Create New Flashcard Set
+            {singleCard ? "Add New Flashcard" : "Create New Flashcard Set"}
           </DialogTitle>
           <DialogDescription>
-            Create a set of flashcards to help you study
+            {singleCard 
+              ? "Add a new flashcard to your set" 
+              : "Create a set of flashcards to help you study"
+            }
           </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6 mt-2">
-          <div className="space-y-2">
-            <Label htmlFor="setName">Set Name</Label>
-            <Input
-              id="setName"
-              value={setName}
-              onChange={(e) => setSetName(e.target.value)}
-              placeholder="e.g., Biology Terms"
-              className="w-full"
-            />
-          </div>
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h4 className="text-sm font-medium">Flashcards</h4>
-              <span className="text-sm text-muted-foreground">{cards.length} cards</span>
+          {!singleCard && (
+            <div className="space-y-2">
+              <Label htmlFor="setName">Set Name</Label>
+              <Input
+                id="setName"
+                value={setName}
+                onChange={(e) => setSetName(e.target.value)}
+                placeholder="e.g., Biology Terms"
+                className="w-full"
+              />
             </div>
-            
-            {cards.map((card, index) => (
-              <div key={index} className="p-4 border rounded-lg space-y-3 bg-muted/30">
-                <div className="flex items-center justify-between">
-                  <h5 className="text-sm font-medium">Card {index + 1}</h5>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0"
-                    onClick={() => handleRemoveCard(index)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={`front-${index}`}>Front</Label>
-                  <Input
-                    id={`front-${index}`}
-                    value={card.front}
-                    onChange={(e) => handleCardChange(index, "front", e.target.value)}
-                    placeholder="Question or term"
-                    className="w-full"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={`back-${index}`}>Back</Label>
-                  <Textarea
-                    id={`back-${index}`}
-                    value={card.back}
-                    onChange={(e) => handleCardChange(index, "back", e.target.value)}
-                    placeholder="Answer or definition"
-                    className="w-full min-h-[80px]"
-                  />
-                </div>
+          )}
+          
+          {singleCard ? (
+            <div className="p-4 border rounded-lg space-y-3 bg-muted/30">
+              <div className="space-y-2">
+                <Label htmlFor="single-front">Front (Question/Term)</Label>
+                <Input
+                  id="single-front"
+                  value={singleCardData.front}
+                  onChange={(e) => handleSingleCardChange("front", e.target.value)}
+                  placeholder="Enter question or term"
+                  className="w-full"
+                />
               </div>
-            ))}
-            
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full border-dashed"
-              onClick={handleAddCard}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Card
-            </Button>
-          </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="single-back">Back (Answer/Definition)</Label>
+                <Textarea
+                  id="single-back"
+                  value={singleCardData.back}
+                  onChange={(e) => handleSingleCardChange("back", e.target.value)}
+                  placeholder="Enter answer or definition"
+                  className="w-full min-h-[80px]"
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-sm font-medium">Flashcards</h4>
+                <span className="text-sm text-muted-foreground">{cards.length} cards</span>
+              </div>
+              
+              {cards.map((card, index) => (
+                <div key={index} className="p-4 border rounded-lg space-y-3 bg-muted/30">
+                  <div className="flex items-center justify-between">
+                    <h5 className="text-sm font-medium">Card {index + 1}</h5>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={() => handleRemoveCard(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor={`front-${index}`}>Front</Label>
+                    <Input
+                      id={`front-${index}`}
+                      value={card.front}
+                      onChange={(e) => handleCardChange(index, "front", e.target.value)}
+                      placeholder="Question or term"
+                      className="w-full"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor={`back-${index}`}>Back</Label>
+                    <Textarea
+                      id={`back-${index}`}
+                      value={card.back}
+                      onChange={(e) => handleCardChange(index, "back", e.target.value)}
+                      placeholder="Answer or definition"
+                      className="w-full min-h-[80px]"
+                    />
+                  </div>
+                </div>
+              ))}
+              
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full border-dashed"
+                onClick={handleAddCard}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Card
+              </Button>
+            </div>
+          )}
           
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit">Create Flashcard Set</Button>
+            <Button type="submit">
+              {singleCard ? "Add Flashcard" : "Create Flashcard Set"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

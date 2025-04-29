@@ -57,6 +57,13 @@ const Flashcards = () => {
       [id]: !prev[id]
     }));
   };
+
+  const handleAddNewFlashcard = (setId: string) => {
+    const dialogTrigger = document.getElementById(`add-flashcard-button-${setId}`);
+    if (dialogTrigger) {
+      dialogTrigger.click();
+    }
+  };
   
   const handleCreateFlashcardSet = (setName: string, cards: { front: string, back: string }[]) => {
     // Create a sanitized ID from the name
@@ -98,6 +105,24 @@ const Flashcards = () => {
       description: `Successfully created "${setName}" with ${cards.length} cards.`
     });
   };
+
+  const handleAddFlashcard = (front: string, back: string) => {
+    const newCard = {
+      id: Math.max(0, ...Object.values(flashcardSets).flat().map(c => c.id)) + 1,
+      front,
+      back
+    };
+
+    setFlashcardSets(prev => ({
+      ...prev,
+      [activeSet]: [...(prev[activeSet] || []), newCard]
+    }));
+
+    toast({
+      title: "Flashcard added",
+      description: "Successfully added new flashcard to the set."
+    });
+  };
   
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -130,29 +155,45 @@ const Flashcards = () => {
                     {cards.map((card) => (
                       <div 
                         key={card.id} 
-                        className="perspective-1000"
+                        className="perspective-1000 h-64"
                         onClick={() => toggleFlip(card.id)}
                       >
                         <Card 
-                          className={`h-64 w-full cursor-pointer transition-all duration-500 transform-style-3d relative ${flipped[card.id] ? 'rotate-y-180' : ''}`}
+                          className={`h-full w-full cursor-pointer transition-all duration-500 relative ${
+                            flipped[card.id] ? 'rotate-y-180' : ''
+                          }`}
+                          style={{
+                            transformStyle: 'preserve-3d'
+                          }}
                         >
-                          <div className="absolute inset-0 backface-hidden">
-                            <CardContent className="p-6 flex flex-col items-center justify-center h-full bg-spark-light rounded-md">
-                              <h3 className="text-xl font-semibold text-center mb-4">{card.front}</h3>
-                              <p className="text-sm text-muted-foreground text-center">Click to flip</p>
-                            </CardContent>
+                          <div 
+                            className="absolute inset-0 flex flex-col items-center justify-center p-6 rounded-md bg-spark-light"
+                            style={{
+                              backfaceVisibility: 'hidden'
+                            }}
+                          >
+                            <h3 className="text-xl font-semibold text-center mb-4">{card.front}</h3>
+                            <p className="text-sm text-muted-foreground text-center">Click to flip</p>
                           </div>
-                          <div className="absolute inset-0 rotate-y-180 backface-hidden">
-                            <CardContent className="p-6 flex flex-col items-center justify-center h-full bg-spark-primary text-white rounded-md">
-                              <p className="text-center overflow-auto max-h-full">{card.back}</p>
-                              <p className="text-sm opacity-70 text-center mt-4">Click to flip back</p>
-                            </CardContent>
+                          <div 
+                            className="absolute inset-0 flex flex-col items-center justify-center p-6 rounded-md bg-spark-primary text-white"
+                            style={{
+                              backfaceVisibility: 'hidden',
+                              transform: 'rotateY(180deg)'
+                            }}
+                          >
+                            <p className="text-center overflow-auto max-h-full">{card.back}</p>
+                            <p className="text-sm opacity-70 text-center mt-4">Click to flip back</p>
                           </div>
                         </Card>
                       </div>
                     ))}
                     
-                    <div className="flex items-center justify-center h-64">
+                    <div 
+                      id={`add-flashcard-container-${key}`}
+                      className="flex items-center justify-center h-64"
+                      onClick={() => handleAddNewFlashcard(key)}
+                    >
                       <Card className="h-full w-full border-dashed flex flex-col items-center justify-center cursor-pointer hover:bg-spark-light/20 transition-colors">
                         <Plus className="h-8 w-8 text-spark-primary mb-2" />
                         <p className="text-center font-medium">Add New Flashcard</p>
@@ -178,6 +219,16 @@ const Flashcards = () => {
                     />
                   </div>
                 )}
+
+                {/* Hidden trigger button for the dialog */}
+                <div className="hidden">
+                  <CreateFlashcardDialog
+                    id={`add-flashcard-button-${key}`}
+                    singleCard={true}
+                    setId={key}
+                    onAddCard={handleAddFlashcard}
+                  />
+                </div>
               </TabsContent>
             ))}
           </Tabs>
