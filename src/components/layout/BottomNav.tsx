@@ -5,6 +5,13 @@ import { Link, useLocation } from "react-router-dom";
 const BottomNav = () => {
   const location = useLocation();
   
+  // Don't show bottom nav on landing page
+  const isLandingPage = location.pathname === "/" || location.pathname === "/landing";
+  
+  if (isLandingPage) {
+    return null;
+  }
+  
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-spark-light shadow-lg z-50 dark:bg-card dark:border-muted">
       <div className="flex items-center justify-around h-16">

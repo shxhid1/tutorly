@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Link, useNavigate } from "react-router-dom";
@@ -36,10 +35,8 @@ const Index = () => {
   };
   
   const handleGetStarted = () => {
-    // Smooth scroll to document uploader section
-    document.getElementById('document-uploader')?.scrollIntoView({ 
-      behavior: 'smooth' 
-    });
+    // Navigate to dashboard instead of scrolling
+    navigate("/dashboard");
   };
   
   return (

@@ -1,14 +1,24 @@
 
+import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollText, FileText, Plus, Clock, LucideIcon } from "lucide-react";
+import { ScrollText, FileText, Plus, Clock, LucideIcon, Upload, X, FileIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/components/ui/use-toast";
 
 const Summaries = () => {
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { toast } = useToast();
+  
   const subjects = [
     { id: "biology", name: "Biology", active: true },
     { id: "chemistry", name: "Chemistry", active: true },
@@ -78,6 +88,58 @@ const Summaries = () => {
     deep: { label: "Deep Dive", bg: "bg-spark-peach", icon: FileText }
   };
   
+  const handleGenerateSummary = () => {
+    setShowUploadDialog(true);
+  };
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+  
+  const handleUpload = () => {
+    if (!selectedFile) {
+      toast({
+        title: "No file selected",
+        description: "Please select a file to upload",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setIsUploading(true);
+    setUploadProgress(0);
+    
+    // Simulate upload progress
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + 5;
+      });
+    }, 100);
+    
+    // Simulate upload completion
+    setTimeout(() => {
+      clearInterval(interval);
+      setUploadProgress(100);
+      
+      setTimeout(() => {
+        setIsUploading(false);
+        setShowUploadDialog(false);
+        setSelectedFile(null);
+        
+        toast({
+          title: "Summary generated",
+          description: "Your document has been uploaded and summary created successfully"
+        });
+      }, 500);
+    }, 2000);
+  };
+  
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
@@ -89,7 +151,10 @@ const Summaries = () => {
               <h1 className="text-2xl md:text-3xl font-bold mb-2">Smart Summaries</h1>
               <p className="text-muted-foreground">Get condensed versions of your material in different formats</p>
             </div>
-            <Button className="spark-button-primary button-click-effect">
+            <Button 
+              className="spark-button-primary button-click-effect"
+              onClick={handleGenerateSummary}
+            >
               <Plus className="mr-2 h-4 w-4" /> Generate New Summary
             </Button>
           </div>
@@ -166,6 +231,88 @@ const Summaries = () => {
       
       <Footer />
       <BottomNav />
+      
+      {/* File Upload Dialog */}
+      <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Upload Document for Summary</DialogTitle>
+            <DialogDescription>
+              Upload your study material to generate a smart summary
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className={`border-2 border-dashed rounded-lg p-6 text-center ${selectedFile ? 'bg-muted border-primary/20' : 'border-muted-foreground/25'}`}>
+              {selectedFile ? (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <FileIcon className="h-8 w-8 text-muted-foreground" />
+                    <div className="space-y-1 text-left">
+                      <p className="text-sm font-medium">{selectedFile.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setSelectedFile(null)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center space-y-2">
+                  <div className="rounded-full bg-muted p-2">
+                    <Upload className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">Drag & drop or click to upload</p>
+                    <p className="text-xs text-muted-foreground">
+                      PDF, Word, or Text files (max 20MB)
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              <input
+                type="file"
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                onChange={handleFileChange}
+                accept=".pdf,.doc,.docx,.txt"
+              />
+            </div>
+            
+            {isUploading && (
+              <div className="space-y-2">
+                <Progress value={uploadProgress} className="h-2" />
+                <p className="text-xs text-center text-muted-foreground">
+                  {uploadProgress < 100 ? 'Uploading...' : 'Processing document...'}
+                </p>
+              </div>
+            )}
+            
+            <div className="flex justify-end space-x-2">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowUploadDialog(false)} 
+                disabled={isUploading}
+              >
+                Cancel
+              </Button>
+              <Button 
+                className="spark-button-primary"
+                onClick={handleUpload}
+                disabled={!selectedFile || isUploading}
+              >
+                {isUploading ? 'Processing...' : 'Generate Summary'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

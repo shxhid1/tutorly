@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -23,6 +22,8 @@ const Navbar = () => {
   const isMobile = useIsMobile();
   const location = useLocation();
   
+  const isLandingPage = location.pathname === "/" || location.pathname === "/landing";
+  
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
@@ -40,41 +41,47 @@ const Navbar = () => {
             <BookOpenIcon className="h-6 w-6 text-spark-primary" />
             <span className="text-xl font-bold dark:text-foreground">SparkLearn</span>
           </Link>
-          <div className="hidden md:flex items-center gap-6 ml-6">
-            <NavLink href="/" icon={<Home className="h-4 w-4" />} label="Dashboard" active={location.pathname === '/'} />
-            <NavLink href="/library" icon={<Library className="h-4 w-4" />} label="Library" active={location.pathname === '/library'} />
-            <NavLink href="/study-plans" icon={<CalendarDays className="h-4 w-4" />} label="Study Plans" active={location.pathname === '/study-plans'} />
-            <NavLink href="/progress" icon={<BarChart3 className="h-4 w-4" />} label="Progress" active={location.pathname === '/progress'} />
-          </div>
+          {!isLandingPage && (
+            <div className="hidden md:flex items-center gap-6 ml-6">
+              <NavLink href="/dashboard" icon={<Home className="h-4 w-4" />} label="Dashboard" active={location.pathname === '/dashboard'} />
+              <NavLink href="/library" icon={<Library className="h-4 w-4" />} label="Library" active={location.pathname === '/library'} />
+              <NavLink href="/study-plans" icon={<CalendarDays className="h-4 w-4" />} label="Study Plans" active={location.pathname === '/study-plans'} />
+              <NavLink href="/progress" icon={<BarChart3 className="h-4 w-4" />} label="Progress" active={location.pathname === '/progress'} />
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
-          <div className="relative hidden sm:flex items-center">
-            <div className="relative group">
-              <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
-              <input 
-                type="search"
-                placeholder="Search your materials..." 
-                className="pl-10 pr-4 py-2 rounded-full border border-spark-light focus:outline-none focus:ring-2 focus:ring-spark-primary text-sm w-56 lg:w-64 transition-all duration-300 dark:bg-muted dark:border-muted" 
-              />
-            </div>
-          </div>
-          
-          <Button variant="ghost" size="icon" className="relative hover:bg-spark-light transition-colors dark:hover:bg-accent">
-            <BellIcon className="h-5 w-5" />
-            <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-spark-primary"></span>
-          </Button>
-          
-          <Link to="/profile">
-            <Avatar className="hover-lift">
-              <AvatarImage src="" />
-              <AvatarFallback className="bg-spark-secondary text-white">SL</AvatarFallback>
-            </Avatar>
-          </Link>
+          {!isLandingPage && (
+            <>
+              <div className="relative hidden sm:flex items-center">
+                <div className="relative group">
+                  <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
+                  <input 
+                    type="search"
+                    placeholder="Search your materials..." 
+                    className="pl-10 pr-4 py-2 rounded-full border border-spark-light focus:outline-none focus:ring-2 focus:ring-spark-primary text-sm w-56 lg:w-64 transition-all duration-300 dark:bg-muted dark:border-muted" 
+                  />
+                </div>
+              </div>
+              
+              <Button variant="ghost" size="icon" className="relative hover:bg-spark-light transition-colors dark:hover:bg-accent">
+                <BellIcon className="h-5 w-5" />
+                <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-spark-primary"></span>
+              </Button>
+              
+              <Link to="/profile">
+                <Avatar className="hover-lift">
+                  <AvatarImage src="" />
+                  <AvatarFallback className="bg-spark-secondary text-white">SL</AvatarFallback>
+                </Avatar>
+              </Link>
+            </>
+          )}
           
           <Button 
             variant="ghost" 
             size="icon" 
-            className="md:hidden hover:bg-spark-light transition-colors dark:hover:bg-accent"
+            className={`${!isLandingPage ? 'md:hidden' : 'hidden'} hover:bg-spark-light transition-colors dark:hover:bg-accent`}
             onClick={toggleMobileMenu}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
@@ -83,7 +90,7 @@ const Navbar = () => {
       </div>
       
       {/* Mobile Menu */}
-      {mobileMenuOpen && (
+      {mobileMenuOpen && !isLandingPage && (
         <div className="md:hidden bg-white border-b border-spark-light animate-fade-in dark:bg-card dark:border-muted">
           <div className="container py-4 space-y-4">
             <div className="flex items-center gap-2 bg-spark-gray rounded-lg px-3 py-2 dark:bg-muted">
@@ -95,7 +102,7 @@ const Navbar = () => {
               />
             </div>
             <nav className="space-y-1">
-              <MobileNavLink href="/" icon={<Home className="h-5 w-5" />} label="Dashboard" active={location.pathname === '/'} />
+              <MobileNavLink href="/dashboard" icon={<Home className="h-5 w-5" />} label="Dashboard" active={location.pathname === '/dashboard'} />
               <MobileNavLink href="/library" icon={<Library className="h-5 w-5" />} label="Library" active={location.pathname === '/library'} />
               <MobileNavLink href="/study-plans" icon={<CalendarDays className="h-5 w-5" />} label="Study Plans" active={location.pathname === '/study-plans'} />
               <MobileNavLink href="/progress" icon={<BarChart3 className="h-5 w-5" />} label="Progress" active={location.pathname === '/progress'} />
