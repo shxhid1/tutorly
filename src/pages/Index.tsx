@@ -38,7 +38,11 @@ const Index = () => {
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 hover-lift">
-              <BookOpenText className="h-6 w-6 text-spark-primary" />
+              <img 
+                src="/lovable-uploads/f0690da2-3b69-4cc1-8315-feec3f1edf30.png" 
+                alt="SparkLearn Logo" 
+                className="h-8 w-8" 
+              />
               <span className="text-xl font-bold">SparkLearn</span>
             </div>
           </div>
@@ -71,18 +75,18 @@ const Index = () => {
               <div className="w-full lg:w-1/2 space-y-6 text-center lg:text-left animate-fade-in">
                 <div className="inline-flex items-center gap-2 bg-spark-light px-4 py-2 rounded-full mb-3">
                   <Sparkles className="h-4 w-4 text-spark-primary" />
-                  <span className="text-sm font-semibold text-spark-secondary">AI-Powered Learning</span>
+                  <span className="text-sm font-semibold text-spark-secondary">Smart Learning Platform</span>
                 </div>
                 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-gray-900">
-                  📚 Supercharge Your Studies with
+                  Supercharge Your Studies with
                   <span className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-transparent bg-clip-text block mt-3">
-                    AI-Powered Flashcards
+                    Intelligent Study Tools
                   </span>
                 </h1>
                 
                 <p className="text-lg md:text-xl text-gray-700 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                  Upload notes, get instant summaries, flashcards, and personalized quizzes. Study smarter, not harder.
+                  Upload notes, get instant summaries, personalized quizzes, and track your progress. Study smarter, not harder.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
@@ -132,9 +136,9 @@ const Index = () => {
                   <div className="absolute -top-6 -right-6 w-40 h-40 bg-[#FDE1D3] rounded-full opacity-70 blur-2xl"></div>
                   <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-[#E5DEFF] rounded-full opacity-70 blur-3xl"></div>
                   <img
-                    src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80"
-                    alt="Student studying with SparkLearn"
-                    className="w-full h-auto rounded-2xl shadow-2xl relative z-10 object-cover"
+                    src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?auto=format&fit=crop&w=800&q=80"
+                    alt="Student studying efficiently"
+                    className="rounded-lg shadow-lg relative z-10 w-full h-auto object-cover"
                   />
                   
                   {/* Floating elements */}
@@ -169,7 +173,7 @@ const Index = () => {
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-4 text-gray-900">Everything You Need To Study Smarter</h2>
               <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-                Our AI-powered platform transforms the way you learn with these powerful features
+                Our platform transforms the way you learn with these powerful features
               </p>
             </div>
             
@@ -181,8 +185,8 @@ const Index = () => {
               />
               <FeatureCard 
                 icon={<BookOpen className="w-10 h-10 text-spark-primary" />}
-                title="Smart Flashcards"
-                description="Automatically generated flashcards to help you memorize key concepts"
+                title="Smart Study Tools"
+                description="Accelerate your learning with effective study materials generated from your content"
               />
               <FeatureCard 
                 icon={<BarChart3 className="w-10 h-10 text-spark-primary" />}
@@ -252,8 +256,8 @@ const Index = () => {
                   <div className="relative">
                     <div className="absolute -inset-4 bg-gradient-to-r from-[#9b87f5]/20 to-[#7E69AB]/20 rounded-xl blur-lg"></div>
                     <img 
-                      src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=500&h=400&q=80" 
-                      alt="Document upload preview" 
+                      src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=500&h=400&q=80" 
+                      alt="Students studying together" 
                       className="rounded-lg shadow-lg relative z-10 w-full h-auto object-cover"
                     />
                     {/* Decorative elements */}
@@ -282,7 +286,7 @@ const Index = () => {
               <BenefitCard 
                 number="01"
                 title="Active Recall"
-                description="Our flashcards and quizzes force your brain to retrieve information, strengthening neural connections."
+                description="Our interactive tools force your brain to retrieve information, strengthening neural connections."
               />
               <BenefitCard 
                 number="02"
@@ -320,7 +324,7 @@ const Index = () => {
                 role="Medical Student"
               />
               <TestimonialCard 
-                quote="Flashcards generated from my notes have saved me countless hours of study time."
+                quote="The study tools generated from my notes have saved me countless hours of study time."
                 author="James L."
                 role="Law Student"
               />
@@ -376,7 +380,6 @@ const Index = () => {
                     See How It Works
                   </Button>
                 </div>
-                <p className="mt-6 text-sm text-white/70">No credit card required • Cancel anytime</p>
               </div>
             </div>
           </div>
@@ -397,8 +400,6 @@ const Index = () => {
               <Zap className="mr-2 h-5 w-5" />
               Get Started Free
             </Button>
-            
-            <p className="mt-4 text-sm text-white/70">No credit card required</p>
           </div>
         </section>
       </main>
@@ -462,4 +463,3 @@ const TestimonialCard = ({ quote, author, role }) => (
 );
 
 export default Index;
-
