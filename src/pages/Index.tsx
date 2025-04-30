@@ -60,8 +60,8 @@ const Index = () => {
       </header>
       
       <main className="flex-1">
-        {/* Hero Section with dark background for improved contrast */}
-        <section className="py-20 px-4 bg-gray-900 text-white">
+        {/* Hero Section with dark background and explicitly white text */}
+        <section className="py-20 px-4 bg-gray-900 text-white dark-section">
           <div className="container max-w-6xl mx-auto">
             <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
               <div className="w-full space-y-6 text-center">
@@ -160,7 +160,7 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Upload Section - Redesigned with better contrast and no overlapping */}
+        {/* Upload Section - Redesigned with better spacing and no overlapping */}
         <section className="py-20 bg-gray-100 px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
@@ -291,9 +291,9 @@ const Index = () => {
         </section>
         
         {/* CTA Section with improved contrast and visible button */}
-        <section className="py-20 bg-gray-900 text-white px-4">
+        <section className="py-20 bg-gray-900 text-white px-4 dark-section">
           <div className="container mx-auto max-w-5xl text-center">
-            <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Learning?</h2>
+            <h2 className="text-4xl font-bold mb-6 text-white">Ready to Transform Your Learning?</h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
               Join thousands of students who are already studying smarter, not harder.
             </p>

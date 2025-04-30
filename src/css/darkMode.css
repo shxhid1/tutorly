@@ -46,6 +46,44 @@
   background: linear-gradient(to bottom right, rgba(155, 135, 245, 0.2), #1e1e1e, rgba(61, 90, 254, 0.2)) !important;
 }
 
+/* Enhanced text visibility for dark backgrounds */
+.bg-gray-900 h1, 
+.bg-gray-900 h2, 
+.bg-gray-900 h3, 
+.bg-gray-900 p, 
+.bg-gray-900 div,
+.dark .bg-gray-900 h1, 
+.dark .bg-gray-900 h2, 
+.dark .bg-gray-900 h3, 
+.dark .bg-gray-900 p, 
+.dark .bg-gray-900 div {
+  color: white !important;
+}
+
+/* Fix for dark sections that need white text */
+.dark-section h1, 
+.dark-section h2, 
+.dark-section h3, 
+.dark-section p, 
+.dark-section div:not(.bg-purple-100):not(.text-purple-500):not(.text-purple-600) {
+  color: white !important;
+}
+
+.dark-section .text-gray-700,
+.dark-section .text-gray-900 {
+  color: #f1f1f1 !important;
+}
+
+.dark-section .text-gray-300,
+.dark-section .text-gray-600 {
+  color: #b0b0b0 !important;
+}
+
+/* Better visibility for benefit cards in dark mode */
+.dark .bg-white.border {
+  background-color: #1e1e1e !important;
+}
+
 /* Fix spacing issues */
 .section-container {
   margin-bottom: 2rem;
