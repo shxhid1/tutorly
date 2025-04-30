@@ -46,7 +46,7 @@
   background: linear-gradient(to bottom right, rgba(155, 135, 245, 0.2), #1e1e1e, rgba(61, 90, 254, 0.2)) !important;
 }
 
-/* Enhanced text visibility for dark backgrounds */
+/* Enhanced text visibility for dark backgrounds - force white text */
 .bg-gray-900 h1, 
 .bg-gray-900 h2, 
 .bg-gray-900 h3, 
@@ -60,7 +60,7 @@
   color: white !important;
 }
 
-/* Fix for dark sections that need white text */
+/* Make ALL text in dark sections visible */
 .dark-section h1, 
 .dark-section h2, 
 .dark-section h3, 
@@ -77,6 +77,28 @@
 .dark-section .text-gray-300,
 .dark-section .text-gray-600 {
   color: #b0b0b0 !important;
+}
+
+/* Specific text colors for cards and features in dark mode */
+.dark .feature-card h3,
+.dark .feature-card p,
+.dark .benefit-card h3,
+.dark .benefit-card p {
+  color: white !important;
+}
+
+/* Force white text in dark mode for all section headings */
+.dark h2, 
+.dark h3, 
+.dark p {
+  color: white !important;
+}
+
+/* Override dark backgrounds with appropriate text colors */
+.bg-gray-900, 
+.dark-background,
+.bg-black {
+  color: white !important;
 }
 
 /* Better visibility for benefit cards in dark mode */
