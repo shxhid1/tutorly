@@ -193,12 +193,14 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
                   key={index}
                   variant="outline"
                   size="sm"
-                  className="text-xs bg-white hover:bg-spark-light transition-colors button-click-effect dark:bg-muted dark:hover:bg-accent"
+                  className="text-xs bg-white hover:bg-spark-light transition-colors button-click-effect dark:bg-muted dark:hover:bg-accent suggestion-box"
                   onClick={() => {
                     setInput(question);
                   }}
                 >
-                  {question}
+                  <span className="whitespace-normal overflow-wrap-break-word text-left">
+                    {question}
+                  </span>
                 </Button>
               ))}
             </div>
@@ -206,7 +208,7 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
         </div>
       )}
       
-      <CardFooter className="px-4 py-3 border-t flex-shrink-0">
+      <CardFooter className={`px-4 py-3 border-t flex-shrink-0 ${isFullscreen ? 'pb-safe' : ''}`}>
         <div className="flex items-center gap-2 w-full">
           <Button 
             variant="outline" 
@@ -216,7 +218,7 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
           >
             <Sparkles className="h-4 w-4 text-spark-primary" />
           </Button>
-          <div className="flex items-center w-full relative">
+          <div className={`flex items-center w-full relative ${isFullscreen ? 'input-container' : ''}`}>
             <input
               type="text"
               placeholder="Ask anything about your material..."

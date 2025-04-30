@@ -38,7 +38,7 @@ const Chat = () => {
             Chat with your AI tutor about any topic in your study materials
           </p>
           
-          <div className={`${isFullscreen ? 'fixed inset-0 z-50 p-4 bg-white dark:bg-background' : ''}`}>
+          <div className={`${isFullscreen ? 'fixed inset-0 z-50 p-4 pb-20 md:pb-4 bg-white dark:bg-background' : ''}`}>
             {isFullscreen && (
               <div className="flex items-center mb-4">
                 <Button 
