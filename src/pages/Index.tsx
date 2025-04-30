@@ -32,10 +32,10 @@ const Index = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      {/* Simplified navbar for landing page only */}
-      <header className="border-b border-spark-light bg-white sticky top-0 z-50 shadow-sm">
-        <div className="container flex h-16 items-center justify-between">
+    <div className="min-h-screen flex flex-col">
+      {/* Dark navbar for better contrast */}
+      <header className="bg-gray-900 text-white sticky top-0 z-50 shadow-md">
+        <div className="container flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 hover-lift">
               <img 
@@ -43,18 +43,19 @@ const Index = () => {
                 alt="SparkLearn Logo" 
                 className="h-8 w-8" 
               />
-              <span className="text-xl font-bold">SparkLearn</span>
+              <span className="text-xl font-bold text-white">SparkLearn</span>
             </div>
           </div>
-          <div>
+          <div className="flex items-center gap-2">
             <Button 
               variant="ghost" 
               onClick={handleGetStarted}
+              className="text-white hover:bg-gray-800"
             >
               Sign In
             </Button>
             <Button 
-              className="ml-2 bg-spark-primary text-white hover:bg-spark-secondary"
+              className="bg-purple-500 text-white hover:bg-purple-600"
               onClick={handleGetStarted}
             >
               Get Started
@@ -64,35 +65,31 @@ const Index = () => {
       </header>
       
       <main className="flex-1">
-        {/* Hero Section with improved readability and contrast */}
-        <section className="py-24 px-4 bg-gradient-to-br from-[#9b87f5]/20 via-white to-[#e5deff]/40 relative overflow-hidden">
-          {/* Abstract shapes in the background */}
-          <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#9b87f5]/10 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-40 -left-20 w-80 h-80 bg-[#d3e4fd]/20 rounded-full blur-3xl"></div>
-          
+        {/* Hero Section with dark background for improved contrast */}
+        <section className="py-20 px-4 bg-gray-900 text-white">
           <div className="container max-w-6xl mx-auto">
-            <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-              <div className="w-full lg:w-1/2 space-y-6 text-center lg:text-left animate-fade-in">
-                <div className="inline-flex items-center gap-2 bg-spark-light px-4 py-2 rounded-full mb-3">
-                  <Sparkles className="h-4 w-4 text-spark-primary" />
-                  <span className="text-sm font-semibold text-spark-secondary">Smart Learning Platform</span>
+            <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+              <div className="w-full lg:w-1/2 space-y-6 text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 bg-purple-900/60 px-4 py-2 rounded-full mb-3">
+                  <Sparkles className="h-4 w-4 text-purple-300" />
+                  <span className="text-sm font-semibold text-purple-300">Smart Learning Platform</span>
                 </div>
                 
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-gray-900">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-white">
                   Supercharge Your Studies with
-                  <span className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-transparent bg-clip-text block mt-3">
+                  <span className="bg-gradient-to-r from-purple-400 to-purple-300 text-transparent bg-clip-text block mt-3">
                     Intelligent Study Tools
                   </span>
                 </h1>
                 
-                <p className="text-lg md:text-xl text-gray-700 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                <p className="text-lg md:text-xl text-gray-300 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                   Upload notes, get instant summaries, personalized quizzes, and track your progress. Study smarter, not harder.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
                   <Button 
                     size="lg" 
-                    className="w-full sm:w-auto bg-spark-primary hover:bg-spark-secondary text-white button-click-effect text-base font-semibold shadow-lg"
+                    className="w-full sm:w-auto bg-purple-500 hover:bg-purple-600 text-white button-click-effect text-base font-semibold"
                     onClick={handleGetStarted}
                     disabled={isLoading}
                   >
@@ -104,7 +101,7 @@ const Index = () => {
                     ) : (
                       <>
                         <Zap className="mr-2 h-5 w-5" />
-                        Get Started Free
+                        Get Started
                       </>
                     )}
                   </Button>
@@ -112,9 +109,8 @@ const Index = () => {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    className="w-full sm:w-auto text-base font-medium border-spark-primary text-spark-primary hover:bg-spark-light"
+                    className="w-full sm:w-auto text-base font-medium border-purple-400 text-purple-300 hover:bg-purple-900/40"
                     onClick={() => {
-                      // Play demo video or show features
                       toast({
                         title: "Coming Soon!",
                         description: "Our product tour video will be available soon!"
@@ -127,39 +123,35 @@ const Index = () => {
                 
                 {/* Social proof */}
                 <div className="pt-4">
-                  <p className="text-sm font-medium text-gray-600">Trusted by <span className="font-bold text-spark-secondary">10,000+</span> students worldwide</p>
+                  <p className="text-sm font-medium text-gray-300">Trusted by <span className="font-bold text-purple-300">10,000+</span> students worldwide</p>
                 </div>
               </div>
               
-              <div className="w-full lg:w-1/2 flex justify-center animate-slide-up relative">
-                <div className="relative w-full max-w-md">
-                  <div className="absolute -top-6 -right-6 w-40 h-40 bg-[#FDE1D3] rounded-full opacity-70 blur-2xl"></div>
-                  <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-[#E5DEFF] rounded-full opacity-70 blur-3xl"></div>
-                  <img
-                    src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?auto=format&fit=crop&w=800&q=80"
-                    alt="Student studying efficiently"
-                    className="rounded-lg shadow-lg relative z-10 w-full h-auto object-cover"
-                  />
-                  
-                  {/* Floating elements */}
-                  <div className="absolute -right-8 top-1/4 bg-white p-4 rounded-xl shadow-lg flex items-center gap-3 animate-pulse-subtle">
-                    <div className="bg-green-100 p-2 rounded-full">
-                      <BarChart3 className="h-5 w-5 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-sm">Exam Score</p>
-                      <p className="text-green-600 font-bold">+30%</p>
-                    </div>
+              <div className="w-full lg:w-1/2 flex justify-center relative">
+                <img
+                  src="/lovable-uploads/9f437524-8bd8-4f3a-bfa6-5677c3e1758c.png"
+                  alt="Student studying efficiently"
+                  className="rounded-lg shadow-lg relative z-10 w-full max-w-md h-auto object-cover"
+                />
+                
+                {/* Floating elements with proper contrast */}
+                <div className="absolute -right-4 top-1/4 bg-white p-4 rounded-xl shadow-lg flex items-center gap-3">
+                  <div className="bg-green-100 p-2 rounded-full">
+                    <BarChart3 className="h-5 w-5 text-green-600" />
                   </div>
-                  
-                  <div className="absolute -left-8 bottom-1/4 bg-white p-4 rounded-xl shadow-lg flex items-center gap-3">
-                    <div className="bg-blue-100 p-2 rounded-full">
-                      <Brain className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-sm">Study Time</p>
-                      <p className="text-blue-600 font-bold">-40%</p>
-                    </div>
+                  <div>
+                    <p className="font-semibold text-sm text-gray-800">Exam Score</p>
+                    <p className="text-green-600 font-bold">+30%</p>
+                  </div>
+                </div>
+                
+                <div className="absolute -left-4 bottom-1/4 bg-white p-4 rounded-xl shadow-lg flex items-center gap-3">
+                  <div className="bg-blue-100 p-2 rounded-full">
+                    <Brain className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm text-gray-800">Study Time</p>
+                    <p className="text-blue-600 font-bold">-40%</p>
                   </div>
                 </div>
               </div>
@@ -167,7 +159,7 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Features Section with improved readability */}
+        {/* Features Section with improved contrast */}
         <section className="py-20 bg-white px-4">
           <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-16">
@@ -179,22 +171,22 @@ const Index = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <FeatureCard 
-                icon={<Brain className="w-10 h-10 text-spark-primary" />}
+                icon={<Brain className="w-10 h-10 text-purple-500" />}
                 title="AI Study Tutor"
                 description="Chat with your personalized AI tutor about any topic in your study materials"
               />
               <FeatureCard 
-                icon={<BookOpen className="w-10 h-10 text-spark-primary" />}
+                icon={<BookOpen className="w-10 h-10 text-purple-500" />}
                 title="Smart Study Tools"
                 description="Accelerate your learning with effective study materials generated from your content"
               />
               <FeatureCard 
-                icon={<BarChart3 className="w-10 h-10 text-spark-primary" />}
+                icon={<BarChart3 className="w-10 h-10 text-purple-500" />}
                 title="Progress Tracking"
                 description="Monitor your learning progress with detailed analytics"
               />
               <FeatureCard 
-                icon={<Zap className="w-10 h-10 text-spark-primary" />}
+                icon={<Zap className="w-10 h-10 text-purple-500" />}
                 title="Instant Quizzes"
                 description="Test your knowledge with AI-generated quizzes tailored to your materials"
               />
@@ -202,8 +194,8 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Upload Section - Redesigned with better contrast and imagery */}
-        <section className="py-20 bg-[#F1F0FB] px-4">
+        {/* Upload Section - Redesigned with better contrast */}
+        <section className="py-20 bg-gray-100 px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4 text-gray-900">Upload Any Study Material</h2>
@@ -212,7 +204,7 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="bg-white rounded-xl shadow-xl p-8 border border-[#E5DEFF]">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <div className="flex flex-col justify-center">
                   <h3 className="text-2xl font-bold mb-4 text-gray-900">Supports Multiple Formats</h3>
@@ -244,7 +236,7 @@ const Index = () => {
                   </div>
                   
                   <Button 
-                    className="w-full md:w-auto bg-spark-primary hover:bg-spark-secondary text-white button-click-effect font-semibold text-base shadow-lg"
+                    className="w-full md:w-auto bg-purple-500 hover:bg-purple-600 text-white font-semibold text-base shadow-md"
                     onClick={handleGetStarted}
                   >
                     <Zap className="mr-2 h-5 w-5" />
@@ -254,16 +246,16 @@ const Index = () => {
                 
                 <div className="flex items-center justify-center">
                   <div className="relative">
-                    <div className="absolute -inset-4 bg-gradient-to-r from-[#9b87f5]/20 to-[#7E69AB]/20 rounded-xl blur-lg"></div>
                     <img 
-                      src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=500&h=400&q=80" 
+                      src="/lovable-uploads/4f1db48c-ba0f-4697-82cf-b0da4decebbf.png" 
                       alt="Students studying together" 
                       className="rounded-lg shadow-lg relative z-10 w-full h-auto object-cover"
                     />
-                    {/* Decorative elements */}
+                    
+                    {/* Decorative element with improved contrast */}
                     <div className="absolute -bottom-6 -right-6 bg-white p-3 rounded-lg shadow-lg z-20 flex items-center gap-2">
-                      <Zap className="h-5 w-5 text-spark-primary" />
-                      <span className="text-sm font-semibold">Instant Processing</span>
+                      <Zap className="h-5 w-5 text-purple-500" />
+                      <span className="text-sm font-semibold text-gray-800">Instant Processing</span>
                     </div>
                   </div>
                 </div>
@@ -272,7 +264,7 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Why SparkLearn Works Section - New section */}
+        {/* Why SparkLearn Works Section with improved text visibility */}
         <section className="py-20 bg-white px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
@@ -302,8 +294,8 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Testimonials Section with improved cards */}
-        <section className="py-20 bg-[#F1F0FB] px-4">
+        {/* Testimonials Section with improved contrast */}
+        <section className="py-20 bg-gray-100 px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4 text-gray-900">Loved by Students Everywhere</h2>
@@ -333,72 +325,35 @@ const Index = () => {
             {/* Stats section with improved visibility */}
             <div className="mt-16 bg-white rounded-xl shadow-lg p-10 grid grid-cols-1 md:grid-cols-3 gap-10">
               <div className="text-center">
-                <div className="text-5xl font-bold text-spark-primary mb-3">30%</div>
+                <div className="text-5xl font-bold text-purple-500 mb-3">30%</div>
                 <p className="text-lg font-medium text-gray-700">Average Exam Score Improvement</p>
               </div>
               <div className="text-center">
-                <div className="text-5xl font-bold text-spark-primary mb-3">10,000+</div>
+                <div className="text-5xl font-bold text-purple-500 mb-3">10,000+</div>
                 <p className="text-lg font-medium text-gray-700">Active Student Users</p>
               </div>
               <div className="text-center">
-                <div className="text-5xl font-bold text-spark-primary mb-3">40%</div>
+                <div className="text-5xl font-bold text-purple-500 mb-3">40%</div>
                 <p className="text-lg font-medium text-gray-700">Less Study Time Required</p>
               </div>
             </div>
           </div>
         </section>
         
-        {/* Start Learning Smarter - New CTA Section */}
-        <section className="py-20 bg-white px-4">
-          <div className="container mx-auto max-w-5xl">
-            <div className="bg-gradient-to-br from-[#9b87f5] to-[#7E69AB] rounded-2xl shadow-xl p-10 md:p-16 text-white">
-              <div className="text-center max-w-2xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">Start Learning Smarter Today</h2>
-                <p className="text-xl mb-8 text-white/90">
-                  Join thousands of students who are already using AI to transform their study habits.
-                </p>
-                <div className="flex flex-col sm:flex-row justify-center gap-4">
-                  <Button 
-                    size="lg" 
-                    className="bg-white text-spark-primary hover:bg-white/90 font-semibold text-base"
-                    onClick={handleGetStarted}
-                  >
-                    <Zap className="mr-2 h-5 w-5" />
-                    Get Started Free
-                  </Button>
-                  <Button 
-                    size="lg" 
-                    variant="outline"
-                    className="border-white text-white hover:bg-white/10 font-medium text-base"
-                    onClick={() => {
-                      toast({
-                        title: "Coming Soon!",
-                        description: "Our product tour video will be available soon!"
-                      });
-                    }}
-                  >
-                    See How It Works
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
         {/* CTA Section with improved contrast */}
-        <section className="py-20 bg-[#121212] text-white px-4">
+        <section className="py-20 bg-gray-900 text-white px-4">
           <div className="container mx-auto max-w-5xl text-center">
             <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Learning?</h2>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
               Join thousands of students who are already studying smarter, not harder.
             </p>
             <Button 
               size="lg" 
-              className="bg-spark-primary hover:bg-spark-secondary button-click-effect text-base font-semibold shadow-lg" 
+              className="bg-purple-500 hover:bg-purple-600 text-white text-base font-semibold shadow-lg" 
               onClick={handleGetStarted}
             >
               <Zap className="mr-2 h-5 w-5" />
-              Get Started Free
+              Get Started
             </Button>
           </div>
         </section>
@@ -411,9 +366,9 @@ const Index = () => {
 
 // Feature Card Component with improved visibility
 const FeatureCard = ({ icon, title, description }) => (
-  <Card className="feature-card hover-glow border border-[#E5DEFF] shadow-md p-6 h-full">
-    <CardContent className="p-0 space-y-4 h-full">
-      <div className="p-3 bg-[#F1F0FB] w-fit rounded-xl">
+  <Card className="border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 h-full">
+    <CardContent className="p-6 space-y-4 h-full">
+      <div className="p-3 bg-purple-100 w-fit rounded-xl">
         {icon}
       </div>
       <h3 className="text-xl font-bold text-gray-900">{title}</h3>
@@ -424,7 +379,7 @@ const FeatureCard = ({ icon, title, description }) => (
 
 // Document Type Card with improved contrast
 const DocumentTypeCard = ({ icon, title, description }) => (
-  <div className="bg-[#F1F0FB] p-4 rounded-lg">
+  <div className="bg-gray-50 p-4 rounded-lg">
     <div className="flex items-start gap-3">
       <div className="mt-1">{icon}</div>
       <div>
@@ -435,24 +390,24 @@ const DocumentTypeCard = ({ icon, title, description }) => (
   </div>
 );
 
-// Benefit Card - New component
+// Benefit Card with improved visibility
 const BenefitCard = ({ number, title, description }) => (
-  <div className="bg-white border border-[#E5DEFF] rounded-xl p-6 shadow-md transition-all duration-300 hover:-translate-y-1">
-    <div className="text-sm font-bold text-spark-primary mb-3">{number}</div>
+  <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-md transition-all duration-300 hover:-translate-y-1 h-full">
+    <div className="text-sm font-bold text-purple-500 mb-3">{number}</div>
     <h3 className="text-xl font-bold text-gray-900 mb-3">{title}</h3>
     <p className="text-gray-700">{description}</p>
-    <div className="mt-4 flex items-center text-spark-secondary font-semibold">
+    <div className="mt-4 flex items-center text-purple-600 font-semibold">
       <CheckCircle className="h-5 w-5 mr-2" />
       <span>Proven Effective</span>
     </div>
   </div>
 );
 
-// Testimonial Card Component with improved design
+// Testimonial Card Component with improved contrast
 const TestimonialCard = ({ quote, author, role }) => (
-  <Card className="p-6 hover-glow border border-[#E5DEFF] shadow-md h-full">
+  <Card className="p-6 border border-gray-200 shadow-md h-full">
     <CardContent className="p-0 space-y-4 h-full">
-      <div className="text-4xl text-spark-primary">"</div>
+      <div className="text-4xl text-purple-500">"</div>
       <p className="text-gray-700 italic">{quote}</p>
       <div className="mt-auto pt-4">
         <p className="font-bold text-gray-900">{author}</p>
