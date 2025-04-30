@@ -38,11 +38,6 @@ const Index = () => {
         <div className="container flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 hover-lift">
-              <img 
-                src="/lovable-uploads/f0690da2-3b69-4cc1-8315-feec3f1edf30.png" 
-                alt="SparkLearn Logo" 
-                className="h-8 w-8" 
-              />
               <span className="text-xl font-bold text-white">SparkLearn</span>
             </div>
           </div>
@@ -69,7 +64,7 @@ const Index = () => {
         <section className="py-20 px-4 bg-gray-900 text-white">
           <div className="container max-w-6xl mx-auto">
             <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-              <div className="w-full lg:w-1/2 space-y-6 text-center lg:text-left">
+              <div className="w-full space-y-6 text-center">
                 <div className="inline-flex items-center gap-2 bg-purple-900/60 px-4 py-2 rounded-full mb-3">
                   <Sparkles className="h-4 w-4 text-purple-300" />
                   <span className="text-sm font-semibold text-purple-300">Smart Learning Platform</span>
@@ -82,11 +77,11 @@ const Index = () => {
                   </span>
                 </h1>
                 
-                <p className="text-lg md:text-xl text-gray-300 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                <p className="text-lg md:text-xl text-gray-300 max-w-xl mx-auto leading-relaxed">
                   Upload notes, get instant summaries, personalized quizzes, and track your progress. Study smarter, not harder.
                 </p>
                 
-                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                   <Button 
                     size="lg" 
                     className="w-full sm:w-auto bg-purple-500 hover:bg-purple-600 text-white button-click-effect text-base font-semibold"
@@ -124,35 +119,6 @@ const Index = () => {
                 {/* Social proof */}
                 <div className="pt-4">
                   <p className="text-sm font-medium text-gray-300">Trusted by <span className="font-bold text-purple-300">10,000+</span> students worldwide</p>
-                </div>
-              </div>
-              
-              <div className="w-full lg:w-1/2 flex justify-center relative">
-                <img
-                  src="/lovable-uploads/9f437524-8bd8-4f3a-bfa6-5677c3e1758c.png"
-                  alt="Student studying efficiently"
-                  className="rounded-lg shadow-lg relative z-10 w-full max-w-md h-auto object-cover"
-                />
-                
-                {/* Floating elements with proper contrast */}
-                <div className="absolute -right-4 top-1/4 bg-white p-4 rounded-xl shadow-lg flex items-center gap-3">
-                  <div className="bg-green-100 p-2 rounded-full">
-                    <BarChart3 className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm text-gray-800">Exam Score</p>
-                    <p className="text-green-600 font-bold">+30%</p>
-                  </div>
-                </div>
-                
-                <div className="absolute -left-4 bottom-1/4 bg-white p-4 rounded-xl shadow-lg flex items-center gap-3">
-                  <div className="bg-blue-100 p-2 rounded-full">
-                    <Brain className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm text-gray-800">Study Time</p>
-                    <p className="text-blue-600 font-bold">-40%</p>
-                  </div>
                 </div>
               </div>
             </div>
@@ -194,7 +160,7 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Upload Section - Redesigned with better contrast */}
+        {/* Upload Section - Redesigned with better contrast and no overlapping */}
         <section className="py-20 bg-gray-100 px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
@@ -205,14 +171,14 @@ const Index = () => {
             </div>
             
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+              <div className="grid grid-cols-1 gap-10">
                 <div className="flex flex-col justify-center">
                   <h3 className="text-2xl font-bold mb-4 text-gray-900">Supports Multiple Formats</h3>
                   <p className="text-gray-700 mb-8 text-lg">
                     Upload PDFs, Word documents, images, or plain text. Our AI processes everything.
                   </p>
                   
-                  <div className="grid grid-cols-2 gap-4 mb-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                     <DocumentTypeCard 
                       icon={<FileText className="h-6 w-6 text-red-600" />}
                       title="PDF Files"
@@ -242,22 +208,6 @@ const Index = () => {
                     <Zap className="mr-2 h-5 w-5" />
                     Upload Your First Document
                   </Button>
-                </div>
-                
-                <div className="flex items-center justify-center">
-                  <div className="relative">
-                    <img 
-                      src="/lovable-uploads/4f1db48c-ba0f-4697-82cf-b0da4decebbf.png" 
-                      alt="Students studying together" 
-                      className="rounded-lg shadow-lg relative z-10 w-full h-auto object-cover"
-                    />
-                    
-                    {/* Decorative element with improved contrast */}
-                    <div className="absolute -bottom-6 -right-6 bg-white p-3 rounded-lg shadow-lg z-20 flex items-center gap-2">
-                      <Zap className="h-5 w-5 text-purple-500" />
-                      <span className="text-sm font-semibold text-gray-800">Instant Processing</span>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -340,21 +290,23 @@ const Index = () => {
           </div>
         </section>
         
-        {/* CTA Section with improved contrast */}
+        {/* CTA Section with improved contrast and visible button */}
         <section className="py-20 bg-gray-900 text-white px-4">
           <div className="container mx-auto max-w-5xl text-center">
             <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Learning?</h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
               Join thousands of students who are already studying smarter, not harder.
             </p>
-            <Button 
-              size="lg" 
-              className="bg-purple-500 hover:bg-purple-600 text-white text-base font-semibold shadow-lg" 
-              onClick={handleGetStarted}
-            >
-              <Zap className="mr-2 h-5 w-5" />
-              Get Started
-            </Button>
+            <div className="flex justify-center">
+              <Button 
+                size="lg" 
+                className="bg-purple-500 hover:bg-purple-600 text-white text-base font-semibold shadow-lg" 
+                onClick={handleGetStarted}
+              >
+                <Zap className="mr-2 h-5 w-5" />
+                Get Started
+              </Button>
+            </div>
           </div>
         </section>
       </main>
