@@ -6,7 +6,7 @@
   --card: #1e1e1e;
   --card-foreground: #e1e1e1;
   --muted: #333333;
-  --muted-foreground: #b0b0b0;
+  --muted-foreground: #c0c0c0; /* Improved contrast */
   --primary: #9b87f5;
   --secondary: #7E69AB;
   --accent: rgba(155, 135, 245, 0.2);
@@ -17,6 +17,7 @@
   color: var(--foreground);
 }
 
+/* Base background overrides */
 .dark .bg-white {
   background-color: var(--background) !important;
 }
@@ -33,31 +34,36 @@
   border-color: #333333 !important;
 }
 
+/* Text color improvements for better contrast */
 .dark .text-muted-foreground {
   color: var(--muted-foreground) !important;
 }
 
+/* Card styling improvements */
 .dark .card {
   background-color: var(--card);
   border-color: #333333;
 }
 
+/* Gradient background adjustments */
 .dark .bg-gradient-to-br.from-spark-light.via-white.to-spark-blue {
   background: linear-gradient(to bottom right, rgba(155, 135, 245, 0.2), #1e1e1e, rgba(61, 90, 254, 0.2)) !important;
 }
 
 /* Enhanced text visibility for dark backgrounds - force white text */
-.bg-gray-900 h1, 
-.bg-gray-900 h2, 
-.bg-gray-900 h3, 
-.bg-gray-900 p, 
-.bg-gray-900 div,
-.dark .bg-gray-900 h1, 
-.dark .bg-gray-900 h2, 
-.dark .bg-gray-900 h3, 
-.dark .bg-gray-900 p, 
-.dark .bg-gray-900 div {
+.dark h1, 
+.dark h2, 
+.dark h3, 
+.dark h4, 
+.dark h5, 
+.dark h6 {
   color: white !important;
+}
+
+.dark p, 
+.dark span:not(.text-purple-500):not(.text-purple-600), 
+.dark div:not(.text-purple-500):not(.text-purple-600) {
+  color: #f1f1f1 !important;
 }
 
 /* Make ALL text in dark sections visible */
@@ -69,14 +75,15 @@
   color: white !important;
 }
 
-.dark-section .text-gray-700,
-.dark-section .text-gray-900 {
+/* Fix specific text colors for sections */
+.dark .text-gray-700,
+.dark .text-gray-900 {
   color: #f1f1f1 !important;
 }
 
-.dark-section .text-gray-300,
-.dark-section .text-gray-600 {
-  color: #b0b0b0 !important;
+.dark .text-gray-300,
+.dark .text-gray-600 {
+  color: #c0c0c0 !important;
 }
 
 /* Fix light mode text for proper contrast on white backgrounds */
@@ -91,53 +98,108 @@
   color: #333333 !important;
 }
 
-/* Specific text colors for light mode sections */
-h2.text-gray-900,
-h3.text-gray-900,
-p.text-gray-700,
-div.text-gray-700 {
-  color: #333333 !important;
+/* Preserve specific colors for both modes */
+.text-purple-500, .text-purple-600, 
+.dark .text-purple-500, .dark .text-purple-600 {
+  color: #9b87f5 !important;
 }
 
-/* Light mode overrides - dark text on light backgrounds */
-.bg-white, 
-.bg-gray-100 {
-  color: #333333 !important;
+/* Dark mode UI components */
+.dark .sheet-content, 
+.dark .popover-content, 
+.dark .dropdown-content {
+  background-color: var(--card) !important;
+  border-color: #333333 !important;
 }
 
-/* Dark mode specific overrides */
-.dark h2.text-gray-900, 
-.dark h3.text-gray-900,
-.dark p.text-gray-700,
-.dark div.text-gray-700 {
-  color: white !important;
+/* Button improvements */
+.dark .btn,
+.dark button:not(.text-white):not(.bg-purple-500):not(.text-purple-500) {
+  color: #f1f1f1 !important;
 }
 
-/* Specific text colors for cards and features in dark mode */
+.dark .bg-white.border {
+  background-color: #1e1e1e !important;
+  border-color: #333333 !important;
+}
+
+/* Improved visibility for inputs in dark mode */
+.dark input, 
+.dark textarea, 
+.dark select {
+  background-color: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+  color: #f1f1f1 !important;
+}
+
+.dark input::placeholder, 
+.dark textarea::placeholder {
+  color: #a0a0a0 !important;
+}
+
+/* Navbar and bottom nav improvements */
+.dark .bg-white.border-b {
+  background-color: var(--card) !important;
+  border-color: #333333 !important;
+}
+
+/* Improve visibility for form elements */
+.dark label {
+  color: #e1e1e1 !important;
+}
+
+/* Component-specific fixes */
+.dark .feature-card,
+.dark .benefit-card,
+.dark .testimonial-card {
+  background-color: var(--card) !important;
+  border-color: #333333 !important;
+}
+
 .dark .feature-card h3,
 .dark .feature-card p,
 .dark .benefit-card h3,
-.dark .benefit-card p {
+.dark .benefit-card p,
+.dark .testimonial-card p {
+  color: #f1f1f1 !important;
+}
+
+/* Ensure dialog, popovers and dropdowns have proper background in dark mode */
+.dark [role="dialog"],
+.dark [role="tooltip"],
+.dark [role="menu"] {
+  background-color: var(--card) !important;
+  color: var(--card-foreground) !important;
+  border-color: #333333 !important;
+}
+
+/* Consistency for sheet components */
+.dark .fixed.z-50.bg-background {
+  background-color: var(--card) !important;
+}
+
+/* Ensure good contrast for icons */
+.dark svg:not(.text-purple-500):not(.text-purple-600) {
+  color: #f1f1f1 !important;
+}
+
+/* Specific class fixes for component contrast */
+.dark .DocumentTypeCard {
+  background-color: #2a2a2a !important;
+}
+
+.dark .DocumentTypeCard h4 {
   color: white !important;
 }
 
-/* Force white text in dark mode for all section headings */
-.dark h2, 
-.dark h3, 
-.dark p {
-  color: white !important;
+.dark .DocumentTypeCard p {
+  color: #e1e1e1 !important;
 }
 
-/* Override dark backgrounds with appropriate text colors */
-.bg-gray-900, 
-.dark-background,
-.bg-black {
-  color: white !important;
-}
-
-/* Better visibility for benefit cards in dark mode */
-.dark .bg-white.border {
-  background-color: #1e1e1e !important;
+/* Fix sheet background */
+.dark [data-radix-popper-content-wrapper] > * {
+  background-color: var(--card) !important;
+  border-color: #333333 !important;
 }
 
 /* Fix spacing issues */
@@ -148,171 +210,21 @@ div.text-gray-700 {
   clear: both;
 }
 
-/* Better section separation */
-.section-divider {
-  margin: 1.5rem 0;
-  border-color: rgba(155, 135, 245, 0.2);
-}
-
-/* Improvement for card animations */
-.feature-card {
-  transition: all 0.3s ease;
-}
-
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.dark .feature-card:hover {
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-}
-
-/* Spinner for loading states */
-.loading-spinner {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(155, 135, 245, 0.3);
-  border-radius: 50%;
-  border-top-color: #9b87f5;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Mobile responsiveness improvements */
+/* Fix for bottom navigation and mobile responsiveness */
 @media (max-width: 640px) {
+  .dark .fixed.bottom-0.left-0.right-0 {
+    background-color: var(--card) !important;
+    border-color: #333333 !important;
+  }
+  
   .container {
     padding-left: 1rem;
     padding-right: 1rem;
   }
-  
-  h1, h2 {
-    word-wrap: break-word;
-  }
 }
 
-/* Button animations */
-.animated-button {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.animated-button::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: all 0.5s ease;
-}
-
-.animated-button:active::after {
-  width: 300%;
-  height: 300%;
-}
-
-.dark .animated-button::after {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-/* Special card text fixes for better contrast in both themes */
-.card h3 {
-  color: #1a1a1a !important;
-}
-
-.dark .card h3 {
-  color: white !important;
-}
-
-.card p {
-  color: #4a4a4a !important;
-}
-
-.dark .card p {
-  color: #e1e1e1 !important;
-}
-
-/* Text color fixes for sections with white background in light mode */
-.bg-white .text-gray-900,
-.bg-gray-100 .text-gray-900 {
-  color: #1a1a1a !important;
-}
-
-.bg-white .text-gray-700,
-.bg-gray-100 .text-gray-700 {
-  color: #333333 !important;
-}
-
-.bg-white .text-gray-600,
-.bg-gray-100 .text-gray-600 {
-  color: #4b5563 !important;
-}
-
-/* Text color override for dark backgrounds in light mode */
-.bg-gray-900 .text-gray-300 {
-  color: #d1d5db !important;
-}
-
-/* Testimonial card text colors */
-.TestimonialCard .text-gray-700 {
-  color: #4a4a4a !important;
-}
-
-.dark .TestimonialCard .text-gray-700 {
-  color: #e1e1e1 !important;
-}
-
-/* Feature card text colors */
-.FeatureCard .text-gray-700 {
-  color: #4a4a4a !important;
-}
-
-.dark .FeatureCard .text-gray-700 {
-  color: #e1e1e1 !important;
-}
-
-/* Benefit card text colors */
-.BenefitCard .text-gray-700 {
-  color: #4a4a4a !important;
-}
-
-.dark .BenefitCard .text-gray-700 {
-  color: #e1e1e1 !important;
-}
-
-/* Document type card text colors */
-.DocumentTypeCard .text-gray-900 {
-  color: #1a1a1a !important;
-}
-
-.dark .DocumentTypeCard .text-gray-900 {
-  color: white !important;
-}
-
-.DocumentTypeCard .text-gray-700 {
-  color: #4a4a4a !important;
-}
-
-.dark .DocumentTypeCard .text-gray-700 {
-  color: #e1e1e1 !important;
-}
-
-/* Stats section text color fixes */
-.stats-item .text-gray-700 {
-  color: #4a4a4a !important;
-}
-
-.dark .stats-item .text-gray-700 {
-  color: #e1e1e1 !important;
+/* Enhancements for Footer in dark mode */
+.dark footer {
+  background-color: var(--card) !important;
+  border-color: #333333 !important;
 }

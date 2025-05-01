@@ -1,9 +1,11 @@
 
-import { Home, BookOpen, Upload, User } from "lucide-react";
+import { Home, BookOpen, Upload, User, Moon, Sun } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const BottomNav = () => {
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
   
   // Don't show bottom nav on landing page
   const isLandingPage = location.pathname === "/" || location.pathname === "/landing";
@@ -47,10 +49,10 @@ const BottomNav = () => {
 const NavItem = ({ icon, label, href, active }) => {
   return (
     <Link to={href} className="flex flex-col items-center justify-center w-full py-1 animated-button">
-      <div className={`p-1.5 ${active ? 'text-spark-primary' : 'text-muted-foreground'}`}>
+      <div className={`p-1.5 ${active ? 'text-spark-primary' : 'text-muted-foreground dark:text-gray-400'}`}>
         {icon}
       </div>
-      <span className={`text-xs mt-1 ${active ? 'text-spark-primary font-medium' : 'text-muted-foreground'}`}>
+      <span className={`text-xs mt-1 ${active ? 'text-spark-primary font-medium' : 'text-muted-foreground dark:text-gray-400'}`}>
         {label}
       </span>
     </Link>

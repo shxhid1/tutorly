@@ -14,14 +14,18 @@ import {
   CalendarDays,
   BarChart3,
   User,
+  Moon,
+  Sun
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
   
   const isLandingPage = location.pathname === "/" || location.pathname === "/landing";
   
@@ -59,13 +63,22 @@ const Navbar = () => {
                 <input 
                   type="search"
                   placeholder="Search your materials..." 
-                  className="pl-10 pr-4 py-2 rounded-full border border-spark-light focus:outline-none focus:ring-2 focus:ring-spark-primary text-sm w-56 lg:w-64 transition-all duration-300 dark:bg-muted dark:border-muted" 
+                  className="pl-10 pr-4 py-2 rounded-full border border-spark-light focus:outline-none focus:ring-2 focus:ring-spark-primary text-sm w-56 lg:w-64 transition-all duration-300 dark:bg-muted dark:border-muted dark:text-foreground" 
                 />
               </div>
               
               <Button variant="ghost" size="icon" className="relative hover:bg-spark-light transition-colors dark:hover:bg-accent">
                 <BellIcon className="h-5 w-5" />
                 <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-spark-primary"></span>
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="hover:bg-spark-light transition-colors dark:hover:bg-accent"
+                onClick={toggleTheme}
+              >
+                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </Button>
               
               <Link to="/profile">
@@ -97,7 +110,7 @@ const Navbar = () => {
               <input 
                 type="search"
                 placeholder="Search your materials..." 
-                className="bg-transparent border-none outline-none text-sm w-full dark:bg-transparent" 
+                className="bg-transparent border-none outline-none text-sm w-full dark:bg-transparent dark:text-foreground" 
               />
             </div>
             <nav className="space-y-1">
@@ -106,6 +119,16 @@ const Navbar = () => {
               <MobileNavLink href="/study-plans" icon={<CalendarDays className="h-5 w-5" />} label="Study Plans" active={location.pathname === '/study-plans'} />
               <MobileNavLink href="/progress" icon={<BarChart3 className="h-5 w-5" />} label="Progress" active={location.pathname === '/progress'} />
               <MobileNavLink href="/profile" icon={<User className="h-5 w-5" />} label="Profile" active={location.pathname === '/profile'} />
+              
+              <div 
+                className="flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-spark-light transition-colors dark:hover:bg-accent cursor-pointer"
+                onClick={toggleTheme}
+              >
+                <div className="flex items-center gap-3">
+                  {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  <span className="font-medium">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+                </div>
+              </div>
             </nav>
           </div>
         </div>
@@ -130,7 +153,7 @@ const NavLink = ({ href, icon, label, active }) => (
 const MobileNavLink = ({ href, icon, label, active }) => (
   <Link 
     to={href} 
-    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg ${active ? 'bg-spark-light text-spark-primary' : 'hover:bg-spark-light'} transition-colors dark:hover:bg-accent`}
+    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg ${active ? 'bg-spark-light text-spark-primary dark:bg-accent dark:text-spark-primary' : 'hover:bg-spark-light dark:hover:bg-accent'} transition-colors`}
   >
     {icon}
     <span className="font-medium">{label}</span>
