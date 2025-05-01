@@ -6,7 +6,7 @@ import BottomNav from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollText, FileText, Plus, Clock, LucideIcon, Upload, X, FileIcon } from "lucide-react";
+import { ScrollText, FileText, Plus, Clock, Upload, X, FileIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
@@ -141,15 +141,15 @@ const Summaries = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-background">
       <Navbar />
       
       <main className="flex-1 py-8 px-4 pb-20 md:pb-8">
         <div className="container max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">Smart Summaries</h1>
-              <p className="text-muted-foreground">Get condensed versions of your material in different formats</p>
+              <h1 className="text-2xl md:text-3xl font-bold mb-2 dark:text-white">Smart Summaries</h1>
+              <p className="text-muted-foreground dark:text-gray-300">Get condensed versions of your material in different formats</p>
             </div>
             <Button 
               className="spark-button-primary button-click-effect"
@@ -184,7 +184,7 @@ const Summaries = () => {
                       const Icon = type.icon;
                       
                       return (
-                        <Card key={summary.id} className="hover-glow hover-lift transition-all duration-300 h-full">
+                        <Card key={summary.id} className="hover-glow hover-lift transition-all duration-300 h-full dark:border-muted">
                           <CardHeader className={cn("rounded-t-lg", type.bg)}>
                             <div className="flex justify-between items-center">
                               <div className="bg-white/20 p-2 rounded-full">
@@ -196,9 +196,9 @@ const Summaries = () => {
                             </div>
                           </CardHeader>
                           <CardContent className="pt-4">
-                            <CardTitle className="text-lg mb-2">{summary.title}</CardTitle>
-                            <CardDescription className="line-clamp-2 mb-4">{summary.description}</CardDescription>
-                            <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <CardTitle className="text-lg mb-2 dark:text-white">{summary.title}</CardTitle>
+                            <CardDescription className="line-clamp-2 mb-4 dark:text-gray-300">{summary.description}</CardDescription>
+                            <div className="flex items-center justify-between text-xs text-muted-foreground dark:text-gray-400">
                               <span>{summary.created}</span>
                               <div className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
@@ -212,10 +212,10 @@ const Summaries = () => {
                 </div>
                 
                 {summaries.filter(s => s.subject === subject.id).length === 0 && (
-                  <div className="text-center py-12 bg-gray-50 rounded-lg">
+                  <div className="text-center py-12 bg-gray-50 dark:bg-card rounded-lg">
                     <ScrollText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-xl font-medium mb-2">No summaries yet</h3>
-                    <p className="text-muted-foreground mb-4">
+                    <h3 className="text-xl font-medium mb-2 dark:text-white">No summaries yet</h3>
+                    <p className="text-muted-foreground mb-4 dark:text-gray-300">
                       Upload study material to generate smart summaries.
                     </p>
                     <Button className="spark-button-primary button-click-effect">
@@ -234,23 +234,23 @@ const Summaries = () => {
       
       {/* File Upload Dialog */}
       <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md dark:bg-card">
           <DialogHeader>
-            <DialogTitle>Upload Document for Summary</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="dark:text-white">Upload Document for Summary</DialogTitle>
+            <DialogDescription className="dark:text-gray-300">
               Upload your study material to generate a smart summary
             </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-4 py-4">
-            <div className={`border-2 border-dashed rounded-lg p-6 text-center ${selectedFile ? 'bg-muted border-primary/20' : 'border-muted-foreground/25'}`}>
+            <div className={`border-2 border-dashed rounded-lg p-6 text-center ${selectedFile ? 'bg-muted border-primary/20' : 'border-muted-foreground/25'} dark:border-muted`}>
               {selectedFile ? (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <FileIcon className="h-8 w-8 text-muted-foreground" />
+                    <FileIcon className="h-8 w-8 text-muted-foreground dark:text-gray-400" />
                     <div className="space-y-1 text-left">
-                      <p className="text-sm font-medium">{selectedFile.name}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-sm font-medium dark:text-white">{selectedFile.name}</p>
+                      <p className="text-xs text-muted-foreground dark:text-gray-400">
                         {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>
@@ -259,18 +259,19 @@ const Summaries = () => {
                     variant="ghost" 
                     size="sm" 
                     onClick={() => setSelectedFile(null)}
+                    className="dark:text-gray-300"
                   >
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center space-y-2">
-                  <div className="rounded-full bg-muted p-2">
-                    <Upload className="h-6 w-6 text-muted-foreground" />
+                  <div className="rounded-full bg-muted p-2 dark:bg-muted/30">
+                    <Upload className="h-6 w-6 text-muted-foreground dark:text-gray-400" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium">Drag & drop or click to upload</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-sm font-medium dark:text-white">Drag & drop or click to upload</p>
+                    <p className="text-xs text-muted-foreground dark:text-gray-400">
                       PDF, Word, or Text files (max 20MB)
                     </p>
                   </div>
@@ -288,7 +289,7 @@ const Summaries = () => {
             {isUploading && (
               <div className="space-y-2">
                 <Progress value={uploadProgress} className="h-2" />
-                <p className="text-xs text-center text-muted-foreground">
+                <p className="text-xs text-center text-muted-foreground dark:text-gray-400">
                   {uploadProgress < 100 ? 'Uploading...' : 'Processing document...'}
                 </p>
               </div>
@@ -299,6 +300,7 @@ const Summaries = () => {
                 variant="outline" 
                 onClick={() => setShowUploadDialog(false)} 
                 disabled={isUploading}
+                className="dark:text-gray-300 dark:border-muted"
               >
                 Cancel
               </Button>

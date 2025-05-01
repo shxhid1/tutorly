@@ -1,11 +1,11 @@
 
-import { Home, BookOpen, Upload, User, Moon, Sun } from "lucide-react";
+import { Home, BookOpen, Upload, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "@/contexts/ThemeContext";
 
 const BottomNav = () => {
   const location = useLocation();
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   
   // Don't show bottom nav on landing page
   const isLandingPage = location.pathname === "/" || location.pathname === "/landing";
