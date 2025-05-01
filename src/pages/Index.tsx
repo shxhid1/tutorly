@@ -125,8 +125,8 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Features Section with improved contrast - add dark-section class */}
-        <section className="py-20 bg-white px-4 dark:dark-section">
+        {/* Features Section with improved contrast */}
+        <section className="py-20 bg-white px-4">
           <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-4 text-gray-900">Everything You Need To Study Smarter</h2>
@@ -160,8 +160,8 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Upload Section - Redesigned with better spacing and no overlapping - add dark-section for dark mode */}
-        <section className="py-20 bg-gray-100 px-4 dark:dark-section">
+        {/* Upload Section - Redesigned with better spacing and no overlapping */}
+        <section className="py-20 bg-gray-100 px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4 text-gray-900">Upload Any Study Material</h2>
@@ -170,11 +170,11 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 dark:bg-card dark:border-muted">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
               <div className="grid grid-cols-1 gap-10">
                 <div className="flex flex-col justify-center">
-                  <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Supports Multiple Formats</h3>
-                  <p className="text-gray-700 mb-8 text-lg dark:text-gray-300">
+                  <h3 className="text-2xl font-bold mb-4 text-gray-900">Supports Multiple Formats</h3>
+                  <p className="text-gray-700 mb-8 text-lg">
                     Upload PDFs, Word documents, images, or plain text. Our AI processes everything.
                   </p>
                   
@@ -214,8 +214,8 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Why SparkLearn Works Section with improved text visibility - add dark-section for dark mode */}
-        <section className="py-20 bg-white px-4 dark:dark-section">
+        {/* Why SparkLearn Works Section with improved text visibility */}
+        <section className="py-20 bg-white px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4 text-gray-900">Why SparkLearn Works</h2>
@@ -244,8 +244,8 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Testimonials Section with improved contrast - add dark-section for dark mode */}
-        <section className="py-20 bg-gray-100 px-4 dark:dark-section">
+        {/* Testimonials Section with improved contrast */}
+        <section className="py-20 bg-gray-100 px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4 text-gray-900">Loved by Students Everywhere</h2>
@@ -273,18 +273,18 @@ const Index = () => {
             </div>
             
             {/* Stats section with improved visibility */}
-            <div className="mt-16 bg-white rounded-xl shadow-lg p-10 grid grid-cols-1 md:grid-cols-3 gap-10 dark:bg-card dark:border dark:border-muted">
-              <div className="text-center">
+            <div className="mt-16 bg-white rounded-xl shadow-lg p-10 grid grid-cols-1 md:grid-cols-3 gap-10">
+              <div className="text-center stats-item">
                 <div className="text-5xl font-bold text-purple-500 mb-3">30%</div>
-                <p className="text-lg font-medium text-gray-700 dark:text-gray-300">Average Exam Score Improvement</p>
+                <p className="text-lg font-medium text-gray-700">Average Exam Score Improvement</p>
               </div>
-              <div className="text-center">
+              <div className="text-center stats-item">
                 <div className="text-5xl font-bold text-purple-500 mb-3">10,000+</div>
-                <p className="text-lg font-medium text-gray-700 dark:text-gray-300">Active Student Users</p>
+                <p className="text-lg font-medium text-gray-700">Active Student Users</p>
               </div>
-              <div className="text-center">
+              <div className="text-center stats-item">
                 <div className="text-5xl font-bold text-purple-500 mb-3">40%</div>
-                <p className="text-lg font-medium text-gray-700 dark:text-gray-300">Less Study Time Required</p>
+                <p className="text-lg font-medium text-gray-700">Less Study Time Required</p>
               </div>
             </div>
           </div>
@@ -318,25 +318,25 @@ const Index = () => {
 
 // Feature Card Component with improved visibility and dark mode support
 const FeatureCard = ({ icon, title, description }) => (
-  <Card className="border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 h-full dark:bg-card dark:border-muted">
+  <Card className="border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 h-full FeatureCard">
     <CardContent className="p-6 space-y-4 h-full">
-      <div className="p-3 bg-purple-100 w-fit rounded-xl dark:bg-purple-900/30">
+      <div className="p-3 bg-purple-100 w-fit rounded-xl">
         {icon}
       </div>
-      <h3 className="text-xl font-bold text-gray-900 dark:text-white">{title}</h3>
-      <p className="text-gray-700 dark:text-gray-300">{description}</p>
+      <h3 className="text-xl font-bold text-gray-900">{title}</h3>
+      <p className="text-gray-700">{description}</p>
     </CardContent>
   </Card>
 );
 
 // Document Type Card with improved contrast and dark mode support
 const DocumentTypeCard = ({ icon, title, description }) => (
-  <div className="bg-gray-50 p-4 rounded-lg dark:bg-muted">
+  <div className="bg-gray-50 p-4 rounded-lg DocumentTypeCard">
     <div className="flex items-start gap-3">
       <div className="mt-1">{icon}</div>
       <div>
-        <h4 className="font-bold text-gray-900 dark:text-white">{title}</h4>
-        <p className="text-sm text-gray-700 dark:text-gray-300">{description}</p>
+        <h4 className="font-bold text-gray-900">{title}</h4>
+        <p className="text-sm text-gray-700">{description}</p>
       </div>
     </div>
   </div>
@@ -344,10 +344,10 @@ const DocumentTypeCard = ({ icon, title, description }) => (
 
 // Benefit Card with improved visibility and dark mode support
 const BenefitCard = ({ number, title, description }) => (
-  <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-md transition-all duration-300 hover:-translate-y-1 h-full dark:bg-card dark:border-muted">
+  <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-md transition-all duration-300 hover:-translate-y-1 h-full BenefitCard">
     <div className="text-sm font-bold text-purple-500 mb-3">{number}</div>
-    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{title}</h3>
-    <p className="text-gray-700 dark:text-gray-300">{description}</p>
+    <h3 className="text-xl font-bold text-gray-900 mb-3">{title}</h3>
+    <p className="text-gray-700">{description}</p>
     <div className="mt-4 flex items-center text-purple-600 font-semibold">
       <CheckCircle className="h-5 w-5 mr-2" />
       <span>Proven Effective</span>
@@ -357,13 +357,13 @@ const BenefitCard = ({ number, title, description }) => (
 
 // Testimonial Card Component with improved contrast and dark mode support
 const TestimonialCard = ({ quote, author, role }) => (
-  <Card className="p-6 border border-gray-200 shadow-md h-full dark:bg-card dark:border-muted">
+  <Card className="p-6 border border-gray-200 shadow-md h-full TestimonialCard">
     <CardContent className="p-0 space-y-4 h-full">
       <div className="text-4xl text-purple-500">"</div>
-      <p className="text-gray-700 italic dark:text-gray-300">{quote}</p>
+      <p className="text-gray-700 italic">{quote}</p>
       <div className="mt-auto pt-4">
-        <p className="font-bold text-gray-900 dark:text-white">{author}</p>
-        <p className="text-sm text-gray-600 dark:text-gray-400">{role}</p>
+        <p className="font-bold text-gray-900">{author}</p>
+        <p className="text-sm text-gray-600">{role}</p>
       </div>
     </CardContent>
   </Card>

@@ -79,6 +79,40 @@
   color: #b0b0b0 !important;
 }
 
+/* Fix light mode text for proper contrast on white backgrounds */
+.bg-white h1, 
+.bg-white h2, 
+.bg-white h3 {
+  color: #1a1a1a !important;
+}
+
+.bg-white p, 
+.bg-white div:not(.text-white) {
+  color: #333333 !important;
+}
+
+/* Specific text colors for light mode sections */
+h2.text-gray-900,
+h3.text-gray-900,
+p.text-gray-700,
+div.text-gray-700 {
+  color: #333333 !important;
+}
+
+/* Light mode overrides - dark text on light backgrounds */
+.bg-white, 
+.bg-gray-100 {
+  color: #333333 !important;
+}
+
+/* Dark mode specific overrides */
+.dark h2.text-gray-900, 
+.dark h3.text-gray-900,
+.dark p.text-gray-700,
+.dark div.text-gray-700 {
+  color: white !important;
+}
+
 /* Specific text colors for cards and features in dark mode */
 .dark .feature-card h3,
 .dark .feature-card p,
@@ -190,4 +224,95 @@
 
 .dark .animated-button::after {
   background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Special card text fixes for better contrast in both themes */
+.card h3 {
+  color: #1a1a1a !important;
+}
+
+.dark .card h3 {
+  color: white !important;
+}
+
+.card p {
+  color: #4a4a4a !important;
+}
+
+.dark .card p {
+  color: #e1e1e1 !important;
+}
+
+/* Text color fixes for sections with white background in light mode */
+.bg-white .text-gray-900,
+.bg-gray-100 .text-gray-900 {
+  color: #1a1a1a !important;
+}
+
+.bg-white .text-gray-700,
+.bg-gray-100 .text-gray-700 {
+  color: #333333 !important;
+}
+
+.bg-white .text-gray-600,
+.bg-gray-100 .text-gray-600 {
+  color: #4b5563 !important;
+}
+
+/* Text color override for dark backgrounds in light mode */
+.bg-gray-900 .text-gray-300 {
+  color: #d1d5db !important;
+}
+
+/* Testimonial card text colors */
+.TestimonialCard .text-gray-700 {
+  color: #4a4a4a !important;
+}
+
+.dark .TestimonialCard .text-gray-700 {
+  color: #e1e1e1 !important;
+}
+
+/* Feature card text colors */
+.FeatureCard .text-gray-700 {
+  color: #4a4a4a !important;
+}
+
+.dark .FeatureCard .text-gray-700 {
+  color: #e1e1e1 !important;
+}
+
+/* Benefit card text colors */
+.BenefitCard .text-gray-700 {
+  color: #4a4a4a !important;
+}
+
+.dark .BenefitCard .text-gray-700 {
+  color: #e1e1e1 !important;
+}
+
+/* Document type card text colors */
+.DocumentTypeCard .text-gray-900 {
+  color: #1a1a1a !important;
+}
+
+.dark .DocumentTypeCard .text-gray-900 {
+  color: white !important;
+}
+
+.DocumentTypeCard .text-gray-700 {
+  color: #4a4a4a !important;
+}
+
+.dark .DocumentTypeCard .text-gray-700 {
+  color: #e1e1e1 !important;
+}
+
+/* Stats section text color fixes */
+.stats-item .text-gray-700 {
+  color: #4a4a4a !important;
+}
+
+.dark .stats-item .text-gray-700 {
+  color: #e1e1e1 !important;
 }
