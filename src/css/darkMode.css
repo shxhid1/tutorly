@@ -2,11 +2,11 @@
 /* Dark Mode Styles */
 .dark {
   --background: #0d1117; /* Darker background for better contrast */
-  --foreground: #f5f5f5; /* Lighter foreground for better readability */
+  --foreground: #ffffff; /* White foreground for maximum visibility */
   --card: #161b22; /* Darker card background */
-  --card-foreground: #f5f5f5; /* Lighter card foreground for better readability */
+  --card-foreground: #ffffff; /* White card foreground for maximum visibility */
   --muted: #21262d; /* Darker muted background */
-  --muted-foreground: #c9d1d9; /* Lighter muted foreground for better contrast */
+  --muted-foreground: #ffffff; /* White muted foreground for better visibility */
   --primary: #9b87f5;
   --secondary: #7E69AB;
   --accent: rgba(155, 135, 245, 0.2);
@@ -36,7 +36,7 @@
 
 /* Text color improvements for better contrast */
 .dark .text-muted-foreground {
-  color: var(--muted-foreground) !important;
+  color: #ffffff !important;
 }
 
 /* Card styling improvements */
@@ -51,21 +51,21 @@
   background: linear-gradient(to bottom right, rgba(155, 135, 245, 0.2), var(--card), rgba(61, 90, 254, 0.2)) !important;
 }
 
-/* Enhanced text visibility for dark backgrounds - set heading colors */
+/* Enhanced text visibility for dark backgrounds - make ALL text white */
 .dark h1, 
 .dark h2, 
 .dark h3, 
 .dark h4, 
 .dark h5, 
 .dark h6 {
-  color: #f5f5f5 !important;
+  color: #ffffff !important;
 }
 
-/* Set body text colors for better visibility */
+/* Set all body text to white for maximum visibility */
 .dark p, 
 .dark span:not(.text-purple-500):not(.text-purple-600), 
 .dark div:not(.text-purple-500):not(.text-purple-600) {
-  color: #c9d1d9 !important;
+  color: #ffffff !important;
 }
 
 /* Make ALL text in dark sections visible */
@@ -77,18 +77,18 @@
 
 .dark .dark-section p, 
 .dark .dark-section div:not(.bg-purple-100):not(.text-purple-500):not(.text-purple-600) {
-  color: #f5f5f5 !important;
+  color: #ffffff !important;
 }
 
 /* Fix specific text colors for sections */
 .dark .text-gray-700,
 .dark .text-gray-900 {
-  color: #f5f5f5 !important;
+  color: #ffffff !important;
 }
 
 .dark .text-gray-300,
 .dark .text-gray-600 {
-  color: #c9d1d9 !important;
+  color: #ffffff !important;
 }
 
 /* Fix light mode text for proper contrast on white backgrounds */
@@ -119,13 +119,13 @@
 .dark [data-radix-popper-content-wrapper] > * {
   background-color: var(--card) !important;
   border-color: var(--border) !important;
-  color: var(--foreground) !important;
+  color: #ffffff !important;
 }
 
 /* Button improvements */
 .dark .btn,
 .dark button:not(.text-white):not(.bg-purple-500):not(.text-purple-500) {
-  color: #f5f5f5 !important;
+  color: #ffffff !important;
 }
 
 .dark .bg-white.border {
@@ -139,7 +139,7 @@
 .dark select {
   background-color: #1c2128 !important;
   border-color: var(--border) !important;
-  color: #f5f5f5 !important;
+  color: #ffffff !important;
 }
 
 .dark input::placeholder, 
@@ -156,7 +156,7 @@
 
 /* Improve visibility for form elements */
 .dark label {
-  color: #f0f6fc !important;
+  color: #ffffff !important;
 }
 
 /* Component-specific fixes */
@@ -175,7 +175,7 @@
 .dark .testimonial-card p,
 .dark .DocumentTypeCard h4,
 .dark .DocumentTypeCard p {
-  color: #f5f5f5 !important;
+  color: #ffffff !important;
 }
 
 /* Fix tab headers and content visibility */
@@ -184,7 +184,7 @@
 }
 
 .dark [role="tab"] {
-  color: #c9d1d9 !important;
+  color: #ffffff !important;
 }
 
 .dark [role="tab"][data-state="active"] {
@@ -200,7 +200,7 @@
 /* Card content text contrast fixes */
 .dark .CardDescription,
 .dark .CardContent p {
-  color: #c9d1d9 !important;
+  color: #ffffff !important;
 }
 
 .dark .CardTitle {
@@ -214,7 +214,7 @@
 
 /* Ensure good contrast for icons */
 .dark svg:not(.text-purple-500):not(.text-purple-600) {
-  color: #f5f5f5 !important;
+  color: #ffffff !important;
 }
 
 /* Fix sheet background */
@@ -237,7 +237,7 @@
 }
 
 .dark .perspective-1000 .card div:first-child h3 {
-  color: #f0f6fc !important;
+  color: #ffffff !important;
 }
 
 .dark .perspective-1000 .card div:last-child {
@@ -249,7 +249,7 @@
 .dark dialog,
 .dark .dialog {
   background-color: var(--card) !important;
-  color: var(--card-foreground) !important;
+  color: #ffffff !important;
   border-color: var(--border) !important;
 }
 
@@ -274,7 +274,7 @@
 
 /* Enhanced readability for all forms in dark mode */
 .dark form label {
-  color: #f0f6fc !important;
+  color: #ffffff !important;
 }
 
 .dark form input,
@@ -282,7 +282,7 @@
 .dark form select {
   background-color: #1c2128 !important;
   border-color: #30363d !important;
-  color: #f5f5f5 !important;
+  color: #ffffff !important;
 }
 
 .dark form button {
@@ -306,11 +306,37 @@
   color: #9b87f5 !important;
 }
 
-/* Fix any remaining text visibility issues */
+/* Make ALL text white in dark mode */
 .dark .text-xs,
 .dark .text-sm,
 .dark .text-base,
 .dark .text-lg,
-.dark .text-xl {
-  color: #c9d1d9 !important;
+.dark .text-xl,
+.dark .text-muted-foreground {
+  color: #ffffff !important;
+}
+
+/* Make sure bottom navigation text is white */
+.dark .bottom-nav-link,
+.dark .bottom-nav-link span {
+  color: #ffffff !important;
+}
+
+/* Ensure all text in dialogs is white */
+.dark [role="dialog"] * {
+  color: #ffffff !important;
+}
+
+/* Override any remaining text colors */
+.dark * {
+  color: #ffffff !important;
+}
+
+/* Preserve specific colors we want to keep */
+.dark .text-purple-500,
+.dark .text-purple-600,
+.dark .bg-purple-500,
+.dark svg.text-purple-500,
+.dark svg.text-purple-600 {
+  color: #9b87f5 !important;
 }
