@@ -340,3 +340,21 @@
 .dark svg.text-purple-600 {
   color: #9b87f5 !important;
 }
+
+/* Progress page specific text fixes */
+.dark .MaterialProgressCard p,
+.dark .MaterialProgressCard span {
+  color: #ffffff !important;
+}
+
+/* Library page card fixes */
+.dark .TabsContent .Card h3,
+.dark .Card .line-clamp-2,
+.dark .Card .font-medium {
+  color: #ffffff !important;
+}
+
+/* Fix specific issues with Library page material titles */
+.dark .line-clamp-2 {
+  color: #ffffff !important;
+}

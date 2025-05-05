@@ -49,10 +49,10 @@ const BottomNav = () => {
 const NavItem = ({ icon, label, href, active }) => {
   return (
     <Link to={href} className="flex flex-col items-center justify-center w-full py-1 animated-button">
-      <div className={`p-1.5 ${active ? 'text-primary' : 'text-white dark:text-white'}`}>
+      <div className={active ? 'text-primary p-1.5' : 'text-foreground p-1.5'}>
         {icon}
       </div>
-      <span className={`text-xs mt-1 ${active ? 'text-primary font-medium' : 'text-white dark:text-white'}`}>
+      <span className={active ? 'text-xs mt-1 text-primary font-medium' : 'text-xs mt-1 text-foreground'}>
         {label}
       </span>
     </Link>
