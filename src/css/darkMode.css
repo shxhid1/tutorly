@@ -1,16 +1,16 @@
 
 /* Dark Mode Styles */
 .dark {
-  --background: #121212;
-  --foreground: #f1f1f1;
-  --card: #1e1e1e;
-  --card-foreground: #e1e1e1;
-  --muted: #333333;
-  --muted-foreground: #c0c0c0; /* Improved contrast */
+  --background: #0d1117; /* Darker background for better contrast */
+  --foreground: #f5f5f5; /* Lighter foreground for better readability */
+  --card: #161b22; /* Darker card background */
+  --card-foreground: #f5f5f5; /* Lighter card foreground for better readability */
+  --muted: #21262d; /* Darker muted background */
+  --muted-foreground: #c9d1d9; /* Lighter muted foreground for better contrast */
   --primary: #9b87f5;
   --secondary: #7E69AB;
   --accent: rgba(155, 135, 245, 0.2);
-  --border: #333333;
+  --border: #30363d; /* Darker border for better visibility */
   
   /* Apply dark mode color schemes */
   background-color: var(--background);
@@ -27,11 +27,11 @@
 }
 
 .dark .bg-spark-gray {
-  background-color: #1e1e1e !important;
+  background-color: var(--card) !important;
 }
 
 .dark .border-spark-light {
-  border-color: #333333 !important;
+  border-color: var(--border) !important;
 }
 
 /* Text color improvements for better contrast */
@@ -40,50 +40,55 @@
 }
 
 /* Card styling improvements */
-.dark .card {
+.dark .card, 
+.dark .spark-card {
   background-color: var(--card);
-  border-color: #333333;
+  border-color: var(--border);
 }
 
 /* Gradient background adjustments */
 .dark .bg-gradient-to-br.from-spark-light.via-white.to-spark-blue {
-  background: linear-gradient(to bottom right, rgba(155, 135, 245, 0.2), #1e1e1e, rgba(61, 90, 254, 0.2)) !important;
+  background: linear-gradient(to bottom right, rgba(155, 135, 245, 0.2), var(--card), rgba(61, 90, 254, 0.2)) !important;
 }
 
-/* Enhanced text visibility for dark backgrounds - force white text */
+/* Enhanced text visibility for dark backgrounds - set heading colors */
 .dark h1, 
 .dark h2, 
 .dark h3, 
 .dark h4, 
 .dark h5, 
 .dark h6 {
-  color: white !important;
+  color: #f5f5f5 !important;
 }
 
+/* Set body text colors for better visibility */
 .dark p, 
 .dark span:not(.text-purple-500):not(.text-purple-600), 
 .dark div:not(.text-purple-500):not(.text-purple-600) {
-  color: #f1f1f1 !important;
+  color: #c9d1d9 !important;
 }
 
 /* Make ALL text in dark sections visible */
 .dark .dark-section h1, 
 .dark .dark-section h2, 
-.dark .dark-section h3, 
+.dark .dark-section h3 {
+  color: #ffffff !important;
+}
+
 .dark .dark-section p, 
 .dark .dark-section div:not(.bg-purple-100):not(.text-purple-500):not(.text-purple-600) {
-  color: white !important;
+  color: #f5f5f5 !important;
 }
 
 /* Fix specific text colors for sections */
 .dark .text-gray-700,
 .dark .text-gray-900 {
-  color: #f1f1f1 !important;
+  color: #f5f5f5 !important;
 }
 
 .dark .text-gray-300,
 .dark .text-gray-600 {
-  color: #c0c0c0 !important;
+  color: #c9d1d9 !important;
 }
 
 /* Fix light mode text for proper contrast on white backgrounds */
@@ -107,61 +112,70 @@
 /* Dark mode UI components */
 .dark .sheet-content, 
 .dark .popover-content, 
-.dark .dropdown-content {
+.dark .dropdown-content,
+.dark [role="dialog"],
+.dark [role="tooltip"],
+.dark [role="menu"],
+.dark [data-radix-popper-content-wrapper] > * {
   background-color: var(--card) !important;
-  border-color: #333333 !important;
+  border-color: var(--border) !important;
+  color: var(--foreground) !important;
 }
 
 /* Button improvements */
 .dark .btn,
 .dark button:not(.text-white):not(.bg-purple-500):not(.text-purple-500) {
-  color: #f1f1f1 !important;
+  color: #f5f5f5 !important;
 }
 
 .dark .bg-white.border {
-  background-color: #1e1e1e !important;
-  border-color: #333333 !important;
+  background-color: var(--card) !important;
+  border-color: var(--border) !important;
 }
 
 /* Improved visibility for inputs in dark mode */
 .dark input, 
 .dark textarea, 
 .dark select {
-  background-color: #2a2a2a !important;
-  border-color: #3a3a3a !important;
-  color: #f1f1f1 !important;
+  background-color: #1c2128 !important;
+  border-color: var(--border) !important;
+  color: #f5f5f5 !important;
 }
 
 .dark input::placeholder, 
 .dark textarea::placeholder {
-  color: #a0a0a0 !important;
+  color: #8b949e !important;
 }
 
 /* Navbar and bottom nav improvements */
-.dark .bg-white.border-b {
+.dark .bg-white.border-b,
+.dark .fixed.bottom-0.left-0.right-0 {
   background-color: var(--card) !important;
-  border-color: #333333 !important;
+  border-color: var(--border) !important;
 }
 
 /* Improve visibility for form elements */
 .dark label {
-  color: #e1e1e1 !important;
+  color: #f0f6fc !important;
 }
 
 /* Component-specific fixes */
 .dark .feature-card,
 .dark .benefit-card,
-.dark .testimonial-card {
+.dark .testimonial-card,
+.dark .DocumentTypeCard {
   background-color: var(--card) !important;
-  border-color: #333333 !important;
+  border-color: var(--border) !important;
 }
 
 .dark .feature-card h3,
 .dark .feature-card p,
 .dark .benefit-card h3,
 .dark .benefit-card p,
-.dark .testimonial-card p {
-  color: #f1f1f1 !important;
+.dark .testimonial-card p,
+.dark .DocumentTypeCard h4,
+.dark .DocumentTypeCard p {
+  color: #f5f5f5 !important;
 }
 
 /* Fix tab headers and content visibility */
@@ -170,12 +184,12 @@
 }
 
 .dark [role="tab"] {
-  color: #c0c0c0 !important;
+  color: #c9d1d9 !important;
 }
 
 .dark [role="tab"][data-state="active"] {
   color: white !important;
-  background-color: var(--card) !important;
+  background-color: var(--primary) !important;
 }
 
 /* Fix summaries cards and content */
@@ -186,20 +200,11 @@
 /* Card content text contrast fixes */
 .dark .CardDescription,
 .dark .CardContent p {
-  color: #e1e1e1 !important;
+  color: #c9d1d9 !important;
 }
 
 .dark .CardTitle {
   color: white !important;
-}
-
-/* Ensure dialog, popovers and dropdowns have proper background in dark mode */
-.dark [role="dialog"],
-.dark [role="tooltip"],
-.dark [role="menu"] {
-  background-color: var(--card) !important;
-  color: var(--card-foreground) !important;
-  border-color: #333333 !important;
 }
 
 /* Consistency for sheet components */
@@ -209,26 +214,13 @@
 
 /* Ensure good contrast for icons */
 .dark svg:not(.text-purple-500):not(.text-purple-600) {
-  color: #f1f1f1 !important;
-}
-
-/* Specific class fixes for component contrast */
-.dark .DocumentTypeCard {
-  background-color: #2a2a2a !important;
-}
-
-.dark .DocumentTypeCard h4 {
-  color: white !important;
-}
-
-.dark .DocumentTypeCard p {
-  color: #e1e1e1 !important;
+  color: #f5f5f5 !important;
 }
 
 /* Fix sheet background */
 .dark [data-radix-popper-content-wrapper] > * {
   background-color: var(--card) !important;
-  border-color: #333333 !important;
+  border-color: var(--border) !important;
 }
 
 /* Fix spacing issues */
@@ -239,11 +231,33 @@
   clear: both;
 }
 
+/* Flashcard improvements for dark mode */
+.dark .perspective-1000 .card div:first-child {
+  background-color: #21262d !important;
+}
+
+.dark .perspective-1000 .card div:first-child h3 {
+  color: #f0f6fc !important;
+}
+
+.dark .perspective-1000 .card div:last-child {
+  background-color: var(--primary) !important;
+}
+
+/* DialogContent dark mode improvements */
+.dark .DialogContent,
+.dark dialog,
+.dark .dialog {
+  background-color: var(--card) !important;
+  color: var(--card-foreground) !important;
+  border-color: var(--border) !important;
+}
+
 /* Fix for bottom navigation and mobile responsiveness */
 @media (max-width: 640px) {
   .dark .fixed.bottom-0.left-0.right-0 {
     background-color: var(--card) !important;
-    border-color: #333333 !important;
+    border-color: var(--border) !important;
   }
   
   .container {
@@ -255,11 +269,48 @@
 /* Enhancements for Footer in dark mode */
 .dark footer {
   background-color: var(--card) !important;
-  border-color: #333333 !important;
+  border-color: var(--border) !important;
 }
 
-/* Fix for dialog content in dark mode */
-.dark .DialogContent {
-  background-color: var(--card) !important;
-  color: var(--card-foreground) !important;
+/* Enhanced readability for all forms in dark mode */
+.dark form label {
+  color: #f0f6fc !important;
+}
+
+.dark form input,
+.dark form textarea,
+.dark form select {
+  background-color: #1c2128 !important;
+  border-color: #30363d !important;
+  color: #f5f5f5 !important;
+}
+
+.dark form button {
+  border-color: #30363d !important;
+}
+
+/* Landing page specific dark mode enhancements */
+.dark .feature-card, 
+.dark .DocumentTypeCard,
+.dark .bg-gray-50, 
+.dark .bg-white {
+  background-color: #161b22 !important;
+}
+
+.dark .bg-gray-900, 
+.dark .stats-item {
+  background-color: #0d1117 !important;
+}
+
+.dark .stats-item .text-purple-500 {
+  color: #9b87f5 !important;
+}
+
+/* Fix any remaining text visibility issues */
+.dark .text-xs,
+.dark .text-sm,
+.dark .text-base,
+.dark .text-lg,
+.dark .text-xl {
+  color: #c9d1d9 !important;
 }

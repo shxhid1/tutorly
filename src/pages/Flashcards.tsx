@@ -125,7 +125,7 @@ const Flashcards = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-background dark:bg-background">
       <Navbar />
       
       <main className="flex-1 py-8 px-4 pb-20 md:pb-8">
@@ -167,23 +167,23 @@ const Flashcards = () => {
                           }}
                         >
                           <div 
-                            className="absolute inset-0 flex flex-col items-center justify-center p-6 rounded-md bg-spark-light"
+                            className="absolute inset-0 flex flex-col items-center justify-center p-6 rounded-md bg-muted dark:bg-muted"
                             style={{
                               backfaceVisibility: 'hidden'
                             }}
                           >
-                            <h3 className="text-xl font-semibold text-center mb-4">{card.front}</h3>
+                            <h3 className="text-xl font-semibold text-center mb-4 text-foreground">{card.front}</h3>
                             <p className="text-sm text-muted-foreground text-center">Click to flip</p>
                           </div>
                           <div 
-                            className="absolute inset-0 flex flex-col items-center justify-center p-6 rounded-md bg-spark-primary text-white"
+                            className="absolute inset-0 flex flex-col items-center justify-center p-6 rounded-md bg-primary text-white"
                             style={{
                               backfaceVisibility: 'hidden',
                               transform: 'rotateY(180deg)'
                             }}
                           >
-                            <p className="text-center overflow-auto max-h-full">{card.back}</p>
-                            <p className="text-sm opacity-70 text-center mt-4">Click to flip back</p>
+                            <p className="text-center overflow-auto max-h-full text-white">{card.back}</p>
+                            <p className="text-sm opacity-70 text-center mt-4 text-white">Click to flip back</p>
                           </div>
                         </Card>
                       </div>
@@ -194,16 +194,16 @@ const Flashcards = () => {
                       className="flex items-center justify-center h-64"
                       onClick={() => handleAddNewFlashcard(key)}
                     >
-                      <Card className="h-full w-full border-dashed flex flex-col items-center justify-center cursor-pointer hover:bg-spark-light/20 transition-colors">
-                        <Plus className="h-8 w-8 text-spark-primary mb-2" />
+                      <Card className="h-full w-full border-dashed flex flex-col items-center justify-center cursor-pointer hover:bg-muted/20 transition-colors">
+                        <Plus className="h-8 w-8 text-primary mb-2" />
                         <p className="text-center font-medium">Add New Flashcard</p>
                       </Card>
                     </div>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12">
-                    <div className="bg-spark-light rounded-full p-4 mb-4">
-                      <Zap className="h-8 w-8 text-spark-primary" />
+                    <div className="bg-muted rounded-full p-4 mb-4">
+                      <Zap className="h-8 w-8 text-primary" />
                     </div>
                     <h3 className="text-xl font-semibold mb-2">No flashcards yet</h3>
                     <p className="text-muted-foreground mb-6 text-center max-w-md">
@@ -212,7 +212,7 @@ const Flashcards = () => {
                     <CreateFlashcardDialog 
                       onSave={handleCreateFlashcardSet}
                       trigger={
-                        <Button className="spark-button-primary button-click-effect">
+                        <Button className="bg-primary text-white button-click-effect">
                           <Plus className="mr-2 h-4 w-4" /> Create Flashcards
                         </Button>
                       }
