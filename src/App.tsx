@@ -41,6 +41,7 @@ const App = () => (
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/summaries" element={<Summaries />} />
             <Route path="/micro-lessons" element={<MicroLessons />} />
+            <Route path="/upload" element={<Navigate to="/library" replace />} /> {/* Add upload route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

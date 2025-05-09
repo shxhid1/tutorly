@@ -6,7 +6,7 @@
   --card: #161b22; /* Darker card background */
   --card-foreground: #ffffff; /* White card foreground for maximum visibility */
   --muted: #21262d; /* Darker muted background */
-  --muted-foreground: #ffffff; /* White muted foreground for better visibility */
+  --muted-foreground: #c9d1d9; /* Light gray muted foreground for better visibility */
   --primary: #9b87f5;
   --secondary: #7E69AB;
   --accent: rgba(155, 135, 245, 0.2);
@@ -35,8 +35,12 @@
 }
 
 /* Text color improvements for better contrast */
+.dark .text-gray-700,
+.dark .text-gray-900,
+.dark .text-gray-600,
+.dark .text-gray-300,
 .dark .text-muted-foreground {
-  color: #ffffff !important;
+  color: #c9d1d9 !important;
 }
 
 /* Card styling improvements */
@@ -51,7 +55,7 @@
   background: linear-gradient(to bottom right, rgba(155, 135, 245, 0.2), var(--card), rgba(61, 90, 254, 0.2)) !important;
 }
 
-/* Enhanced text visibility for dark backgrounds - make ALL text white */
+/* Enhanced text visibility for dark backgrounds */
 .dark h1, 
 .dark h2, 
 .dark h3, 
@@ -61,14 +65,14 @@
   color: #ffffff !important;
 }
 
-/* Set all body text to white for maximum visibility */
+/* Set all body text to visible colors for better readability */
 .dark p, 
 .dark span:not(.text-purple-500):not(.text-purple-600), 
 .dark div:not(.text-purple-500):not(.text-purple-600) {
-  color: #ffffff !important;
+  color: #c9d1d9 !important;
 }
 
-/* Make ALL text in dark sections visible */
+/* Ensure text in dark sections remains visible */
 .dark .dark-section h1, 
 .dark .dark-section h2, 
 .dark .dark-section h3 {
@@ -77,18 +81,7 @@
 
 .dark .dark-section p, 
 .dark .dark-section div:not(.bg-purple-100):not(.text-purple-500):not(.text-purple-600) {
-  color: #ffffff !important;
-}
-
-/* Fix specific text colors for sections */
-.dark .text-gray-700,
-.dark .text-gray-900 {
-  color: #ffffff !important;
-}
-
-.dark .text-gray-300,
-.dark .text-gray-600 {
-  color: #ffffff !important;
+  color: #c9d1d9 !important;
 }
 
 /* Fix light mode text for proper contrast on white backgrounds */
@@ -175,7 +168,7 @@
 .dark .testimonial-card p,
 .dark .DocumentTypeCard h4,
 .dark .DocumentTypeCard p {
-  color: #ffffff !important;
+  color: #c9d1d9 !important;
 }
 
 /* Fix tab headers and content visibility */
@@ -200,7 +193,7 @@
 /* Card content text contrast fixes */
 .dark .CardDescription,
 .dark .CardContent p {
-  color: #ffffff !important;
+  color: #c9d1d9 !important;
 }
 
 .dark .CardTitle {
@@ -266,12 +259,6 @@
   }
 }
 
-/* Enhancements for Footer in dark mode */
-.dark footer {
-  background-color: var(--card) !important;
-  border-color: var(--border) !important;
-}
-
 /* Enhanced readability for all forms in dark mode */
 .dark form label {
   color: #ffffff !important;
@@ -302,59 +289,44 @@
   background-color: #0d1117 !important;
 }
 
-.dark .stats-item .text-purple-500 {
-  color: #9b87f5 !important;
+/* Library, Flashcards, and Summaries-specific fixes */
+.dark .line-clamp-2,
+.dark .TabsContent .Card h3,
+.dark .Card .font-medium,
+.dark .MaterialProgressCard p,
+.dark .MaterialProgressCard span {
+  color: #c9d1d9 !important;
 }
 
-/* Make ALL text white in dark mode */
-.dark .text-xs,
-.dark .text-sm,
-.dark .text-base,
-.dark .text-lg,
-.dark .text-xl,
-.dark .text-muted-foreground {
-  color: #ffffff !important;
-}
-
-/* Make sure bottom navigation text is white */
+/* Progress and mobile navigation text fixes */
 .dark .bottom-nav-link,
 .dark .bottom-nav-link span {
   color: #ffffff !important;
 }
 
-/* Ensure all text in dialogs is white */
+/* Make sure dialog content is readable */
 .dark [role="dialog"] * {
+  color: #c9d1d9 !important;
+}
+
+/* Specific overrides to ensure dialog buttons are visible */
+.dark [role="dialog"] button {
   color: #ffffff !important;
 }
 
-/* Override any remaining text colors */
-.dark * {
-  color: #ffffff !important;
+/* Ensure links remain visible */
+.dark a:not(.text-purple-500):not(.text-purple-600) {
+  color: #58a6ff !important;
 }
 
-/* Preserve specific colors we want to keep */
-.dark .text-purple-500,
-.dark .text-purple-600,
-.dark .bg-purple-500,
-.dark svg.text-purple-500,
-.dark svg.text-purple-600 {
-  color: #9b87f5 !important;
-}
-
-/* Progress page specific text fixes */
-.dark .MaterialProgressCard p,
-.dark .MaterialProgressCard span {
-  color: #ffffff !important;
-}
-
-/* Library page card fixes */
-.dark .TabsContent .Card h3,
-.dark .Card .line-clamp-2,
-.dark .Card .font-medium {
-  color: #ffffff !important;
-}
-
-/* Fix specific issues with Library page material titles */
-.dark .line-clamp-2 {
-  color: #ffffff !important;
+/* Responsive design improvements */
+@media (max-width: 768px) {
+  .responsive-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .responsive-text {
+    font-size: 0.9rem;
+  }
 }

@@ -32,8 +32,8 @@ const BottomNav = () => {
         <NavItem 
           icon={<Upload size={20} />} 
           label="Upload" 
-          href="/library" 
-          active={false} 
+          href="/upload" 
+          active={location.pathname === '/upload'} 
         />
         <NavItem 
           icon={<User size={20} />} 
@@ -47,12 +47,21 @@ const BottomNav = () => {
 };
 
 const NavItem = ({ icon, label, href, active }) => {
+  const { theme } = useTheme();
+  const isDarkMode = theme === "dark";
+  
   return (
-    <Link to={href} className="flex flex-col items-center justify-center w-full py-1 animated-button">
-      <div className={active ? 'text-primary p-1.5' : 'text-foreground p-1.5'}>
+    <Link 
+      to={href} 
+      className="flex flex-col items-center justify-center w-full py-1 animated-button"
+    >
+      <div className={active ? 'text-primary p-1.5' : `text-foreground p-1.5 ${isDarkMode ? 'text-white' : ''}`}>
         {icon}
       </div>
-      <span className={active ? 'text-xs mt-1 text-primary font-medium' : 'text-xs mt-1 text-foreground'}>
+      <span className={active 
+        ? 'text-xs mt-1 text-primary font-medium' 
+        : `text-xs mt-1 ${isDarkMode ? 'text-white' : 'text-foreground'}`
+      }>
         {label}
       </span>
     </Link>
