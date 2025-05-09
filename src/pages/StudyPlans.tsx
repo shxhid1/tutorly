@@ -7,6 +7,11 @@ import BottomNav from "@/components/layout/BottomNav";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress"; 
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   CalendarDays, 
   Clock, 
@@ -15,7 +20,8 @@ import {
   Calendar,
   BookOpen,
   AlertCircle,
-  ChevronRight
+  ChevronRight,
+  X
 } from "lucide-react";
 
 const StudyPlans = () => {
@@ -44,6 +50,14 @@ const StudyPlans = () => {
     },
   ]);
   
+  // New state for study plan creation
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [newPlan, setNewPlan] = useState({
+    title: "",
+    dueDate: "",
+    sessions: [{ day: "Monday", time: "2:00 PM - 4:00 PM", topic: "" }]
+  });
+  
   const { toast } = useToast();
   
   useEffect(() => {
@@ -62,8 +76,60 @@ const StudyPlans = () => {
     });
   };
   
+  const handleCreatePlan = () => {
+    if (!newPlan.title) {
+      toast({
+        title: "Missing information",
+        description: "Please provide a title for your study plan",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const newStudyPlan = {
+      id: plans.length + 1,
+      title: newPlan.title,
+      dueDate: newPlan.dueDate || "N/A",
+      progress: 0,
+      sessions: newPlan.sessions.filter(session => session.topic.trim() !== "")
+    };
+    
+    setPlans([...plans, newStudyPlan]);
+    setIsCreateDialogOpen(false);
+    setNewPlan({
+      title: "",
+      dueDate: "",
+      sessions: [{ day: "Monday", time: "2:00 PM - 4:00 PM", topic: "" }]
+    });
+    
+    toast({
+      title: "Study plan created",
+      description: `Your "${newStudyPlan.title}" study plan has been created successfully.`,
+    });
+  };
+  
+  const addSession = () => {
+    setNewPlan({
+      ...newPlan,
+      sessions: [...newPlan.sessions, { day: "Monday", time: "2:00 PM - 4:00 PM", topic: "" }]
+    });
+  };
+  
+  const removeSession = (index) => {
+    setNewPlan({
+      ...newPlan,
+      sessions: newPlan.sessions.filter((_, i) => i !== index)
+    });
+  };
+  
+  const updateSession = (index, field, value) => {
+    const updatedSessions = [...newPlan.sessions];
+    updatedSessions[index] = { ...updatedSessions[index], [field]: value };
+    setNewPlan({ ...newPlan, sessions: updatedSessions });
+  };
+  
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-[#0d1117] text-white">
       <Navbar />
       
       <main className="flex-1 py-8 px-4 pb-20 md:pb-8">
@@ -78,10 +144,127 @@ const StudyPlans = () => {
             </div>
             
             <div>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Study Plan
-              </Button>
+              <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Study Plan
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Create New Study Plan</DialogTitle>
+                    <DialogDescription>
+                      Create a structured study plan to organize your learning sessions.
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <div className="space-y-5 my-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="title">Study Plan Title</Label>
+                      <Input 
+                        id="title"
+                        placeholder="e.g., Biology Final Exam"
+                        value={newPlan.title}
+                        onChange={(e) => setNewPlan({...newPlan, title: e.target.value})}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="dueDate">Due Date (Optional)</Label>
+                      <Input 
+                        id="dueDate"
+                        placeholder="e.g., May 20, 2025"
+                        value={newPlan.dueDate}
+                        onChange={(e) => setNewPlan({...newPlan, dueDate: e.target.value})}
+                      />
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Label>Study Sessions</Label>
+                        <Button variant="outline" size="sm" type="button" onClick={addSession}>
+                          <Plus className="h-3.5 w-3.5 mr-1" />
+                          Add Session
+                        </Button>
+                      </div>
+                      
+                      {newPlan.sessions.map((session, index) => (
+                        <div key={index} className="p-3 border rounded-md space-y-3 relative">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="absolute right-2 top-2 h-6 w-6"
+                            onClick={() => removeSession(index)}
+                            disabled={newPlan.sessions.length === 1}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                          
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                              <Label htmlFor={`day-${index}`}>Day</Label>
+                              <Select 
+                                value={session.day} 
+                                onValueChange={(value) => updateSession(index, 'day', value)}
+                              >
+                                <SelectTrigger id={`day-${index}`}>
+                                  <SelectValue placeholder={session.day} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Monday">Monday</SelectItem>
+                                  <SelectItem value="Tuesday">Tuesday</SelectItem>
+                                  <SelectItem value="Wednesday">Wednesday</SelectItem>
+                                  <SelectItem value="Thursday">Thursday</SelectItem>
+                                  <SelectItem value="Friday">Friday</SelectItem>
+                                  <SelectItem value="Saturday">Saturday</SelectItem>
+                                  <SelectItem value="Sunday">Sunday</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-1">
+                              <Label htmlFor={`time-${index}`}>Time</Label>
+                              <Select 
+                                value={session.time} 
+                                onValueChange={(value) => updateSession(index, 'time', value)}
+                              >
+                                <SelectTrigger id={`time-${index}`}>
+                                  <SelectValue placeholder={session.time} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="8:00 AM - 10:00 AM">8:00 AM - 10:00 AM</SelectItem>
+                                  <SelectItem value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</SelectItem>
+                                  <SelectItem value="1:00 PM - 3:00 PM">1:00 PM - 3:00 PM</SelectItem>
+                                  <SelectItem value="2:00 PM - 4:00 PM">2:00 PM - 4:00 PM</SelectItem>
+                                  <SelectItem value="3:00 PM - 5:00 PM">3:00 PM - 5:00 PM</SelectItem>
+                                  <SelectItem value="4:00 PM - 6:00 PM">4:00 PM - 6:00 PM</SelectItem>
+                                  <SelectItem value="7:00 PM - 9:00 PM">7:00 PM - 9:00 PM</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-1">
+                            <Label htmlFor={`topic-${index}`}>Topic</Label>
+                            <Input 
+                              id={`topic-${index}`}
+                              placeholder="e.g., Cell Biology"
+                              value={session.topic}
+                              onChange={(e) => updateSession(index, 'topic', e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>Cancel</Button>
+                    <Button onClick={handleCreatePlan}>Create Study Plan</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
           
@@ -111,7 +294,7 @@ const StudyPlans = () => {
                   <p className="text-muted-foreground mb-6">
                     Create your first study plan to organize your learning
                   </p>
-                  <Button>
+                  <Button onClick={() => setIsCreateDialogOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" />
                     Create Study Plan
                   </Button>

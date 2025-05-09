@@ -145,7 +145,7 @@ const Library = () => {
   );
   
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-background">
+    <div className="min-h-screen flex flex-col bg-[#0d1117] text-white">
       <Navbar />
       
       <main className="flex-1 py-8 px-4 pb-20 md:pb-8">
