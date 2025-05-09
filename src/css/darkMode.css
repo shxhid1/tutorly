@@ -294,8 +294,29 @@
 .dark .TabsContent .Card h3,
 .dark .Card .font-medium,
 .dark .MaterialProgressCard p,
+.dark .MaterialProgressCard span,
+.dark .font-medium,
+.dark .text-sm,
+.dark .text-xs,
+.dark .text-lg,
+.dark .text-xl,
+.dark .text-2xl {
+  color: #ffffff !important;
+}
+
+/* Study Plans specific fixes */
+.dark .StudyPlanCard span,
+.dark .SessionItem span,
+.dark .SessionItem div {
+  color: #ffffff !important;
+}
+
+/* Progress page specific fixes */
+.dark .ProgressStatCard p,
+.dark .ProgressStatCard span,
+.dark .MaterialProgressCard p,
 .dark .MaterialProgressCard span {
-  color: #c9d1d9 !important;
+  color: #ffffff !important;
 }
 
 /* Progress and mobile navigation text fixes */
@@ -329,4 +350,29 @@
   .responsive-text {
     font-size: 0.9rem;
   }
+}
+
+/* Study Plans text visibility fixes */
+.dark .space-y-4 .CardContent .text-muted-foreground,
+.dark .space-y-4 .CardContent div,
+.dark .CardFooter button {
+  color: #ffffff !important;
+}
+
+/* Library page text visibility */
+.dark .p-4 .font-medium,
+.dark .p-4 .text-muted-foreground,
+.dark .CardHeader .text-muted-foreground,
+.dark .p-4 div span {
+  color: #ffffff !important;
+}
+
+/* Progress page chart labels */
+.dark .recharts-text {
+  fill: #ffffff !important;
+}
+
+/* Bottom navigation text fixes */
+.dark .bottom-0 .flex .flex-col span {
+  color: #ffffff !important;
 }
