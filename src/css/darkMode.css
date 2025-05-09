@@ -1,378 +1,139 @@
 
 /* Dark Mode Styles */
 .dark {
-  --background: #0d1117; /* Darker background for better contrast */
-  --foreground: #ffffff; /* White foreground for maximum visibility */
-  --card: #161b22; /* Darker card background */
-  --card-foreground: #ffffff; /* White card foreground for maximum visibility */
-  --muted: #21262d; /* Darker muted background */
-  --muted-foreground: #c9d1d9; /* Light gray muted foreground for better visibility */
+  --background: #0d1117;
+  --foreground: #ffffff;
+  --card: #1a1f29;
+  --card-foreground: #ffffff;
+  --popover: #1a1f29;
+  --popover-foreground: #ffffff;
   --primary: #9b87f5;
-  --secondary: #7E69AB;
-  --accent: rgba(155, 135, 245, 0.2);
-  --border: #30363d; /* Darker border for better visibility */
-  
-  /* Apply dark mode color schemes */
-  background-color: var(--background);
+  --primary-foreground: #ffffff;
+  --secondary: #384457;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1f29;
+  --muted-foreground: #94a3b8;
+  --accent: #252b38;
+  --accent-foreground: #ffffff;
+  --destructive: #ff5353;
+  --destructive-foreground: #ffffff;
+  --border: #252b38;
+  --input: #252b38;
+  --ring: #9b87f5;
+}
+
+/* Ensure text visibility in dark mode */
+.dark body {
+  background-color: #0d1117;
   color: var(--foreground);
 }
 
-/* Base background overrides */
-.dark .bg-white {
-  background-color: var(--background) !important;
+/* Dark mode text visibility fixes */
+.dark .card,
+.dark .card-header,
+.dark .card-title,
+.dark .card-description,
+.dark .card-content,
+.dark .card-footer {
+  color: var(--foreground);
 }
 
-.dark .bg-spark-light {
-  background-color: rgba(155, 135, 245, 0.1) !important;
-}
-
-.dark .bg-spark-gray {
-  background-color: var(--card) !important;
-}
-
-.dark .border-spark-light {
-  border-color: var(--border) !important;
-}
-
-/* Text color improvements for better contrast */
-.dark .text-gray-700,
-.dark .text-gray-900,
-.dark .text-gray-600,
-.dark .text-gray-300,
-.dark .text-muted-foreground {
-  color: #c9d1d9 !important;
-}
-
-/* Card styling improvements */
-.dark .card, 
-.dark .spark-card {
-  background-color: var(--card);
-  border-color: var(--border);
-}
-
-/* Gradient background adjustments */
-.dark .bg-gradient-to-br.from-spark-light.via-white.to-spark-blue {
-  background: linear-gradient(to bottom right, rgba(155, 135, 245, 0.2), var(--card), rgba(61, 90, 254, 0.2)) !important;
-}
-
-/* Enhanced text visibility for dark backgrounds */
+/* Fix headings in dark mode */
 .dark h1, 
 .dark h2, 
 .dark h3, 
 .dark h4, 
 .dark h5, 
 .dark h6 {
-  color: #ffffff !important;
+  color: var(--foreground);
 }
 
-/* Set all body text to visible colors for better readability */
-.dark p, 
-.dark span:not(.text-purple-500):not(.text-purple-600), 
-.dark div:not(.text-purple-500):not(.text-purple-600) {
-  color: #c9d1d9 !important;
-}
-
-/* Ensure text in dark sections remains visible */
-.dark .dark-section h1, 
-.dark .dark-section h2, 
-.dark .dark-section h3 {
-  color: #ffffff !important;
-}
-
-.dark .dark-section p, 
-.dark .dark-section div:not(.bg-purple-100):not(.text-purple-500):not(.text-purple-600) {
-  color: #c9d1d9 !important;
-}
-
-/* Fix light mode text for proper contrast on white backgrounds */
-.bg-white h1, 
-.bg-white h2, 
-.bg-white h3 {
-  color: #1a1a1a !important;
-}
-
-.bg-white p, 
-.bg-white div:not(.text-white) {
-  color: #333333 !important;
-}
-
-/* Preserve specific colors for both modes */
-.text-purple-500, .text-purple-600, 
-.dark .text-purple-500, .dark .text-purple-600 {
-  color: #9b87f5 !important;
-}
-
-/* Dark mode UI components */
-.dark .sheet-content, 
-.dark .popover-content, 
-.dark .dropdown-content,
-.dark [role="dialog"],
-.dark [role="tooltip"],
-.dark [role="menu"],
-.dark [data-radix-popper-content-wrapper] > * {
-  background-color: var(--card) !important;
-  border-color: var(--border) !important;
-  color: #ffffff !important;
-}
-
-/* Button improvements */
-.dark .btn,
-.dark button:not(.text-white):not(.bg-purple-500):not(.text-purple-500) {
-  color: #ffffff !important;
-}
-
-.dark .bg-white.border {
-  background-color: var(--card) !important;
-  border-color: var(--border) !important;
-}
-
-/* Improved visibility for inputs in dark mode */
-.dark input, 
-.dark textarea, 
-.dark select {
-  background-color: #1c2128 !important;
-  border-color: var(--border) !important;
-  color: #ffffff !important;
-}
-
-.dark input::placeholder, 
-.dark textarea::placeholder {
-  color: #8b949e !important;
-}
-
-/* Navbar and bottom nav improvements */
-.dark .bg-white.border-b,
-.dark .fixed.bottom-0.left-0.right-0 {
-  background-color: var(--card) !important;
-  border-color: var(--border) !important;
-}
-
-/* Improve visibility for form elements */
+/* Fix text in various components */
+.dark .text-foreground,
+.dark .text-default,
+.dark p,
+.dark span,
+.dark div,
 .dark label {
-  color: #ffffff !important;
+  color: var(--foreground);
 }
 
-/* Component-specific fixes */
-.dark .feature-card,
-.dark .benefit-card,
-.dark .testimonial-card,
-.dark .DocumentTypeCard {
-  background-color: var(--card) !important;
-  border-color: var(--border) !important;
+/* Fix text in buttons */
+.dark .btn,
+.dark button:not(.text-destructive):not(.text-muted-foreground) {
+  color: var(--foreground);
 }
 
-.dark .feature-card h3,
-.dark .feature-card p,
-.dark .benefit-card h3,
-.dark .benefit-card p,
-.dark .testimonial-card p,
-.dark .DocumentTypeCard h4,
-.dark .DocumentTypeCard p {
-  color: #c9d1d9 !important;
+/* Fix muted text for better visibility */
+.dark .text-muted-foreground {
+  color: #94a3b8;
 }
 
-/* Fix tab headers and content visibility */
-.dark [role="tablist"] {
-  background-color: var(--muted) !important;
+/* Fix specific pages background */
+.dark .progress-page,
+.dark .study-plans-page,
+.dark .library-page {
+  background-color: #0d1117;
 }
 
-.dark [role="tab"] {
-  color: #ffffff !important;
-}
-
-.dark [role="tab"][data-state="active"] {
-  color: white !important;
-  background-color: var(--primary) !important;
-}
-
-/* Fix summaries cards and content */
-.dark .TabsContent {
-  background-color: transparent !important;
-}
-
-/* Card content text contrast fixes */
-.dark .CardDescription,
-.dark .CardContent p {
-  color: #c9d1d9 !important;
-}
-
-.dark .CardTitle {
-  color: white !important;
-}
-
-/* Consistency for sheet components */
-.dark .fixed.z-50.bg-background {
-  background-color: var(--card) !important;
-}
-
-/* Ensure good contrast for icons */
-.dark svg:not(.text-purple-500):not(.text-purple-600) {
-  color: #ffffff !important;
-}
-
-/* Fix sheet background */
-.dark [data-radix-popper-content-wrapper] > * {
-  background-color: var(--card) !important;
-  border-color: var(--border) !important;
-}
-
-/* Fix spacing issues */
-.section-container {
-  margin-bottom: 2rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  clear: both;
-}
-
-/* Flashcard improvements for dark mode */
-.dark .perspective-1000 .card div:first-child {
-  background-color: #21262d !important;
-}
-
-.dark .perspective-1000 .card div:first-child h3 {
-  color: #ffffff !important;
-}
-
-.dark .perspective-1000 .card div:last-child {
-  background-color: var(--primary) !important;
-}
-
-/* DialogContent dark mode improvements */
-.dark .DialogContent,
-.dark dialog,
-.dark .dialog {
-  background-color: var(--card) !important;
-  color: #ffffff !important;
-  border-color: var(--border) !important;
-}
-
-/* Fix for bottom navigation and mobile responsiveness */
-@media (max-width: 640px) {
-  .dark .fixed.bottom-0.left-0.right-0 {
-    background-color: var(--card) !important;
-    border-color: var(--border) !important;
-  }
-  
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
-/* Enhanced readability for all forms in dark mode */
-.dark form label {
-  color: #ffffff !important;
-}
-
-.dark form input,
-.dark form textarea,
-.dark form select {
-  background-color: #1c2128 !important;
-  border-color: #30363d !important;
-  color: #ffffff !important;
-}
-
-.dark form button {
-  border-color: #30363d !important;
-}
-
-/* Landing page specific dark mode enhancements */
-.dark .feature-card, 
-.dark .DocumentTypeCard,
-.dark .bg-gray-50, 
-.dark .bg-white {
-  background-color: #161b22 !important;
-}
-
-.dark .bg-gray-900, 
-.dark .stats-item {
-  background-color: #0d1117 !important;
-}
-
-/* Library, Flashcards, and Summaries-specific fixes */
-.dark .line-clamp-2,
-.dark .TabsContent .Card h3,
-.dark .Card .font-medium,
-.dark .MaterialProgressCard p,
-.dark .MaterialProgressCard span,
-.dark .font-medium,
-.dark .text-sm,
-.dark .text-xs,
-.dark .text-lg,
-.dark .text-xl,
-.dark .text-2xl {
-  color: #ffffff !important;
-}
-
-/* Study Plans specific fixes */
-.dark .StudyPlanCard span,
-.dark .SessionItem span,
-.dark .SessionItem div {
-  color: #ffffff !important;
-}
-
-/* Progress page specific fixes */
-.dark .ProgressStatCard p,
-.dark .ProgressStatCard span,
-.dark .MaterialProgressCard p,
-.dark .MaterialProgressCard span {
-  color: #ffffff !important;
-}
-
-/* Progress and mobile navigation text fixes */
-.dark .bottom-nav-link,
-.dark .bottom-nav-link span {
-  color: #ffffff !important;
-}
-
-/* Make sure dialog content is readable */
-.dark [role="dialog"] * {
-  color: #c9d1d9 !important;
-}
-
-/* Specific overrides to ensure dialog buttons are visible */
-.dark [role="dialog"] button {
-  color: #ffffff !important;
-}
-
-/* Ensure links remain visible */
-.dark a:not(.text-purple-500):not(.text-purple-600) {
-  color: #58a6ff !important;
-}
-
-/* Responsive design improvements */
+/* Fix responsive text on smaller devices */
 @media (max-width: 768px) {
-  .responsive-padding {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  .dark .text-sm {
+    color: var(--foreground);
   }
   
-  .responsive-text {
-    font-size: 0.9rem;
+  .dark .text-xs {
+    color: var(--foreground);
   }
 }
 
-/* Study Plans text visibility fixes */
-.dark .space-y-4 .CardContent .text-muted-foreground,
-.dark .space-y-4 .CardContent div,
-.dark .CardFooter button {
-  color: #ffffff !important;
+/* Library-specific fixes */
+.dark .library-card {
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
-/* Library page text visibility */
-.dark .p-4 .font-medium,
-.dark .p-4 .text-muted-foreground,
-.dark .CardHeader .text-muted-foreground,
-.dark .p-4 div span {
-  color: #ffffff !important;
+/* Progress page fixes */
+.dark .progress-chart text {
+  fill: var(--foreground);
 }
 
-/* Progress page chart labels */
-.dark .recharts-text {
-  fill: #ffffff !important;
+/* Study Plans fixes */
+.dark .study-plan-card {
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
-/* Bottom navigation text fixes */
-.dark .bottom-0 .flex .flex-col span {
-  color: #ffffff !important;
+/* Bottom navigation fixes */
+.dark .bottom-nav {
+  background-color: var(--card);
+  border-color: var(--border);
+}
+
+.dark .bottom-nav-item {
+  color: var(--foreground);
+}
+
+/* Add styles for the navbar in dark mode */
+.dark .navbar {
+  background-color: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Fix any remaining contrast issues */
+.dark [class*="text-gray-"] {
+  color: #c9d1d9;
+}
+
+/* Ensure dialog and modal visibility */
+.dark .dialog,
+.dark .modal {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Tooltip visibility */
+.dark .tooltip {
+  background-color: var(--card);
+  color: var(--foreground);
 }
