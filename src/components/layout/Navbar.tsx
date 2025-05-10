@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,8 @@ import {
   BarChart3,
   User,
   Moon,
-  Sun
+  Sun,
+  Sparkles
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -62,6 +64,7 @@ const Navbar = () => {
               <NavLink href="/library" icon={<Library className="h-4 w-4" />} label="Library" active={location.pathname === '/library'} />
               <NavLink href="/study-plans" icon={<CalendarDays className="h-4 w-4" />} label="Study Plans" active={location.pathname === '/study-plans'} />
               <NavLink href="/progress" icon={<BarChart3 className="h-4 w-4" />} label="Progress" active={location.pathname === '/progress'} />
+              <NavLink href="/ai-assistant" icon={<Sparkles className="h-4 w-4" />} label="AI Assistant" active={location.pathname === '/ai-assistant'} />
             </div>
           )}
         </div>
@@ -137,6 +140,7 @@ const Navbar = () => {
               <MobileNavLink href="/library" icon={<Library className="h-5 w-5" />} label="Library" active={location.pathname === '/library'} />
               <MobileNavLink href="/study-plans" icon={<CalendarDays className="h-5 w-5" />} label="Study Plans" active={location.pathname === '/study-plans'} />
               <MobileNavLink href="/progress" icon={<BarChart3 className="h-5 w-5" />} label="Progress" active={location.pathname === '/progress'} />
+              <MobileNavLink href="/ai-assistant" icon={<Sparkles className="h-5 w-5" />} label="AI Assistant" active={location.pathname === '/ai-assistant'} />
               <MobileNavLink href="/profile" icon={<User className="h-5 w-5" />} label="Profile" active={location.pathname === '/profile'} />
               
               <div 

@@ -17,6 +17,7 @@ import Flashcards from "./pages/Flashcards";
 import Quiz from "./pages/Quiz";
 import Summaries from "./pages/Summaries";
 import MicroLessons from "./pages/MicroLessons";
+import AIAssistant from "./pages/AIAssistant";
 import "./css/animations.css";
 import "./css/darkMode.css";
 
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/progress" element={<Progress />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/ai-assistant" element={<AIAssistant />} />
             <Route path="/flashcards" element={<Flashcards />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/summaries" element={<Summaries />} />
