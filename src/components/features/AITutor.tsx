@@ -6,6 +6,7 @@ import { BrainCircuit, MessageSquare, BookOpen, RefreshCw, Send, Sparkles, User,
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
+import { fetchAIResponse } from "@/lib/aiClient";
 
 type Message = {
   role: "user" | "assistant";
@@ -33,35 +34,67 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
   
+  // Load saved messages from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("tutorly_chat");
+    if (saved) {
+      try {
+        setMessages(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse saved messages", e);
+      }
+    }
+  }, []);
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("tutorly_chat", JSON.stringify(messages));
+  }, [messages]);
+  
   useEffect(() => {
     scrollToBottom();
   }, [messages, isThinking]);
   
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!input.trim()) return;
     
     // Add user message
-    setMessages([...messages, { role: "user", content: input }]);
+    setMessages(prev => [...prev, { role: "user", content: input }]);
     setInput("");
     setIsThinking(true);
     
-    // Simulate AI response
-    setTimeout(() => {
-      setIsThinking(false);
+    try {
+      // Use the AI client to get a response
+      const result = await fetchAIResponse(input);
+      
+      // Remove provider name from response
+      const cleanedResponse = result.replace(/^\([^)]+\)\s➤\s/, '');
+      
       setMessages(prev => [
         ...prev,
         {
           role: "assistant",
-          content: "I'd be happy to explain that! The concept you're asking about relates to cellular respiration, which is how cells convert nutrients into energy. Would you like me to provide more details, examples, or perhaps quiz you on this topic?"
+          content: cleanedResponse
         }
       ]);
       
       toast({
-        title: "AI Tutor Response",
+        title: "Tutor AI Response",
         description: "New explanation available",
         duration: 3000,
       });
-    }, 2000);
+    } catch (error) {
+      console.error(error);
+      setMessages(prev => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "I'm sorry, I had trouble answering that. Please try again."
+        }
+      ]);
+    } finally {
+      setIsThinking(false);
+    }
   };
   
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -79,14 +112,14 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
   ];
   
   return (
-    <Card className={`w-full ${isFullscreen ? 'h-full' : 'h-[500px]'} flex flex-col hover-glow transition-all duration-300`}>
+    <Card className={`w-full ${isFullscreen ? 'h-full' : 'min-h-[500px]'} flex flex-col hover-glow transition-all duration-300`}>
       <CardHeader className="px-4 py-3 border-b flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="p-1 bg-spark-light rounded-md">
               <BrainCircuit className="h-5 w-5 text-spark-primary" />
             </div>
-            <CardTitle className="text-base font-medium">AI Study Tutor</CardTitle>
+            <CardTitle className="text-base font-medium text-foreground">AI Study Tutor</CardTitle>
             <Badge variant="outline" className="ml-2 bg-spark-light text-spark-secondary border-0">
               Beta
             </Badge>
@@ -123,7 +156,7 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
         </div>
       </CardHeader>
       
-      <CardContent className="p-4 overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-spark-light scrollbar-track-transparent">
+      <CardContent className="p-4 overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-spark-light scrollbar-track-transparent min-h-[400px]">
         <div className="space-y-4">
           {messages.map((message, index) => (
             <div 
@@ -186,14 +219,14 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
       {messages.length === 1 && !isThinking && (
         <div className="px-4 mb-2">
           <div className="bg-spark-light/50 rounded-lg p-3">
-            <p className="text-sm font-medium mb-2">Try asking:</p>
+            <p className="text-sm font-medium mb-2 text-foreground">Try asking:</p>
             <div className="flex flex-wrap gap-2">
               {suggestedQuestions.map((question, index) => (
                 <Button 
                   key={index}
                   variant="outline"
                   size="sm"
-                  className="text-xs bg-white hover:bg-spark-light transition-colors button-click-effect dark:bg-muted dark:hover:bg-accent suggestion-box"
+                  className="text-xs bg-white hover:bg-spark-light transition-colors button-click-effect dark:bg-muted dark:hover:bg-accent dark:text-foreground suggestion-box"
                   onClick={() => {
                     setInput(question);
                   }}
@@ -222,7 +255,7 @@ const AITutor = ({ isFullscreen = false, toggleFullscreen }: AITutorProps) => {
             <input
               type="text"
               placeholder="Ask anything about your material..."
-              className="w-full rounded-full border border-spark-light pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-spark-primary transition-all dark:bg-muted dark:border-muted"
+              className="w-full rounded-full border border-spark-light pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-spark-primary transition-all dark:bg-muted dark:border-muted text-foreground"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}

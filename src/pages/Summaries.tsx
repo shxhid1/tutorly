@@ -5,19 +5,21 @@ import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollText, FileText, Plus, Clock, Upload, X, FileIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
 import { useTheme } from "@/contexts/ThemeContext";
+import { fetchAIResponse } from "@/lib/aiClient";
+import { fetchJinaSummary } from "@/lib/jinaReader";
 
 const Summaries = () => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [extractedText, setExtractedText] = useState<string>("");
   const { toast } = useToast();
   const { theme } = useTheme();
   
@@ -86,8 +88,31 @@ const Summaries = () => {
       setSelectedFile(e.target.files[0]);
     }
   };
+
+  const extractTextFromPDF = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      
+      reader.onload = async (event) => {
+        try {
+          // For demonstration, we're returning a placeholder
+          // In a real app, you would use pdf.js or a similar library
+          const text = `Content extracted from ${file.name}. 
+          This is a sample text that would be extracted from the PDF.
+          In a real implementation, we would use pdf.js or a similar library to extract text.`;
+          
+          resolve(text);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      reader.onerror = (error) => reject(error);
+      reader.readAsArrayBuffer(file);
+    });
+  };
   
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!selectedFile) {
       toast({
         title: "No file selected",
@@ -103,16 +128,29 @@ const Summaries = () => {
     // Simulate upload progress
     const interval = setInterval(() => {
       setUploadProgress(prev => {
-        if (prev >= 100) {
+        if (prev >= 95) {
           clearInterval(interval);
-          return 100;
+          return 95;
         }
         return prev + 5;
       });
     }, 100);
     
-    // Simulate upload completion
-    setTimeout(() => {
+    try {
+      // Extract text from PDF
+      const text = await extractTextFromPDF(selectedFile);
+      setExtractedText(text);
+      
+      // Create a temporary file URL for the PDF
+      const fileUrl = URL.createObjectURL(selectedFile);
+      
+      // Use Jina AI to summarize the PDF
+      const summary = await fetchJinaSummary(fileUrl);
+      
+      // Clean up the temporary URL
+      URL.revokeObjectURL(fileUrl);
+      
+      // Complete the progress
       clearInterval(interval);
       setUploadProgress(100);
       
@@ -125,8 +163,24 @@ const Summaries = () => {
           title: "Summary generated",
           description: "Your document has been uploaded and summary created successfully"
         });
+        
+        // Here you would typically save the summary to your state or database
+        console.log("Generated summary:", summary);
+        
+        // Add the new summary to the list (in a real app, this would come from a database)
+        // This is simplified for demonstration
       }, 500);
-    }, 2000);
+    } catch (error) {
+      console.error("Error processing PDF:", error);
+      clearInterval(interval);
+      setIsUploading(false);
+      
+      toast({
+        title: "Error processing document",
+        description: "Could not process your PDF. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
   
   return (
@@ -137,7 +191,7 @@ const Summaries = () => {
         <div className="container max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">Smart Summaries</h1>
+              <h1 className="text-2xl md:text-3xl font-bold mb-2 text-foreground">Smart Summaries</h1>
               <p className="text-muted-foreground">Get condensed versions of your material in different formats</p>
             </div>
             <Button 
@@ -167,7 +221,7 @@ const Summaries = () => {
                     </div>
                   </CardHeader>
                   <CardContent className="pt-4">
-                    <CardTitle className="text-lg mb-2">{summary.title}</CardTitle>
+                    <CardTitle className="text-lg mb-2 text-foreground">{summary.title}</CardTitle>
                     <CardDescription className="line-clamp-2 mb-4">{summary.description}</CardDescription>
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <span>{summary.created}</span>
@@ -185,7 +239,7 @@ const Summaries = () => {
           {summaries.length === 0 && (
             <div className="text-center py-12 bg-muted rounded-lg">
               <ScrollText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-xl font-medium mb-2">No summaries yet</h3>
+              <h3 className="text-xl font-medium mb-2 text-foreground">No summaries yet</h3>
               <p className="text-muted-foreground mb-4">
                 Upload study material to generate smart summaries.
               </p>
@@ -204,7 +258,7 @@ const Summaries = () => {
       <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Upload Document for Summary</DialogTitle>
+            <DialogTitle className="text-foreground">Upload Document for Summary</DialogTitle>
             <DialogDescription>
               Upload your study material to generate a smart summary
             </DialogDescription>
@@ -217,7 +271,7 @@ const Summaries = () => {
                   <div className="flex items-center space-x-2">
                     <FileIcon className="h-8 w-8 text-muted-foreground" />
                     <div className="space-y-1 text-left">
-                      <p className="text-sm font-medium">{selectedFile.name}</p>
+                      <p className="text-sm font-medium text-foreground">{selectedFile.name}</p>
                       <p className="text-xs text-muted-foreground">
                         {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                       </p>
@@ -237,7 +291,7 @@ const Summaries = () => {
                     <Upload className="h-6 w-6 text-muted-foreground" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium">Drag & drop or click to upload</p>
+                    <p className="text-sm font-medium text-foreground">Drag & drop or click to upload</p>
                     <p className="text-xs text-muted-foreground">
                       PDF, Word, or Text files (max 20MB)
                     </p>
@@ -257,7 +311,7 @@ const Summaries = () => {
               <div className="space-y-2">
                 <Progress value={uploadProgress} className="h-2" />
                 <p className="text-xs text-center text-muted-foreground">
-                  {uploadProgress < 100 ? 'Uploading...' : 'Processing document...'}
+                  {uploadProgress < 100 ? 'Processing document...' : 'Generating summary...'}
                 </p>
               </div>
             )}
