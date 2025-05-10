@@ -23,11 +23,22 @@ import { useTheme } from "@/contexts/ThemeContext";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const isMobile = useIsMobile();
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   
   const isLandingPage = location.pathname === "/" || location.pathname === "/landing";
+  
+  // Add scroll effect for sticky header
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -39,12 +50,13 @@ const Navbar = () => {
   }, [location.pathname]);
   
   return (
-    <header className="border-b border-spark-light bg-white sticky top-0 z-50 shadow-sm dark:bg-card dark:border-muted">
+    <header className={`border-b border-spark-light sticky top-0 z-50 shadow-sm transition-all duration-300
+      ${scrolled ? "backdrop-blur-lg bg-white/90 dark:bg-card/90" : "bg-white dark:bg-card"}`}>
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-4">
           <Link to="/" className="flex items-center gap-2 hover-lift">
-            <BookOpenIcon className="h-6 w-6 text-spark-primary" />
-            <span className="text-xl font-bold dark:text-foreground">SparkLearn</span>
+            <img src="/logo.svg" alt="Tutorly Logo" className="h-8 w-auto" />
+            <span className="text-xl font-bold dark:text-foreground">Tutorly</span>
           </Link>
           {!isLandingPage && (
             <div className="hidden md:flex items-center gap-6 ml-6">
@@ -72,14 +84,23 @@ const Navbar = () => {
                 <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-spark-primary"></span>
               </Button>
               
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="hover:bg-spark-light transition-colors dark:hover:bg-accent"
-                onClick={toggleTheme}
-              >
-                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="icon" 
+                      className="dark-mode-toggle hover:bg-spark-light transition-colors dark:hover:bg-accent"
+                      onClick={toggleTheme}
+                    >
+                      {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               
               <Link to="/profile">
                 <Avatar className="hover-lift">

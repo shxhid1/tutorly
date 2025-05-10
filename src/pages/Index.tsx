@@ -38,7 +38,8 @@ const Index = () => {
         <div className="container flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 hover-lift">
-              <span className="text-xl font-bold text-white">SparkLearn</span>
+              <img src="/logo.svg" alt="Tutorly Logo" className="h-8 w-auto" />
+              <span className="text-xl font-bold text-white">Tutorly</span>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -50,7 +51,7 @@ const Index = () => {
               Sign In
             </Button>
             <Button 
-              className="bg-purple-500 text-white hover:bg-purple-600"
+              className="bg-purple-500 text-white hover:bg-purple-600 py-2 px-6 rounded-md font-semibold"
               onClick={handleGetStarted}
             >
               Get Started
@@ -84,7 +85,7 @@ const Index = () => {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                   <Button 
                     size="lg" 
-                    className="w-full sm:w-auto bg-purple-500 hover:bg-purple-600 text-white button-click-effect text-base font-semibold"
+                    className="w-full sm:w-auto bg-purple-500 hover:bg-purple-600 text-white button-click-effect text-base font-semibold py-6 px-8 rounded-md shadow-lg"
                     onClick={handleGetStarted}
                     disabled={isLoading}
                   >
@@ -104,7 +105,7 @@ const Index = () => {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    className="w-full sm:w-auto text-base font-medium border-purple-400 text-purple-300 hover:bg-purple-900/40"
+                    className="w-full sm:w-auto text-base font-medium border-purple-400 text-purple-300 hover:bg-purple-900/40 py-6 px-8 rounded-md"
                     onClick={() => {
                       toast({
                         title: "Coming Soon!",
@@ -129,7 +130,7 @@ const Index = () => {
         <section className="py-20 px-4 bg-background dark:bg-background">
           <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-4">Everything You Need To Study Smarter</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything You Need To Study Smarter</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Our platform transforms the way you learn with these powerful features
               </p>
@@ -164,7 +165,7 @@ const Index = () => {
         <section className="py-20 bg-muted px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Upload Any Study Material</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Upload Any Study Material</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Our AI instantly processes your documents and helps you learn faster
               </p>
@@ -202,7 +203,7 @@ const Index = () => {
                   </div>
                   
                   <Button 
-                    className="w-full md:w-auto bg-purple-500 hover:bg-purple-600 text-white font-semibold text-base shadow-md"
+                    className="w-full md:w-auto bg-purple-500 hover:bg-purple-600 text-white font-semibold text-base shadow-md py-3 px-6 rounded-md"
                     onClick={handleGetStarted}
                   >
                     <Zap className="mr-2 h-5 w-5" />
@@ -218,7 +219,7 @@ const Index = () => {
         <section className="py-20 bg-background dark:bg-background px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Why SparkLearn Works</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Tutorly Works</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Our science-based approach combines proven learning methods with cutting-edge AI
               </p>
@@ -248,7 +249,7 @@ const Index = () => {
         <section className="py-20 bg-muted px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Loved by Students Everywhere</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Loved by Students Everywhere</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 See what our users are saying about their learning experience
               </p>
@@ -256,7 +257,7 @@ const Index = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <TestimonialCard 
-                quote="SparkLearn completely changed how I study. I've improved my grades significantly!"
+                quote="Tutorly completely changed how I study. I've improved my grades significantly!"
                 author="Alex K."
                 role="Computer Science Student"
               />
@@ -293,14 +294,14 @@ const Index = () => {
         {/* CTA Section with improved contrast and visible button */}
         <section className="py-20 bg-gray-900 text-white px-4">
           <div className="container mx-auto max-w-5xl text-center">
-            <h2 className="text-4xl font-bold mb-6 text-white">Ready to Transform Your Learning?</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Ready to Transform Your Learning?</h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
               Join thousands of students who are already studying smarter, not harder.
             </p>
             <div className="flex justify-center">
               <Button 
                 size="lg" 
-                className="bg-purple-500 hover:bg-purple-600 text-white text-base font-semibold shadow-lg" 
+                className="bg-purple-500 hover:bg-purple-600 text-white text-lg font-semibold shadow-lg py-3 px-8 rounded-md" 
                 onClick={handleGetStarted}
               >
                 <Zap className="mr-2 h-5 w-5" />
@@ -318,7 +319,7 @@ const Index = () => {
 
 // Feature Card Component with improved visibility and dark mode support
 const FeatureCard = ({ icon, title, description }) => (
-  <Card className="border shadow-md hover:shadow-lg transition-all duration-300 h-full">
+  <Card className="border shadow-md hover:shadow-lg transition-all duration-300 h-full feature-card">
     <CardContent className="p-6 space-y-4 h-full">
       <div className="p-3 bg-purple-100 w-fit rounded-xl">
         {icon}
@@ -357,7 +358,7 @@ const BenefitCard = ({ number, title, description }) => (
 
 // Testimonial Card Component with improved contrast and dark mode support
 const TestimonialCard = ({ quote, author, role }) => (
-  <Card className="p-6 border shadow-md h-full">
+  <Card className="p-6 border shadow-md h-full testimonial-card">
     <CardContent className="p-0 space-y-4 h-full">
       <div className="text-4xl text-purple-500">"</div>
       <p className="text-muted-foreground italic">{quote}</p>
