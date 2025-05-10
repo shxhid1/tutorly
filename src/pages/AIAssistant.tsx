@@ -1,18 +1,22 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
-import { Helmet } from "react-helmet";
 import AIChat from "@/components/features/AIChat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DocumentUploader from "@/components/features/DocumentUploader";
 
 const AIAssistant = () => {
+  // Update document title on component mount
+  useEffect(() => {
+    document.title = "AI Assistant | Tutorly";
+    // Restore original title when component unmounts
+    return () => {
+      document.title = "Tutorly - Smart Learning Platform";
+    };
+  }, []);
+
   return (
     <>
-      <Helmet>
-        <title>AI Assistant | Tutorly</title>
-      </Helmet>
-      
       <Navbar />
       
       <main className="container py-8">
