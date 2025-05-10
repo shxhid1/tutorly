@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -55,7 +54,6 @@ const Navbar = () => {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-4">
           <Link to="/" className="flex items-center gap-2 hover-lift">
-            <img src="/logo.svg" alt="Tutorly Logo" className="h-8 w-auto" />
             <span className="text-xl font-bold dark:text-foreground">Tutorly</span>
           </Link>
           {!isLandingPage && (

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -38,7 +37,6 @@ const Index = () => {
         <div className="container flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 hover-lift">
-              <img src="/logo.svg" alt="Tutorly Logo" className="h-8 w-auto" />
               <span className="text-xl font-bold text-white">Tutorly</span>
             </div>
           </div>
