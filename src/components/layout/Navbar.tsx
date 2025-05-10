@@ -161,7 +161,7 @@ const Navbar = () => {
 const NavLink = ({ href, icon, label, active }) => (
   <Link 
     to={href} 
-    className={`group flex flex-col items-center gap-1 text-sm font-medium transition-colors ${active ? 'text-spark-primary' : 'text-muted-foreground hover:text-spark-primary'}`}
+    className={`group flex flex-col items-center gap-1 text-sm font-medium transition-colors ${active ? 'text-spark-primary tutorly-nav-active' : 'text-muted-foreground hover:text-spark-primary'}`}
   >
     <div className="flex items-center gap-1">
       {icon}

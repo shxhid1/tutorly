@@ -215,7 +215,7 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Why SparkLearn Works Section with improved readability */}
+        {/* Why Tutorly Works Section with improved readability */}
         <section className="py-20 bg-background dark:bg-background px-4">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
@@ -305,7 +305,7 @@ const Index = () => {
                 onClick={handleGetStarted}
               >
                 <Zap className="mr-2 h-5 w-5" />
-                Get Started
+                Get Started with Tutorly
               </Button>
             </div>
           </div>

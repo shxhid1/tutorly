@@ -20,7 +20,11 @@ import MicroLessons from "./pages/MicroLessons";
 import "./css/animations.css";
 import "./css/darkMode.css";
 
+// Create a new QueryClient instance
 const queryClient = new QueryClient();
+
+// Document title update
+document.title = "Tutorly - Smart Learning Platform";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -41,7 +45,7 @@ const App = () => (
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/summaries" element={<Summaries />} />
             <Route path="/micro-lessons" element={<MicroLessons />} />
-            <Route path="/upload" element={<Navigate to="/library" replace />} /> {/* Add upload route */}
+            <Route path="/upload" element={<Navigate to="/library" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
