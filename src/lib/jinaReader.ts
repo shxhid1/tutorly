@@ -1,4 +1,3 @@
-
 import { fetchAIResponse } from './aiClient';
 import * as pdfjs from 'pdfjs-dist';
 
@@ -7,99 +6,57 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pd
 
 export async function fetchJinaSummary(file: File): Promise<string> {
   try {
-    console.log('Attempting to summarize PDF with Jina AI:', file.name);
+    console.log('Attempting to summarize PDF:', file.name);
     
-    // Create a FormData object to send the file
-    const formData = new FormData();
-    formData.append('file', file);
+    // First, try using local PDF extraction
+    let extractedText = "";
     
-    // First, try using Jina AI's PDF reader service
-    const response = await fetch("https://api.jina.ai/v1/summarize", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${import.meta.env.VITE_JINA_API_KEY || ''}`
-      },
-      body: formData,
-    });
-    
-    if (!response.ok) {
-      console.log('Jina API returned error:', response.status, response.statusText);
-      const errorText = await response.text();
-      console.error('Jina API error details:', errorText);
-      
-      if (response.status === 401) {
-        throw new Error('Authentication failed: Invalid API key or token');
-      } else if (response.status === 429) {
-        throw new Error('Rate limit exceeded: Too many requests');
-      } else {
-        throw new Error(`Jina API error: ${response.status}`);
-      }
-    }
-    
-    const data = await response.json();
-    console.log('Jina AI summary response:', data);
-    
-    if (data.summary && data.summary.length > 100) {
-      return data.summary || "No summary generated.";
-    } else {
-      console.log('Jina summary was too short or empty, falling back to local extraction');
-      throw new Error('Summary too short');
-    }
-  } catch (jinaError) {
-    console.error('Error using Jina AI:', jinaError);
-    
-    // Extract text from PDF using PDF.js and then summarize with AI client
     try {
-      console.log('Falling back to PDF.js extraction and AI client for summarization');
-      let extractedText = "";
+      extractedText = await extractTextFromPDF(file);
       
-      try {
-        extractedText = await extractTextFromPDF(file);
-        
-        // Log a preview of the extracted text to help debug issues
-        console.log('Extracted text preview:', extractedText.substring(0, 300));
-        
-        if (!extractedText || extractedText.length < 100) {
-          throw new Error("Insufficient text extracted from PDF");
-        }
-      } catch (pdfError) {
-        console.error('PDF extraction error:', pdfError);
-        throw new Error(`Could not extract text from PDF: ${pdfError.message || 'Unknown error'}`);
+      // Log a preview of the extracted text to help debug issues
+      console.log('Extracted text preview:', extractedText.substring(0, 300));
+      
+      if (!extractedText || extractedText.length < 100) {
+        throw new Error("Insufficient text extracted from PDF");
       }
-      
-      // Ensure we have enough meaningful content (not just garbage text)
-      if (!/[a-zA-Z]{3,}/.test(extractedText)) {
-        throw new Error("The PDF appears to contain no readable text. It may be scanned or image-based.");
-      }
-      
-      // Limit text length to avoid exceeding token limits but ensure we have enough content
-      const truncatedText = extractedText.substring(0, 12000); // Increased from 8000 to get more context
-      const fallbackPrompt = `Please provide a comprehensive and detailed summary of the following text extracted from a PDF document. 
-      Structure your response with:
-      
-      1. MAIN TOPICS: List 3-5 key topics covered
-      2. DETAILED SUMMARY: Provide a thorough summary with key points organized by section
-      3. KEY INSIGHTS: Highlight 3-5 most important takeaways
-      
-      Include relevant quotes, statistics, or specific details from the text. Format your response with clear headings, paragraphs, and bullet points for readability.
-      
-      Here is the text to summarize:
-      
-      ${truncatedText}`;
-      
-      const fallbackSummary = await fetchAIResponse(fallbackPrompt);
-      
-      // Replace provider name with "Tutor AI" branding
-      const cleanedSummary = fallbackSummary.replace(/^\([^)]+\)\s➤\s/, 'Tutor AI: ');
-      
-      return cleanedSummary;
-    } catch (fallbackError) {
-      console.error('Fallback AI summarization failed:', fallbackError);
-      if (fallbackError.message.includes('PDF')) {
-        return `Error: ${fallbackError.message}. Please try a different PDF file.`;
-      }
-      return "Error processing document. Please try again with a different PDF file.";
+    } catch (pdfError) {
+      console.error('PDF extraction error:', pdfError);
+      throw new Error(`Could not extract text from PDF: ${pdfError.message || 'Unknown error'}`);
     }
+    
+    // Ensure we have enough meaningful content (not just garbage text)
+    if (!/[a-zA-Z]{3,}/.test(extractedText)) {
+      throw new Error("The PDF appears to contain no readable text. It may be scanned or image-based.");
+    }
+    
+    // Limit text length to avoid exceeding token limits but ensure we have enough content
+    const truncatedText = extractedText.substring(0, 12000); // Increased from 8000 to get more context
+    const summaryPrompt = `Please provide a comprehensive and detailed summary of the following text extracted from a PDF document. 
+    Structure your response with:
+    
+    1. MAIN TOPICS: List 3-5 key topics covered
+    2. DETAILED SUMMARY: Provide a thorough summary with key points organized by section
+    3. KEY INSIGHTS: Highlight 3-5 most important takeaways
+    
+    Include relevant quotes, statistics, or specific details from the text. Format your response with clear headings, paragraphs, and bullet points for readability.
+    
+    Here is the text to summarize:
+    
+    ${truncatedText}`;
+    
+    const summary = await fetchAIResponse(summaryPrompt);
+    
+    // Replace provider name with "Tutor AI" branding
+    const cleanedSummary = summary.replace(/^\([^)]+\)\s➤\s/, 'Tutor AI: ');
+    
+    return cleanedSummary;
+  } catch (error) {
+    console.error('Error generating summary:', error);
+    if (error.message.includes('PDF')) {
+      return `Error: ${error.message}. Please try a different PDF file.`;
+    }
+    return "Error processing document. Please try again with a different PDF file.";
   }
 }
 
