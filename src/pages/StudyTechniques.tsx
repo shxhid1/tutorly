@@ -3,8 +3,23 @@ import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollText, Clock, Check, FileText, X, Loader } from "lucide-react";
+import { 
+  Clock, 
+  Brain, 
+  FileText, 
+  MapPin, 
+  Repeat, 
+  CheckCircle2, 
+  LayoutList, 
+  SplitSquareVertical
+} from "lucide-react";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
@@ -13,236 +28,223 @@ import {
 } from "@/components/ui/accordion";
 
 const StudyTechniques = () => {
+  const [expandedTechnique, setExpandedTechnique] = useState<string | null>(null);
+  
   const techniques = [
     {
       id: "pomodoro",
       title: "Pomodoro Technique",
-      description: "Work in focused intervals with short breaks",
       icon: Clock,
-      content: `
-        The Pomodoro Technique is a time management method that uses a timer to break work into intervals, traditionally 25 minutes in length, separated by short breaks.
-        
-        ## How to use it:
-        1. Choose a task to work on
-        2. Set a timer for 25 minutes (one "Pomodoro")
-        3. Work on the task until the timer rings
-        4. Take a short 5-minute break
-        5. After 4 Pomodoros, take a longer 15-30 minute break
-        
-        ## Benefits:
-        - Improves focus and concentration
-        - Reduces mental fatigue
-        - Creates a sense of urgency
-        - Helps track time spent on tasks
-      `
+      color: "bg-red-100 dark:bg-red-900/20",
+      textColor: "text-red-600 dark:text-red-400",
+      description: "Time management method that uses a timer to break work into intervals, traditionally 25 minutes in length, separated by short breaks.",
+      steps: [
+        "Choose a task to work on",
+        "Set a timer for 25 minutes (one 'Pomodoro')",
+        "Work on the task until the timer rings",
+        "Take a short 5-minute break",
+        "After 4 Pomodoros, take a longer 15-30 minute break"
+      ],
+      benefits: [
+        "Increases focus and concentration",
+        "Reduces mental fatigue",
+        "Creates a sense of urgency",
+        "Keeps you accountable"
+      ]
     },
     {
       id: "feynman",
       title: "Feynman Technique",
-      description: "Learn by teaching concepts in simple terms",
-      icon: FileText,
-      content: `
-        The Feynman Technique is a method for learning concepts thoroughly by explaining them in simple terms, as if teaching a child.
-        
-        ## How to use it:
-        1. Choose a concept to learn
-        2. Explain it in simple terms, as if teaching a 12-year-old
-        3. Identify gaps in your explanation or understanding
-        4. Review and simplify further
-        
-        ## Benefits:
-        - Exposes knowledge gaps
-        - Enhances deep understanding
-        - Improves ability to communicate complex ideas
-        - Forces clarification of concepts
-      `
+      icon: Brain,
+      color: "bg-blue-100 dark:bg-blue-900/20",
+      textColor: "text-blue-600 dark:text-blue-400",
+      description: "A learning strategy named after physicist Richard Feynman, focused on explaining complex concepts in simple terms to improve understanding.",
+      steps: [
+        "Choose a concept or topic",
+        "Explain it in simple terms as if teaching a child",
+        "Identify gaps in your explanation and review those areas",
+        "Simplify technical language and create analogies"
+      ],
+      benefits: [
+        "Deepens understanding of complex topics",
+        "Identifies knowledge gaps",
+        "Improves ability to communicate ideas",
+        "Strengthens long-term retention"
+      ]
     },
     {
       id: "mind-mapping",
       title: "Mind Mapping",
-      description: "Visualize connections between related concepts",
-      icon: ScrollText,
-      content: `
-        Mind mapping is a visual technique for organizing information around a central concept, with branches representing related ideas.
-        
-        ## How to use it:
-        1. Write the main topic in the center of a page
-        2. Draw branches for main subtopics
-        3. Add smaller branches for details
-        4. Use colors, symbols, and images to enhance memory
-        
-        ## Benefits:
-        - Shows relationships between concepts
-        - Aids visual learning and recall
-        - Encourages creative thinking
-        - Provides a comprehensive overview of a subject
-      `
+      icon: MapPin,
+      color: "bg-green-100 dark:bg-green-900/20",
+      textColor: "text-green-600 dark:text-green-400",
+      description: "A visual technique for structuring information, using a central concept with connected branches of related ideas.",
+      steps: [
+        "Start with a central concept in the middle",
+        "Draw branches for major related topics",
+        "Add smaller branches for subtopics",
+        "Use colors, symbols and images to enhance memory",
+        "Review and reorganize as needed"
+      ],
+      benefits: [
+        "Promotes creative thinking",
+        "Organizes complex information visually",
+        "Shows relationships between concepts",
+        "Helps with brainstorming and note-taking"
+      ]
     },
     {
-      id: "spaced-repetition",
+      id: "spaced",
       title: "Spaced Repetition",
-      description: "Review material at increasing intervals over time",
-      icon: Check,
-      content: `
-        Spaced repetition is a learning technique that involves reviewing information at systematically increasing intervals.
-        
-        ## How to use it:
-        1. Review new material shortly after learning it
-        2. Review again after a slightly longer interval (perhaps 1 day)
-        3. If recalled correctly, double the interval (2 days, then 4 days, etc.)
-        4. If forgotten, reset to a shorter interval
-        
-        ## Benefits:
-        - Maximizes long-term memory retention
-        - Optimizes study time efficiency
-        - Reduces forgetting curve
-        - Works well with flashcards and digital apps
-      `
+      icon: Repeat,
+      color: "bg-purple-100 dark:bg-purple-900/20",
+      textColor: "text-purple-600 dark:text-purple-400",
+      description: "A learning technique that incorporates increasing intervals of time between subsequent reviews of previously learned material.",
+      steps: [
+        "Study material for the first time",
+        "Review after one day",
+        "Review again after three days",
+        "Then review after a week",
+        "Continue increasing intervals (two weeks, a month, etc.)"
+      ],
+      benefits: [
+        "Improves long-term retention",
+        "Combats the forgetting curve",
+        "More efficient than cramming",
+        "Works with digital flashcard systems"
+      ]
     },
     {
       id: "active-recall",
       title: "Active Recall",
-      description: "Actively stimulate memory during the learning process",
-      icon: Check,
-      content: `
-        Active recall involves actively stimulating your memory for information rather than passively reviewing it.
-        
-        ## How to use it:
-        1. Study new material
-        2. Close your notes/books
-        3. Try to recall everything you can about the topic
-        4. Check your notes to see what you missed
-        
-        ## Benefits:
-        - Strengthens neural connections
-        - Identifies knowledge gaps
-        - Improves exam performance
-        - More effective than re-reading
-      `
+      icon: CheckCircle2,
+      color: "bg-yellow-100 dark:bg-yellow-900/20",
+      textColor: "text-yellow-600 dark:text-yellow-400",
+      description: "Testing yourself on material rather than passively reviewing. Retrieving information from memory strengthens neural connections.",
+      steps: [
+        "Read or study material initially",
+        "Close books/notes and try to recall key points",
+        "Check your answers against the material",
+        "Focus on areas where recall was difficult",
+        "Repeat regularly with increasing difficulty"
+      ],
+      benefits: [
+        "Strengthens memory pathways",
+        "Identifies weak areas of understanding",
+        "More effective than re-reading",
+        "Prepares you for exam conditions"
+      ]
     },
     {
       id: "cornell",
-      title: "Cornell Note-Taking Method",
-      description: "Structured note-taking system with cues and summaries",
-      icon: FileText,
-      content: `
-        The Cornell method is a note-taking system that divides pages into sections for questions/cues, notes, and summaries.
-        
-        ## How to use it:
-        1. Divide your page into three sections: a narrow left column (cue column), a wide right column (note column), and a section at the bottom (summary)
-        2. Take notes in the right column
-        3. After class, write questions or keywords in the left column
-        4. Write a summary at the bottom
-        
-        ## Benefits:
-        - Encourages active engagement with material
-        - Facilitates quick review
-        - Organizes information systematically
-        - Promotes meaningful learning
-      `
+      title: "Cornell Method",
+      icon: LayoutList,
+      color: "bg-pink-100 dark:bg-pink-900/20",
+      textColor: "text-pink-600 dark:text-pink-400",
+      description: "A systematic note-taking format that divides pages into sections for questions, notes, and summaries.",
+      steps: [
+        "Divide your page into three sections: a narrow left column, a wide right column, and a bottom section",
+        "Take notes in the right column during class/reading",
+        "Write key questions/terms in the left column",
+        "Write a summary at the bottom section",
+        "Use the layout to test yourself and review"
+      ],
+      benefits: [
+        "Organizes notes systematically",
+        "Encourages active engagement with material",
+        "Built-in review system",
+        "Creates study-ready materials"
+      ]
     },
     {
       id: "interleaved",
       title: "Interleaved Practice",
-      description: "Mix different topics within a single study session",
-      icon: ScrollText,
-      content: `
-        Interleaved practice involves mixing different topics or types of problems within a single study session, rather than focusing on one skill at a time.
-        
-        ## How to use it:
-        1. Instead of practicing topic A, then B, then C in blocks
-        2. Practice in a mixed order: A, B, C, B, A, C
-        3. Create a study schedule that alternates between different subjects
-        4. Switch topics before you feel you've mastered one
-        
-        ## Benefits:
-        - Improves ability to discriminate between problem types
-        - Strengthens long-term retention
-        - Enhances transfer of learning
-        - Better prepares for real-world application
-      `
+      icon: SplitSquareVertical,
+      color: "bg-orange-100 dark:bg-orange-900/20",
+      textColor: "text-orange-600 dark:text-orange-400",
+      description: "Mixing different topics or types of problems within a single study session, rather than focusing on one skill at a time.",
+      steps: [
+        "Identify several related but distinct topics/problems",
+        "Study or practice them in an alternating sequence",
+        "Switch topics before mastery (this creates productive struggle)",
+        "Review connections between different concepts",
+        "Space out practice over time"
+      ],
+      benefits: [
+        "Improves ability to distinguish between problem types",
+        "Develops flexible thinking",
+        "Enhances long-term retention",
+        "Better prepares for real-world application"
+      ]
     }
   ];
-
-  const [expandedTechnique, setExpandedTechnique] = useState<string | null>(null);
-
+  
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <Navbar />
       
       <main className="flex-1 py-8 px-4 pb-20 md:pb-8 text-gray-800 dark:text-white">
-        <div className="container max-w-4xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold mb-2 text-gray-800 dark:text-white">Effective Study Techniques</h1>
-            <p className="text-gray-700 dark:text-gray-200">Science-backed methods to improve your learning and retention</p>
+        <div className="container max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <h1 className="text-3xl font-bold mb-2 text-gray-800 dark:text-white">Advanced Study Techniques</h1>
+            <p className="text-gray-700 dark:text-gray-200 max-w-2xl mx-auto">
+              Discover scientifically-proven methods to enhance your learning efficiency, 
+              improve retention, and make the most of your study sessions.
+            </p>
           </div>
           
-          <div className="space-y-6">
-            <Accordion type="single" collapsible className="w-full">
-              {techniques.map((technique) => {
-                const Icon = technique.icon;
-                
-                return (
-                  <AccordionItem 
-                    key={technique.id} 
-                    value={technique.id}
-                    className="border border-gray-200 dark:border-gray-700 rounded-lg mb-4 bg-white dark:bg-gray-800"
-                  >
-                    <AccordionTrigger className="px-4 py-4 hover:no-underline">
-                      <div className="flex items-center text-left">
-                        <div className="bg-primary/10 dark:bg-primary/20 p-2 rounded-lg mr-3">
-                          <Icon className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium text-lg text-gray-800 dark:text-white">{technique.title}</h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">{technique.description}</p>
-                        </div>
+          {/* Techniques Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {techniques.map((technique) => {
+              const Icon = technique.icon;
+              
+              return (
+                <Card 
+                  key={technique.id} 
+                  className="hover-glow hover-lift transition-all duration-300 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                >
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`p-2 rounded-full ${technique.color}`}>
+                        <Icon className={`h-5 w-5 ${technique.textColor}`} />
                       </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="px-4 pt-0 pb-4">
-                      <div className="mt-2 prose-sm md:prose max-w-none dark:prose-invert">
-                        {technique.content.split('\n\n').map((paragraph, i) => {
-                          if (paragraph.startsWith('## ')) {
-                            return <h3 key={i} className="font-bold text-lg mt-4 text-gray-800 dark:text-white">{paragraph.replace('## ', '')}</h3>;
-                          }
-                          if (paragraph.startsWith('- ')) {
-                            return (
-                              <ul key={i} className="list-disc pl-5 mt-2 text-gray-700 dark:text-gray-200">
-                                {paragraph.split('\n').map((line, j) => (
-                                  <li key={j}>{line.replace('- ', '')}</li>
-                                ))}
-                              </ul>
-                            );
-                          }
-                          if (paragraph.match(/^\d\./)) {
-                            return (
-                              <ol key={i} className="list-decimal pl-5 mt-2 text-gray-700 dark:text-gray-200">
-                                {paragraph.split('\n').map((line, j) => (
-                                  <li key={j}>{line.replace(/^\d\.\s/, '')}</li>
-                                ))}
-                              </ol>
-                            );
-                          }
-                          return <p key={i} className="text-gray-700 dark:text-gray-200">{paragraph}</p>;
-                        })}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                );
-              })}
-            </Accordion>
-          </div>
-          
-          <div className="mt-12 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-bold mb-3 text-gray-800 dark:text-white">How to Maximize Your Study Sessions</h2>
-            <p className="text-gray-700 dark:text-gray-200 mb-4">
-              Combine these techniques for even better results. For example, use the Pomodoro Technique to structure your time, 
-              Active Recall during your study sessions, and Spaced Repetition to schedule your reviews.
-            </p>
-            <p className="text-gray-700 dark:text-gray-200">
-              Remember that different subjects and learning objectives may benefit from different approaches. 
-              Experiment to find what works best for you and your specific learning needs.
-            </p>
+                      <CardTitle className="text-lg text-gray-800 dark:text-white">{technique.title}</CardTitle>
+                    </div>
+                    <CardDescription className="text-gray-700 dark:text-gray-200">
+                      {technique.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="steps" className="border-gray-200 dark:border-gray-700">
+                        <AccordionTrigger className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white">
+                          How to use it
+                        </AccordionTrigger>
+                        <AccordionContent className="text-gray-600 dark:text-gray-300">
+                          <ol className="list-decimal pl-5 space-y-1">
+                            {technique.steps.map((step, index) => (
+                              <li key={index}>{step}</li>
+                            ))}
+                          </ol>
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="benefits" className="border-gray-200 dark:border-gray-700">
+                        <AccordionTrigger className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white">
+                          Benefits
+                        </AccordionTrigger>
+                        <AccordionContent className="text-gray-600 dark:text-gray-300">
+                          <ul className="list-disc pl-5 space-y-1">
+                            {technique.benefits.map((benefit, index) => (
+                              <li key={index}>{benefit}</li>
+                            ))}
+                          </ul>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </main>

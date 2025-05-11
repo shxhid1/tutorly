@@ -14,14 +14,14 @@ const AIAssistant = () => {
   }, []);
 
   return (
-    <>
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <Navbar />
       
-      <main className="container py-8">
+      <main className="container py-8 text-gray-800 dark:text-white">
         <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">AI Learning Assistant</h1>
         <AIChat />
       </main>
-    </>
+    </div>
   );
 };
 
