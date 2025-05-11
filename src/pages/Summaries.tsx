@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -32,6 +31,7 @@ const Summaries = () => {
   const [summaryResult, setSummaryResult] = useState<string | null>(null);
   const [viewingSummary, setViewingSummary] = useState<Summary | null>(null);
   const [showSummaryDialog, setShowSummaryDialog] = useState(false);
+  const [dragActive, setDragActive] = useState(false); // Add the missing dragActive state
   const { toast } = useToast();
   const { theme } = useTheme();
   
@@ -202,6 +202,25 @@ const Summaries = () => {
   const handleViewSummary = (summary: Summary) => {
     setViewingSummary(summary);
     setShowSummaryDialog(true);
+  };
+
+  // Add drag event handlers if they don't exist
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(true);
+  };
+  
+  const handleDragLeave = () => {
+    setDragActive(false);
+  };
+  
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setSelectedFile(e.dataTransfer.files[0]);
+    }
   };
   
   return (
