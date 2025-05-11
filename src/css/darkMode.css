@@ -12,7 +12,7 @@
   --secondary: #384457;
   --secondary-foreground: #ffffff;
   --muted: #1a1f29;
-  --muted-foreground: #94a3b8;
+  --muted-foreground: #b4c0d3;  /* Brightened from #94a3b8 */
   --accent: #252b38;
   --accent-foreground: #ffffff;
   --destructive: #ff5353;
@@ -116,6 +116,14 @@
   color: #e0e0e0;
 }
 
+/* Enhance visibility of topic boxes in dark mode */
+.dark .topic-box,
+.dark .study-topic {
+  background-color: #2d3748 !important;
+  color: #ffffff !important;
+  border-color: #4a5568 !important;
+}
+
 /* Bottom navigation fixes */
 .dark .bottom-nav {
   background-color: var(--card);
@@ -216,10 +224,11 @@
   color: #e0e0e0;
 }
 
-/* Fix quiz elements in dark mode */
+/* Fix quiz elements in dark mode - ensure visibility */
 .dark .quiz-option {
   background-color: #1a1f29;
   border-color: #252b38;
+  color: #ffffff !important;
 }
 
 .dark .quiz-option:hover:not(.selected) {
@@ -233,11 +242,29 @@
 .dark .quiz-option.correct {
   background-color: rgba(34, 197, 94, 0.2);
   border-color: rgb(34, 197, 94);
+  color: rgb(220, 252, 231) !important;
 }
 
 .dark .quiz-option.incorrect {
   background-color: rgba(239, 68, 68, 0.2);
   border-color: rgb(239, 68, 68);
+  color: rgb(254, 226, 226) !important;
+}
+
+.dark .quiz-container,
+.dark .quiz-question,
+.dark .quiz-header,
+.dark .quiz-title,
+.dark .quiz-timer,
+.dark .quiz-progress,
+.dark .quiz-footer {
+  color: #e0e0e0 !important;
+}
+
+/* Fix quiz text and ensure buttons are visible */
+.dark .quiz-button {
+  background-color: var(--primary);
+  color: white !important;
 }
 
 /* Fix PDF viewer elements in dark mode */
@@ -247,5 +274,20 @@
 }
 
 .dark .summary-content {
+  color: #e0e0e0;
+}
+
+/* Fix dialog content in dark mode for better visibility */
+.dark .dialog-content {
+  background-color: #1a1f29;
+  border-color: #2d3748;
+}
+
+/* Fix alert components in dark mode */
+.dark .alert-title {
+  color: #ffffff;
+}
+
+.dark .alert-description {
   color: #e0e0e0;
 }

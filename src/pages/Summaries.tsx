@@ -4,13 +4,14 @@ import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollText, FileText, Plus, Clock, Upload, X, FileIcon, Loader2, Download, Share2 } from "lucide-react";
+import { ScrollText, FileText, Plus, Clock, Upload, X, FileIcon, Loader2, Download, Share2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
-import { fetchJinaSummary } from "@/lib/jinaReader";
+import { fetchJinaSummary, checkPDFProcessable } from "@/lib/jinaReader";
 import { useTheme } from "@/contexts/ThemeContext";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface Summary {
   id: number;
@@ -23,6 +24,9 @@ interface Summary {
   fileName?: string;
 }
 
+// Sample PDF for testing (you can replace this with a known working PDF URL)
+const SAMPLE_PDF_URL = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+
 const Summaries = () => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -31,7 +35,9 @@ const Summaries = () => {
   const [summaryResult, setSummaryResult] = useState<string | null>(null);
   const [viewingSummary, setViewingSummary] = useState<Summary | null>(null);
   const [showSummaryDialog, setShowSummaryDialog] = useState(false);
-  const [dragActive, setDragActive] = useState(false); // Add the missing dragActive state
+  const [dragActive, setDragActive] = useState(false);
+  const [processingError, setProcessingError] = useState<string | null>(null);
+  const [isLoadingSample, setIsLoadingSample] = useState(false);
   const { toast } = useToast();
   const { theme } = useTheme();
   
@@ -101,11 +107,13 @@ const Summaries = () => {
     setShowUploadDialog(true);
     setSummaryResult(null);
     setSelectedFile(null);
+    setProcessingError(null);
   };
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
+      setProcessingError(null); // Clear any previous errors
     }
   };
   
@@ -122,8 +130,19 @@ const Summaries = () => {
       return;
     }
     
+    // Check if file is a PDF
+    if (selectedFile.type !== 'application/pdf') {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a PDF file",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setIsUploading(true);
     setUploadProgress(0);
+    setProcessingError(null);
     
     // Show initial upload progress
     const interval = setInterval(() => {
@@ -137,10 +156,34 @@ const Summaries = () => {
     }, 150);
     
     try {
+      // First check if the PDF is processable
+      console.log("Checking if PDF is processable:", selectedFile.name);
+      const checkResult = await checkPDFProcessable(selectedFile);
+      
+      if (!checkResult.processable) {
+        clearInterval(interval);
+        setUploadProgress(0);
+        setIsUploading(false);
+        setProcessingError(`The PDF cannot be processed: ${checkResult.reason || 'Unknown issue'}`);
+        
+        toast({
+          title: "PDF check failed",
+          description: checkResult.reason || "This PDF format is not supported",
+          variant: "destructive"
+        });
+        return;
+      }
+      
       // Process PDF and generate summary
       console.log("Starting summary generation for:", selectedFile.name);
       const summary = await fetchJinaSummary(selectedFile);
-      console.log("Summary result:", summary);
+      
+      // Check if the response is an error message
+      if (summary.startsWith('Error:')) {
+        throw new Error(summary);
+      }
+      
+      console.log("Summary result:", summary.substring(0, 100) + "...");
       
       // Complete the progress
       clearInterval(interval);
@@ -159,13 +202,47 @@ const Summaries = () => {
       clearInterval(interval);
       setUploadProgress(0);
       
+      // Set a more descriptive error message
+      const errorMessage = error.message || "Could not process your PDF. Please try again with a different document.";
+      setProcessingError(errorMessage);
+      
       toast({
         title: "Error processing document",
-        description: "Could not process your PDF. Please try again with a different document.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
       setIsUploading(false);
+    }
+  };
+  
+  const handleLoadSamplePDF = async () => {
+    try {
+      setIsLoadingSample(true);
+      
+      // Fetch the sample PDF
+      const response = await fetch(SAMPLE_PDF_URL);
+      if (!response.ok) throw new Error("Failed to fetch sample PDF");
+      
+      const pdfBlob = await response.blob();
+      const file = new File([pdfBlob], "sample-document.pdf", { type: "application/pdf" });
+      
+      setSelectedFile(file);
+      setProcessingError(null);
+      
+      toast({
+        title: "Sample PDF loaded",
+        description: "You can now generate a summary from this sample document"
+      });
+    } catch (error) {
+      console.error("Error loading sample PDF:", error);
+      toast({
+        title: "Error loading sample",
+        description: "Could not load the sample PDF. Please try uploading your own file.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoadingSample(false);
     }
   };
   
@@ -191,6 +268,7 @@ const Summaries = () => {
     setShowUploadDialog(false);
     setSummaryResult(null);
     setSelectedFile(null);
+    setProcessingError(null);
     
     // Show success notification
     toast({
@@ -204,7 +282,6 @@ const Summaries = () => {
     setShowSummaryDialog(true);
   };
 
-  // Add drag event handlers if they don't exist
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setDragActive(true);
@@ -220,6 +297,7 @@ const Summaries = () => {
     
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       setSelectedFile(e.dataTransfer.files[0]);
+      setProcessingError(null); // Clear any previous errors
     }
   };
   
@@ -313,7 +391,11 @@ const Summaries = () => {
           <div className="space-y-4 py-4">
             {!summaryResult && (
               <form onSubmit={handleUpload} className="space-y-4">
-                <div className={`relative border-2 border-dashed rounded-lg p-6 text-center ${selectedFile ? 'border-primary bg-primary/5 dark:bg-primary/10' : 'border-gray-300 dark:border-gray-600'} ${dragActive ? 'border-primary bg-primary/5 dark:bg-primary/10' : ''}`}>
+                <div className={`relative border-2 border-dashed rounded-lg p-6 text-center ${selectedFile ? 'border-primary bg-primary/5 dark:bg-primary/10' : 'border-gray-300 dark:border-gray-600'} ${dragActive ? 'border-primary bg-primary/5 dark:bg-primary/10' : ''}`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
                   {selectedFile ? (
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
@@ -358,6 +440,40 @@ const Summaries = () => {
                   />
                 </div>
                 
+                {/* Processing error alert */}
+                {processingError && (
+                  <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200">
+                    <AlertCircle className="h-4 w-4 mr-2" />
+                    <AlertTitle>Processing Error</AlertTitle>
+                    <AlertDescription>
+                      {processingError}
+                    </AlertDescription>
+                  </Alert>
+                )}
+                
+                {/* Sample PDF button */}
+                <div className="flex justify-center">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleLoadSamplePDF}
+                    disabled={isLoadingSample || isUploading}
+                    className="text-gray-800 dark:text-white"
+                  >
+                    {isLoadingSample ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Loading sample...
+                      </>
+                    ) : (
+                      <>
+                        <FileText className="h-4 w-4 mr-2" />
+                        Load Sample PDF
+                      </>
+                    )}
+                  </Button>
+                </div>
+                
                 {isUploading && (
                   <div className="space-y-2">
                     <Progress value={uploadProgress} className="h-2" />
@@ -388,6 +504,7 @@ const Summaries = () => {
                   setSummaryResult(null);
                   setSelectedFile(null);
                   setIsUploading(false);
+                  setProcessingError(null);
                 }} 
                 disabled={isUploading}
                 className="text-gray-800 dark:text-white bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"

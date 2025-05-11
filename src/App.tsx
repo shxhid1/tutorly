@@ -23,7 +23,14 @@ import "./css/animations.css";
 import "./css/darkMode.css";
 
 // Create a new QueryClient instance
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 // Document title update
 document.title = "Tutorly - Smart Learning Platform";
