@@ -13,10 +13,9 @@ export async function fetchJinaSummary(file: File): Promise<string> {
       extractedText = await extractTextFromPDF(file);
       console.log('Extracted text preview:', extractedText.substring(0, 300));
 
-      // Relaxed condition to allow partial content and handle edge cases
-      if (!extractedText || extractedText.length < 100) {
-        console.warn('Not enough readable text found. Length:', extractedText.length);
-        return `⚠️ This PDF may not contain enough readable text. It might be scanned or image-based. Try another file.`;
+      if (!extractedText || extractedText.length < 200) {
+        console.warn('Extracted text is too short or empty:', extractedText.length);
+        throw new Error("Not enough readable text found in the PDF.");
       }
 
     } catch (pdfError) {
@@ -24,12 +23,12 @@ export async function fetchJinaSummary(file: File): Promise<string> {
       throw new Error(`Could not extract text from PDF: ${pdfError.message || 'Unknown error'}`);
     }
 
-    const truncatedText = extractedText.substring(0, 12000); // Limit to first 12,000 characters for summarization
+    const truncatedText = extractedText.substring(0, 12000);
     const summaryPrompt = `Please provide a comprehensive and detailed summary of the following text extracted from a PDF document.
 
-1. MAIN TOPICS: List 3-5 key topics covered.
-2. DETAILED SUMMARY: Provide a thorough summary with key points organized by section.
-3. KEY INSIGHTS: Highlight 3-5 most important takeaways.
+1. MAIN TOPICS: List 3-5 key topics covered
+2. DETAILED SUMMARY: Provide a thorough summary with key points organized by section
+3. KEY INSIGHTS: Highlight 3-5 most important takeaways
 
 Use clear formatting, bullets, and subheadings for readability.
 
@@ -37,19 +36,18 @@ Here is the text to summarize:
 
 ${truncatedText}`;
 
+    console.log("Generated AI prompt:", summaryPrompt);
+
     const summary = await fetchAIResponse(summaryPrompt);
 
-    const cleanedSummary = summary.replace(/^\([^)]+\)\s➤\s/, 'Tutor AI: '); // Clean summary format
+    const cleanedSummary = summary.replace(/^\([^)]+\)\s➤\s/, 'Tutor AI: ');
     return cleanedSummary;
 
   } catch (error) {
     console.error('Error generating summary:', error);
-
-    // Provide more detailed error feedback
     if (error.message.includes('readable text')) {
       return `⚠️ This PDF may be scanned or image-based and contains no readable text. Try another file.`;
     }
-
     return "⚠️ Error processing document. Please try again with a different PDF file.";
   }
 }
@@ -61,18 +59,20 @@ async function extractTextFromPDF(file: File): Promise<string> {
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await Promise.race([
         pdfjs.getDocument({ data: arrayBuffer }).promise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('PDF loading timeout')), 30000)) // 30 seconds timeout
+        new Promise((_, reject) => setTimeout(() => reject(new Error('PDF loading timeout')), 30000))
       ]) as pdfjs.PDFDocumentProxy;
 
       console.log(`PDF loaded with ${pdf.numPages} pages`);
-
       let fullText = '';
+
       for (let i = 1; i <= pdf.numPages; i++) {
         try {
           const page = await pdf.getPage(i);
           const textContent = await page.getTextContent();
           const pageText = textContent.items.map((item: any) => item.str).join(' ');
           fullText += pageText + '\n\n';
+          
+          // Log progress for large documents
           if (pdf.numPages > 10 && i % 5 === 0) {
             console.log(`PDF extraction progress: ${i}/${pdf.numPages}`);
           }
@@ -81,14 +81,14 @@ async function extractTextFromPDF(file: File): Promise<string> {
         }
       }
 
-      // Clean extracted text
       const cleanedText = fullText
-        .replace(/\s+/g, ' ') // Remove excessive spaces
-        .replace(/(\n\s*){3,}/g, '\n\n') // Clean up multiple newlines
-        .replace(/([.!?])\s*(\n\s*)+/g, '$1\n\n') // Keep sentence punctuation intact
-        .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII characters (optional)
+        .replace(/\s+/g, ' ')
+        .replace(/(\n\s*){3,}/g, '\n\n')
+        .replace(/([.!?])\s*(\n\s*)+/g, '$1\n\n')
+        .replace(/[^\x00-\x7F]/g, '')
         .trim();
 
+      console.log("Cleaned extracted text:", cleanedText.substring(0, 300));
       resolve(cleanedText);
 
     } catch (err) {
@@ -98,7 +98,6 @@ async function extractTextFromPDF(file: File): Promise<string> {
   });
 }
 
-// Function to check if PDF is processable (first page has readable text)
 export async function checkPDFProcessable(file: File): Promise<{ processable: boolean; reason?: string }> {
   try {
     const arrayBuffer = await file.arrayBuffer();
@@ -109,6 +108,8 @@ export async function checkPDFProcessable(file: File): Promise<{ processable: bo
     const firstPage = await pdf.getPage(1);
     const textContent = await firstPage.getTextContent();
     const hasText = textContent.items.some((item: any) => item.str.trim().length > 0);
+
+    console.log(`First page text check for ${file.name}:`, hasText ? 'Text found' : 'No text found');
 
     return hasText
       ? { processable: true }
@@ -124,3 +125,4 @@ export async function checkPDFProcessable(file: File): Promise<{ processable: bo
     };
   }
 }
+
