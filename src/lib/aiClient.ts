@@ -15,6 +15,9 @@ export async function fetchAIResponse(prompt: string): Promise<string> {
         continue;
       }
       
+      // For summarization, we need more tokens
+      const maxTokens = prompt.length > 1000 ? 1000 : 500; 
+      
       const res = await fetch(provider.url, {
         method: "POST",
         headers: {
@@ -28,12 +31,12 @@ export async function fetchAIResponse(prompt: string): Promise<string> {
             ? {
                 model: "claude-3-opus-20240229",
                 messages: [{ role: "user", content: prompt }],
-                max_tokens: 100,
+                max_tokens: maxTokens,
               }
             : {
                 model: provider.name === "OpenRouter" ? "openai/gpt-3.5-turbo" : "gpt-3.5-turbo",
                 messages: [{ role: "user", content: prompt }],
-                max_tokens: 100,
+                max_tokens: maxTokens,
               }
         ),
       });

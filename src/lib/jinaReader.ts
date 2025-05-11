@@ -1,5 +1,9 @@
 
 import { fetchAIResponse } from './aiClient';
+import * as pdfjs from 'pdfjs-dist';
+
+// Set worker path for PDF.js
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export async function fetchJinaSummary(file: File): Promise<string> {
   try {
@@ -26,18 +30,30 @@ export async function fetchJinaSummary(file: File): Promise<string> {
     const data = await response.json();
     console.log('Jina AI summary response:', data);
     
-    return data.summary || "No summary generated.";
+    if (data.summary && data.summary.length > 100) {
+      return data.summary || "No summary generated.";
+    } else {
+      console.log('Jina summary was too short or empty, falling back to local extraction');
+      throw new Error('Summary too short');
+    }
   } catch (error) {
     console.error('Error using Jina AI:', error);
     
-    // Extract text from PDF using local extraction
+    // Extract text from PDF using PDF.js and then summarize with AI client
     try {
-      console.log('Falling back to local text extraction and AI client for summarization');
+      console.log('Falling back to PDF.js extraction and AI client for summarization');
       const extractedText = await extractTextFromPDF(file);
       
-      // Limit text length to avoid exceeding token limits
-      const truncatedText = extractedText.substring(0, 4000);
-      const fallbackPrompt = `Please provide a concise summary of the following text extracted from a PDF document:\n\n${truncatedText}`;
+      if (!extractedText || extractedText.length < 100) {
+        throw new Error("Insufficient text extracted from PDF");
+      }
+      
+      // Limit text length to avoid exceeding token limits but ensure we have enough content
+      const truncatedText = extractedText.substring(0, 8000);
+      const fallbackPrompt = `Please provide a comprehensive and detailed summary of the following text extracted from a PDF document. 
+      Include key points, main topics, and important conclusions. Structure your summary with paragraphs and bullet points where appropriate:
+
+      ${truncatedText}`;
       
       const fallbackSummary = await fetchAIResponse(fallbackPrompt);
       // Replace provider name with "Tutor AI" branding
@@ -46,36 +62,48 @@ export async function fetchJinaSummary(file: File): Promise<string> {
       return cleanedSummary;
     } catch (fallbackError) {
       console.error('Fallback AI summarization failed:', fallbackError);
-      return "Error processing document. Please try again later.";
+      return "Error processing document. Please try again with a different PDF file.";
     }
   }
 }
 
-// Helper function to extract text from PDF
+// Improved PDF text extraction using PDF.js
 async function extractTextFromPDF(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const fileReader = new FileReader();
-    
-    fileReader.onload = async (event) => {
-      try {
-        if (!event.target?.result) {
-          throw new Error("Failed to read file");
-        }
-
-        // For demonstration purposes, we're extracting some basic text
-        // In a real implementation, you would use pdf.js or similar
-        const text = `Content extracted from ${file.name}. 
-          This document appears to cover topics related to ${file.name.split('.')[0]}.
-          The document contains several pages of academic content that has been processed 
-          for summarization. Please note this is a simplified text extraction.`;
+  return new Promise(async (resolve, reject) => {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+      const numPages = pdf.numPages;
+      console.log(`PDF loaded with ${numPages} pages`);
+      
+      let fullText = '';
+      
+      // Process all pages to extract text
+      for (let i = 1; i <= numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
         
-        resolve(text);
-      } catch (error) {
-        reject(error);
+        // Join the text items with proper spacing
+        const pageText = textContent.items
+          .map((item: any) => item.str)
+          .join(' ');
+          
+        fullText += pageText + '\n\n';
       }
-    };
-    
-    fileReader.onerror = (error) => reject(error);
-    fileReader.readAsArrayBuffer(file);
+      
+      console.log(`Extracted ${fullText.length} characters of text`);
+      
+      // Clean up the text (remove excessive whitespace, fix common PDF artifacts)
+      const cleanedText = fullText
+        .replace(/\s+/g, ' ')                       // Replace multiple spaces with single space
+        .replace(/(\n\s*){3,}/g, '\n\n')            // Normalize multiple newlines
+        .replace(/([.!?])\s*(\n\s*)+/g, '$1\n\n')   // Fix sentence breaks
+        .trim();
+        
+      resolve(cleanedText);
+    } catch (error) {
+      console.error('PDF extraction error:', error);
+      reject(error);
+    }
   });
 }

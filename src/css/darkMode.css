@@ -83,7 +83,8 @@
 /* Fix specific pages background */
 .dark .progress-page,
 .dark .study-plans-page,
-.dark .library-page {
+.dark .library-page,
+.dark .summaries-page {
   background-color: #0d1117;
 }
 
@@ -181,34 +182,6 @@
   color: #a78bfa;
 }
 
-/* Tutorly brand color */
-.tutorly-purple {
-  color: var(--tutorly-purple);
-}
-
-.bg-tutorly-purple {
-  background-color: var(--tutorly-purple);
-}
-
-.tutorly-light {
-  color: var(--tutorly-light);
-}
-
-.bg-tutorly-light {
-  background-color: var(--tutorly-light);
-}
-
-/* Applied Tutorly branding in dark mode */
-.dark .tutorly-brand-text {
-  color: var(--tutorly-purple);
-  font-weight: bold;
-}
-
-.dark .tutorly-nav-active {
-  color: var(--tutorly-purple);
-  border-color: var(--tutorly-purple);
-}
-
 /* Fix chat bubbles in dark mode */
 .dark .bg-spark-light {
   background-color: #384457;
@@ -235,4 +208,44 @@
 .dark .accordion-title,
 .dark .accordion-content {
   color: #ffffff;
+}
+
+/* Fix study techniques cards */
+.dark .study-technique-card {
+  background-color: var(--card);
+  color: #e0e0e0;
+}
+
+/* Fix quiz elements in dark mode */
+.dark .quiz-option {
+  background-color: #1a1f29;
+  border-color: #252b38;
+}
+
+.dark .quiz-option:hover:not(.selected) {
+  background-color: #252b38;
+}
+
+.dark .quiz-option.selected {
+  background-color: #384457;
+}
+
+.dark .quiz-option.correct {
+  background-color: rgba(34, 197, 94, 0.2);
+  border-color: rgb(34, 197, 94);
+}
+
+.dark .quiz-option.incorrect {
+  background-color: rgba(239, 68, 68, 0.2);
+  border-color: rgb(239, 68, 68);
+}
+
+/* Fix PDF viewer elements in dark mode */
+.dark .pdf-viewer {
+  background-color: #252b38;
+  color: #e0e0e0;
+}
+
+.dark .summary-content {
+  color: #e0e0e0;
 }
