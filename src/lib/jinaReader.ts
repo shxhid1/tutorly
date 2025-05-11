@@ -13,8 +13,10 @@ export async function fetchJinaSummary(file: File): Promise<string> {
       extractedText = await extractTextFromPDF(file);
       console.log('Extracted text preview:', extractedText.substring(0, 300));
 
-      if (!extractedText || extractedText.length < 200) {
-        throw new Error("Not enough readable text found in the PDF.");
+      // Relaxed condition to allow partial content and handle edge cases
+      if (!extractedText || extractedText.length < 100) {
+        console.warn('Not enough readable text found. Length:', extractedText.length);
+        return `⚠️ This PDF may not contain enough readable text. It might be scanned or image-based. Try another file.`;
       }
 
     } catch (pdfError) {
@@ -22,12 +24,12 @@ export async function fetchJinaSummary(file: File): Promise<string> {
       throw new Error(`Could not extract text from PDF: ${pdfError.message || 'Unknown error'}`);
     }
 
-    const truncatedText = extractedText.substring(0, 12000);
+    const truncatedText = extractedText.substring(0, 12000); // Limit to first 12,000 characters for summarization
     const summaryPrompt = `Please provide a comprehensive and detailed summary of the following text extracted from a PDF document.
 
-1. MAIN TOPICS: List 3-5 key topics covered
-2. DETAILED SUMMARY: Provide a thorough summary with key points organized by section
-3. KEY INSIGHTS: Highlight 3-5 most important takeaways
+1. MAIN TOPICS: List 3-5 key topics covered.
+2. DETAILED SUMMARY: Provide a thorough summary with key points organized by section.
+3. KEY INSIGHTS: Highlight 3-5 most important takeaways.
 
 Use clear formatting, bullets, and subheadings for readability.
 
@@ -37,14 +39,17 @@ ${truncatedText}`;
 
     const summary = await fetchAIResponse(summaryPrompt);
 
-    const cleanedSummary = summary.replace(/^\([^)]+\)\s➤\s/, 'Tutor AI: ');
+    const cleanedSummary = summary.replace(/^\([^)]+\)\s➤\s/, 'Tutor AI: '); // Clean summary format
     return cleanedSummary;
 
   } catch (error) {
     console.error('Error generating summary:', error);
+
+    // Provide more detailed error feedback
     if (error.message.includes('readable text')) {
       return `⚠️ This PDF may be scanned or image-based and contains no readable text. Try another file.`;
     }
+
     return "⚠️ Error processing document. Please try again with a different PDF file.";
   }
 }
@@ -56,12 +61,12 @@ async function extractTextFromPDF(file: File): Promise<string> {
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await Promise.race([
         pdfjs.getDocument({ data: arrayBuffer }).promise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('PDF loading timeout')), 30000))
+        new Promise((_, reject) => setTimeout(() => reject(new Error('PDF loading timeout')), 30000)) // 30 seconds timeout
       ]) as pdfjs.PDFDocumentProxy;
 
       console.log(`PDF loaded with ${pdf.numPages} pages`);
-      let fullText = '';
 
+      let fullText = '';
       for (let i = 1; i <= pdf.numPages; i++) {
         try {
           const page = await pdf.getPage(i);
@@ -76,11 +81,12 @@ async function extractTextFromPDF(file: File): Promise<string> {
         }
       }
 
+      // Clean extracted text
       const cleanedText = fullText
-        .replace(/\s+/g, ' ')
-        .replace(/(\n\s*){3,}/g, '\n\n')
-        .replace(/([.!?])\s*(\n\s*)+/g, '$1\n\n')
-        .replace(/[^\x00-\x7F]/g, '')
+        .replace(/\s+/g, ' ') // Remove excessive spaces
+        .replace(/(\n\s*){3,}/g, '\n\n') // Clean up multiple newlines
+        .replace(/([.!?])\s*(\n\s*)+/g, '$1\n\n') // Keep sentence punctuation intact
+        .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII characters (optional)
         .trim();
 
       resolve(cleanedText);
@@ -92,6 +98,7 @@ async function extractTextFromPDF(file: File): Promise<string> {
   });
 }
 
+// Function to check if PDF is processable (first page has readable text)
 export async function checkPDFProcessable(file: File): Promise<{ processable: boolean; reason?: string }> {
   try {
     const arrayBuffer = await file.arrayBuffer();
