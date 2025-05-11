@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import AIChat from "@/components/features/AIChat";
 
@@ -18,7 +18,7 @@ const AIAssistant = () => {
       <Navbar />
       
       <main className="container py-8">
-        <h1 className="text-3xl font-bold mb-6 text-center">AI Learning Assistant</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">AI Learning Assistant</h1>
         <AIChat />
       </main>
     </>

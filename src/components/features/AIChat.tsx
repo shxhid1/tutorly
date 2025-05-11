@@ -57,8 +57,8 @@ const AIChat = () => {
     try {
       const result = await fetchAIResponse(prompt);
       
-      // Remove provider name from response
-      const cleanedResponse = result.replace(/^\([^)]+\)\s➤\s/, '');
+      // Remove provider name from response and replace with "Tutor AI"
+      const cleanedResponse = result.replace(/^\([^)]+\)\s➤\s/, 'Tutor AI: ');
       
       setMessages(prev => [
         ...prev,
@@ -84,10 +84,10 @@ const AIChat = () => {
   return (
     <Card className="w-full max-w-3xl mx-auto hover-glow">
       <CardHeader>
-        <CardTitle className="text-xl font-bold text-center">AI Learning Assistant</CardTitle>
-        <CardDescription className="text-center">Ask any question about your study materials</CardDescription>
+        <CardTitle className="text-xl font-bold text-center text-gray-800 dark:text-white">AI Learning Assistant</CardTitle>
+        <CardDescription className="text-center text-gray-700 dark:text-gray-200">Ask any question about your study materials</CardDescription>
       </CardHeader>
-      <CardContent className="min-h-[400px] max-h-[600px] overflow-y-auto">
+      <CardContent className="min-h-[500px] max-h-[600px] overflow-y-auto">
         <div className="space-y-4">
           {messages.map((message, index) => (
             <div 
@@ -117,7 +117,7 @@ const AIChat = () => {
                   className={`px-4 py-2 rounded-xl break-words ${
                     message.role === "user" 
                       ? "bg-spark-primary text-white rounded-tr-none"
-                      : "bg-spark-light text-foreground rounded-tl-none"
+                      : "bg-spark-light text-gray-800 dark:text-gray-800 rounded-tl-none"
                   }`}
                   style={{ overflowWrap: 'anywhere', maxWidth: '100%' }}
                 >
@@ -137,7 +137,7 @@ const AIChat = () => {
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Ask a question..."
-              className="flex-1 spark-input pr-10 text-foreground"
+              className="flex-1 spark-input pr-10 text-gray-800 dark:text-white"
               disabled={isLoading}
             />
             <Button 

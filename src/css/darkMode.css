@@ -208,3 +208,31 @@
   color: var(--tutorly-purple);
   border-color: var(--tutorly-purple);
 }
+
+/* Fix chat bubbles in dark mode */
+.dark .bg-spark-light {
+  background-color: #384457;
+  color: #ffffff;
+}
+
+.dark .text-gray-800 {
+  color: #ffffff;
+}
+
+/* Fix input fields in dark mode */
+.dark input, 
+.dark textarea {
+  background-color: #252b38;
+  color: #ffffff;
+}
+
+.dark input::placeholder, 
+.dark textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* Fix accordions in dark mode */
+.dark .accordion-title,
+.dark .accordion-content {
+  color: #ffffff;
+}

@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
-import { useTheme } from "@/contexts/ThemeContext";
 import { fetchAIResponse } from "@/lib/aiClient";
 import { fetchJinaSummary } from "@/lib/jinaReader";
 
@@ -21,7 +20,6 @@ const Summaries = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [extractedText, setExtractedText] = useState<string>("");
   const { toast } = useToast();
-  const { theme } = useTheme();
   
   const summaries = [
     { 
@@ -95,11 +93,16 @@ const Summaries = () => {
       
       reader.onload = async (event) => {
         try {
+          if (!event.target?.result) {
+            throw new Error("Failed to read file");
+          }
+          
           // For demonstration, we're returning a placeholder
           // In a real app, you would use pdf.js or a similar library
           const text = `Content extracted from ${file.name}. 
           This is a sample text that would be extracted from the PDF.
-          In a real implementation, we would use pdf.js or a similar library to extract text.`;
+          In a real implementation, we would use pdf.js or a similar library to extract text.
+          The document appears to cover topics related to ${file.name.split('.')[0]}.`;
           
           resolve(text);
         } catch (error) {
@@ -144,32 +147,73 @@ const Summaries = () => {
       // Create a temporary file URL for the PDF
       const fileUrl = URL.createObjectURL(selectedFile);
       
-      // Use Jina AI to summarize the PDF
-      const summary = await fetchJinaSummary(fileUrl);
-      
-      // Clean up the temporary URL
-      URL.revokeObjectURL(fileUrl);
-      
-      // Complete the progress
-      clearInterval(interval);
-      setUploadProgress(100);
-      
-      setTimeout(() => {
-        setIsUploading(false);
-        setShowUploadDialog(false);
-        setSelectedFile(null);
+      try {
+        // Use Jina AI to summarize the PDF
+        const summary = await fetchJinaSummary(fileUrl);
         
-        toast({
-          title: "Summary generated",
-          description: "Your document has been uploaded and summary created successfully"
-        });
-        
-        // Here you would typically save the summary to your state or database
-        console.log("Generated summary:", summary);
-        
-        // Add the new summary to the list (in a real app, this would come from a database)
-        // This is simplified for demonstration
-      }, 500);
+        // If Jina fails, fallback to our AI client for summarization
+        if (!summary || summary.includes("Error")) {
+          toast({
+            title: "Falling back to alternative AI",
+            description: "Using alternative AI for summarization"
+          });
+          
+          const aiSummary = await fetchAIResponse(`Please summarize the following text concisely: ${text.substring(0, 2000)}`);
+          console.log("AI Summary generated:", aiSummary);
+          
+          // Clean up the AI response by removing model name
+          const cleanSummary = aiSummary.replace(/^\([^)]+\)\s➤\s/, '');
+          
+          // Update our existing summaries with a new entry
+          const newSummary = {
+            id: summaries.length + 1,
+            title: selectedFile.name.split('.')[0],
+            description: cleanSummary.substring(0, 120) + "...",
+            type: "quick",
+            created: "Just now",
+            readTime: "5 min read"
+          };
+          
+          // Complete the progress
+          clearInterval(interval);
+          setUploadProgress(100);
+          
+          // Close the dialog and reset state
+          setTimeout(() => {
+            setIsUploading(false);
+            setShowUploadDialog(false);
+            setSelectedFile(null);
+            
+            toast({
+              title: "Summary generated",
+              description: "Your document has been uploaded and summary created successfully"
+            });
+          }, 500);
+        } else {
+          console.log("Jina Summary generated:", summary);
+          
+          // Clean up the temporary URL
+          URL.revokeObjectURL(fileUrl);
+          
+          // Complete the progress
+          clearInterval(interval);
+          setUploadProgress(100);
+          
+          // Close the dialog and reset state
+          setTimeout(() => {
+            setIsUploading(false);
+            setShowUploadDialog(false);
+            setSelectedFile(null);
+            
+            toast({
+              title: "Summary generated",
+              description: "Your document has been uploaded and summary created successfully"
+            });
+          }, 500);
+        }
+      } catch (error) {
+        throw new Error("Error processing summary");
+      }
     } catch (error) {
       console.error("Error processing PDF:", error);
       clearInterval(interval);
@@ -191,8 +235,8 @@ const Summaries = () => {
         <div className="container max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold mb-2 text-foreground">Smart Summaries</h1>
-              <p className="text-muted-foreground">Get condensed versions of your material in different formats</p>
+              <h1 className="text-2xl md:text-3xl font-bold mb-2 text-gray-800 dark:text-white">Smart Summaries</h1>
+              <p className="text-gray-700 dark:text-gray-200">Get condensed versions of your material in different formats</p>
             </div>
             <Button 
               className="bg-primary text-white button-click-effect"
@@ -221,9 +265,9 @@ const Summaries = () => {
                     </div>
                   </CardHeader>
                   <CardContent className="pt-4">
-                    <CardTitle className="text-lg mb-2 text-foreground">{summary.title}</CardTitle>
-                    <CardDescription className="line-clamp-2 mb-4">{summary.description}</CardDescription>
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <CardTitle className="text-lg mb-2 text-gray-800 dark:text-white">{summary.title}</CardTitle>
+                    <CardDescription className="line-clamp-2 mb-4 text-gray-700 dark:text-gray-200">{summary.description}</CardDescription>
+                    <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-300">
                       <span>{summary.created}</span>
                       <div className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
@@ -239,8 +283,8 @@ const Summaries = () => {
           {summaries.length === 0 && (
             <div className="text-center py-12 bg-muted rounded-lg">
               <ScrollText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-xl font-medium mb-2 text-foreground">No summaries yet</h3>
-              <p className="text-muted-foreground mb-4">
+              <h3 className="text-xl font-medium mb-2 text-gray-800 dark:text-white">No summaries yet</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Upload study material to generate smart summaries.
               </p>
               <Button className="bg-primary text-white button-click-effect">
@@ -258,8 +302,8 @@ const Summaries = () => {
       <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-foreground">Upload Document for Summary</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-gray-800 dark:text-white">Upload Document for Summary</DialogTitle>
+            <DialogDescription className="text-gray-700 dark:text-gray-200">
               Upload your study material to generate a smart summary
             </DialogDescription>
           </DialogHeader>
@@ -271,8 +315,8 @@ const Summaries = () => {
                   <div className="flex items-center space-x-2">
                     <FileIcon className="h-8 w-8 text-muted-foreground" />
                     <div className="space-y-1 text-left">
-                      <p className="text-sm font-medium text-foreground">{selectedFile.name}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-sm font-medium text-gray-800 dark:text-white">{selectedFile.name}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">
                         {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>
@@ -291,8 +335,8 @@ const Summaries = () => {
                     <Upload className="h-6 w-6 text-muted-foreground" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-foreground">Drag & drop or click to upload</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-sm font-medium text-gray-800 dark:text-white">Drag & drop or click to upload</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">
                       PDF, Word, or Text files (max 20MB)
                     </p>
                   </div>
@@ -310,7 +354,7 @@ const Summaries = () => {
             {isUploading && (
               <div className="space-y-2">
                 <Progress value={uploadProgress} className="h-2" />
-                <p className="text-xs text-center text-muted-foreground">
+                <p className="text-xs text-center text-gray-600 dark:text-gray-300">
                   {uploadProgress < 100 ? 'Processing document...' : 'Generating summary...'}
                 </p>
               </div>
@@ -321,6 +365,7 @@ const Summaries = () => {
                 variant="outline" 
                 onClick={() => setShowUploadDialog(false)} 
                 disabled={isUploading}
+                className="text-gray-800 dark:text-white"
               >
                 Cancel
               </Button>

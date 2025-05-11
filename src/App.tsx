@@ -18,6 +18,7 @@ import Quiz from "./pages/Quiz";
 import Summaries from "./pages/Summaries";
 import MicroLessons from "./pages/MicroLessons";
 import AIAssistant from "./pages/AIAssistant";
+import StudyTechniques from "./pages/StudyTechniques";
 import "./css/animations.css";
 import "./css/darkMode.css";
 
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/summaries" element={<Summaries />} />
             <Route path="/micro-lessons" element={<MicroLessons />} />
+            <Route path="/study-techniques" element={<StudyTechniques />} />
             <Route path="/upload" element={<Navigate to="/library" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
