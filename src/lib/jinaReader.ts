@@ -36,6 +36,7 @@ export async function fetchJinaSummary(fileUrl: string): Promise<string> {
       const fallbackPrompt = `I have a PDF document with URL ${fileUrl}. Please provide a concise summary of its likely contents based on the URL.`;
       
       const fallbackSummary = await fetchAIResponse(fallbackPrompt);
+      // Replace provider name with "Tutor AI" branding
       const cleanedSummary = fallbackSummary.replace(/^\([^)]+\)\s➤\s/, 'Tutor AI: ');
       
       return cleanedSummary;

@@ -44,7 +44,8 @@ export async function fetchAIResponse(prompt: string): Promise<string> {
           provider.name === "Claude"
             ? data?.content?.[0]?.text || "No response"
             : data?.choices?.[0]?.message?.content || "No response";
-        return `(${provider.name}) ➤ ${text}`;
+        // Return with "Tutor AI" branding instead of provider name
+        return `Tutor AI: ${text}`;
       }
     } catch (e) {
       console.log(`${provider.name} failed: ${(e as Error).message}. Trying next...`);
