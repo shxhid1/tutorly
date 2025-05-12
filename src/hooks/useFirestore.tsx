@@ -7,11 +7,13 @@ import {
   getUserProfile, 
   saveSummary, 
   getUserSummaries, 
-  deleteSummary, 
-  saveNote, 
-  getUserNotes, 
-  deleteNote 
+  deleteSummary
 } from "@/lib/db";
+import {
+  createNote,
+  getNotes as getUserNotes,
+  deleteNote
+} from "@/lib/realtime-db";
 
 export const useFirestore = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -149,7 +151,7 @@ export const useFirestore = () => {
   };
 
   // Note operations
-  const createNote = async (noteData: any) => {
+  const createUserNote = async (noteData: any) => {
     if (!currentUser) {
       toast({
         title: "Authentication required",
@@ -161,7 +163,7 @@ export const useFirestore = () => {
 
     try {
       setIsLoading(true);
-      const noteId = await saveNote(currentUser.uid, noteData);
+      const noteId = await createNote(currentUser.uid, noteData);
       
       toast({
         title: "Note saved",
@@ -202,9 +204,11 @@ export const useFirestore = () => {
   };
 
   const removeNote = async (noteId: string) => {
+    if (!currentUser) return false;
+    
     try {
       setIsLoading(true);
-      await deleteNote(noteId);
+      await deleteNote(currentUser.uid, noteId);
       
       toast({
         title: "Note deleted",
@@ -236,7 +240,7 @@ export const useFirestore = () => {
     deleteSummary: removeSummary,
     
     // Notes
-    createNote,
+    createNote: createUserNote,
     getUserNotes: fetchUserNotes,
     deleteNote: removeNote,
     
