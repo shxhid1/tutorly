@@ -9,7 +9,6 @@ import { getStorage } from "firebase/storage";
 import { getFunctions } from "firebase/functions";
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAbtpK4HYaaorQ2vaJq8s8Kk_vSxw_6fis",
   authDomain: "gettutorly.firebaseapp.com",
@@ -18,7 +17,7 @@ const firebaseConfig = {
   messagingSenderId: "240379067662",
   appId: "1:240379067662:web:941dc77def55c03be3ab5f",
   measurementId: "G-MF9XX03TS0",
-  databaseURL: "https://gettutorly-default-rtdb.firebaseio.com" // Add this for Realtime Database
+  databaseURL: "https://gettutorly-default-rtdb.asia-southeast1.firebasedatabase.app" // Updated from network logs
 };
 
 // Initialize Firebase

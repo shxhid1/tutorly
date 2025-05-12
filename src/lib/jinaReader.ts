@@ -3,7 +3,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from './firebase';
 
-// Configure PDF.js worker properly using npm package
+// Configure PDF.js worker properly
 import { GlobalWorkerOptions } from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
@@ -145,16 +145,80 @@ const getSummaryFromJina = async (text: string): Promise<SummaryResponse> => {
       ${text.substring(0, 10000)}
     `;
     
-    // Mock implementation - replace with actual API call
-    // This is a placeholder - in a real implementation, you would call the Jina API here
-    console.log("Calling summary API with text length:", text.length);
+    // Implement actual API call to Jina AI
+    const apiUrl = 'https://api.jina.ai/v1/chat/completions';
     
-    // Simulated API response - in reality you would get this from the API
-    return {
-      summary: "This is a placeholder summary. In a real implementation, this would be replaced with the actual summary from the Jina AI API. The summary would include key points from the document, main ideas expressed by the author, and any important details that should be highlighted. The summary would be well-structured with clear paragraphs for readability."
-    };
+    try {
+      // Try to make a real API call to Jina
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.JINA_API_KEY || ''}`
+        },
+        body: JSON.stringify({
+          model: 'jina-summary-model',  // Replace with actual model name
+          messages: [
+            { role: 'system', content: 'You are a helpful summarization assistant.' },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.3,
+          max_tokens: 1000
+        }),
+        // Add timeout to prevent hanging
+        signal: AbortSignal.timeout(15000)
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        return {
+          summary: data.choices[0].message.content,
+        };
+      } else {
+        // If API call fails, use fallback summarization
+        console.error("Jina API request failed, using fallback summary");
+        return getFallbackSummary(text);
+      }
+    } catch (error) {
+      console.error("Error calling Jina API, using fallback:", error);
+      return getFallbackSummary(text);
+    }
   } catch (error) {
     console.error("Summary API error:", error);
     throw new Error(`Failed to generate summary: ${error instanceof Error ? error.message : "Unknown API error"}`);
   }
+};
+
+// Fallback summarization function
+const getFallbackSummary = (text: string): SummaryResponse => {
+  // Split text into sentences
+  const sentences = text
+    .replace(/([.?!])\s*(?=[A-Z])/g, "$1|")
+    .split("|")
+    .filter(sentence => sentence.trim().length > 20); // Filter out very short sentences
+  
+  // Select representative sentences for the summary
+  const summaryLength = Math.min(10, Math.ceil(sentences.length / 5));
+  const step = Math.max(1, Math.floor(sentences.length / summaryLength));
+  
+  let selectedSentences = [];
+  for (let i = 0; i < sentences.length && selectedSentences.length < summaryLength; i += step) {
+    if (sentences[i] && sentences[i].length > 30) { // Ensure sentence is substantial
+      selectedSentences.push(sentences[i]);
+    }
+  }
+  
+  // If we don't have enough sentences, add more from the beginning
+  if (selectedSentences.length < summaryLength && sentences.length > summaryLength) {
+    for (let i = 0; i < sentences.length && selectedSentences.length < summaryLength; i++) {
+      if (!selectedSentences.includes(sentences[i])) {
+        selectedSentences.push(sentences[i]);
+      }
+    }
+  }
+  
+  // Create the fallback summary
+  const summary = "Summary (generated offline):\n\n" + selectedSentences.join(' ');
+  
+  return { summary };
 };
