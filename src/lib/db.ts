@@ -12,17 +12,21 @@ import {
   addDoc, 
   serverTimestamp, 
   Timestamp, 
-  DocumentData 
+  DocumentData,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+  onSnapshot,
+  QueryConstraint
 } from "firebase/firestore";
-import { app } from "./firebase";
-
-const db = getFirestore(app);
+import { db } from "./firebase";
 
 // User profile operations
 export const createUserProfile = async (userId: string, userData: any) => {
   try {
     await setDoc(doc(db, "users", userId), {
       ...userData,
+      role: userData.role || "student", // Default role
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     }, { merge: true });
@@ -45,6 +49,43 @@ export const getUserProfile = async (userId: string) => {
     }
   } catch (error) {
     console.error("Error getting user profile:", error);
+    throw error;
+  }
+};
+
+export const updateUserRole = async (userId: string, role: string) => {
+  try {
+    await updateDoc(doc(db, "users", userId), {
+      role: role,
+      updatedAt: serverTimestamp(),
+    });
+    return true;
+  } catch (error) {
+    console.error("Error updating user role:", error);
+    throw error;
+  }
+};
+
+// Admin-specific functions
+export const isUserAdmin = async (userId: string) => {
+  try {
+    const userDoc = await getDoc(doc(db, "users", userId));
+    return userDoc.exists() && userDoc.data()?.role === "admin";
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+    throw error;
+  }
+};
+
+export const getAllUsers = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, "users"));
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error("Error getting all users:", error);
     throw error;
   }
 };
@@ -89,44 +130,46 @@ export const deleteSummary = async (summaryId: string) => {
   }
 };
 
-// Notes operations
-export const saveNote = async (userId: string, noteData: any) => {
+// Study resources operations
+export const addStudyResource = async (resourceData: any) => {
   try {
-    const noteRef = await addDoc(collection(db, "notes"), {
-      userId,
-      ...noteData,
+    const resourceRef = await addDoc(collection(db, "resources"), {
+      ...resourceData,
       createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
-    return noteRef.id;
+    return resourceRef.id;
   } catch (error) {
-    console.error("Error saving note:", error);
+    console.error("Error adding study resource:", error);
     throw error;
   }
 };
 
-export const getUserNotes = async (userId: string) => {
+export const getStudyResources = async (constraints: QueryConstraint[] = []) => {
   try {
-    const q = query(collection(db, "notes"), where("userId", "==", userId));
-    const querySnapshot = await getDocs(q);
+    const resourcesQuery = query(collection(db, "resources"), ...constraints);
+    const querySnapshot = await getDocs(resourcesQuery);
     
     return querySnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
     }));
   } catch (error) {
-    console.error("Error getting user notes:", error);
+    console.error("Error getting study resources:", error);
     throw error;
   }
 };
 
-export const deleteNote = async (noteId: string) => {
-  try {
-    await deleteDoc(doc(db, "notes", noteId));
-    return true;
-  } catch (error) {
-    console.error("Error deleting note:", error);
-    throw error;
-  }
+export const subscribeToCollection = (collectionPath: string, callback: (data: DocumentData[]) => void, ...queryConstraints: QueryConstraint[]) => {
+  const q = query(collection(db, collectionPath), ...queryConstraints);
+  
+  return onSnapshot(q, (snapshot) => {
+    const data = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    callback(data);
+  });
 };
 
 export { db };

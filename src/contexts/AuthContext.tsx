@@ -1,13 +1,22 @@
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, ReactNode } from 'react';
 import { User } from 'firebase/auth';
-import { getCurrentUser, signInWithGoogle, logOut } from '../lib/auth';
-import { useToast } from '@/components/ui/use-toast';
+import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 
 interface AuthContextType {
   currentUser: User | null;
+  userProfile: any;
   loading: boolean;
-  signIn: () => Promise<void>;
+  authError: string | null;
+  signIn: () => Promise<User | null>;
+  signUp: (email: string, password: string, displayName: string) => Promise<User | null>;
+  emailSignIn: (email: string, password: string) => Promise<User | null>;
+  phoneAuth: {
+    setupRecaptcha: (elementId: string) => any;
+    sendVerificationCode: (phoneNumber: string) => Promise<any>;
+    verifyCode: (code: string) => Promise<User | null>;
+  };
+  forgotPassword: (email: string) => Promise<boolean>;
   signOut: () => Promise<void>;
 }
 
@@ -21,74 +30,8 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const auth = useFirebaseAuth();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const user = await getCurrentUser();
-        setCurrentUser(user);
-      } catch (error) {
-        console.error("Auth check error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    checkAuth();
-  }, []);
-
-  const signIn = async () => {
-    try {
-      setLoading(true);
-      const user = await signInWithGoogle();
-      setCurrentUser(user);
-      toast({
-        title: "Welcome!",
-        description: `Signed in as ${user?.displayName || user?.email}`,
-      });
-    } catch (error) {
-      toast({
-        title: "Sign in failed",
-        description: "Could not sign in with Google. Please try again.",
-        variant: "destructive",
-      });
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signOut = async () => {
-    try {
-      setLoading(true);
-      await logOut();
-      setCurrentUser(null);
-      toast({
-        title: "Signed out",
-        description: "You have been signed out successfully.",
-      });
-    } catch (error) {
-      toast({
-        title: "Sign out failed",
-        description: "Could not sign out. Please try again.",
-        variant: "destructive",
-      });
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const value = {
-    currentUser,
-    loading,
-    signIn,
-    signOut,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 };

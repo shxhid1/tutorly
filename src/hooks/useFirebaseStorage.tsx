@@ -1,6 +1,13 @@
 
-import { useState } from "react";
-import { uploadFile, getFileURL, deleteFile, listUserFiles } from "@/lib/storage";
+import { useState, useCallback } from "react";
+import { 
+  uploadFile, 
+  getFileURL, 
+  deleteFile, 
+  listUserFiles, 
+  validateFile,
+  backupUserFiles
+} from "@/lib/storage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -20,23 +27,44 @@ export const useFirebaseStorage = () => {
       return null;
     }
 
+    // Validate file type and size
+    const validation = validateFile(file);
+    if (!validation.valid) {
+      toast({
+        title: "Invalid file",
+        description: validation.message || "This file type or size is not allowed.",
+        variant: "destructive",
+      });
+      return null;
+    }
+
     try {
       setIsUploading(true);
       setProgress(0);
-
-      // Simulate progress (since Firebase storage doesn't provide progress)
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          const nextProgress = prev + 10;
-          return nextProgress >= 90 ? 90 : nextProgress;
-        });
-      }, 300);
-
-      const fileDetails = await uploadFile(currentUser.uid, file, folder);
       
-      clearInterval(progressInterval);
-      setProgress(100);
-
+      // Use the enhanced upload function that returns task for monitoring progress
+      const { task, promise } = uploadFile(currentUser.uid, file, folder);
+      
+      // Monitor upload progress
+      task.on('state_changed', 
+        (snapshot) => {
+          const progressValue = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          setProgress(progressValue);
+        },
+        (error) => {
+          console.error("Upload error:", error);
+          toast({
+            title: "Upload failed",
+            description: `Failed to upload ${file.name}. ${error.message}`,
+            variant: "destructive",
+          });
+          setIsUploading(false);
+        }
+      );
+      
+      // Wait for upload to complete
+      const fileDetails = await promise;
+      
       toast({
         title: "Upload complete",
         description: `${file.name} has been uploaded successfully.`,
@@ -56,7 +84,7 @@ export const useFirebaseStorage = () => {
     }
   };
 
-  const getUserFiles = async (folder: string = "files") => {
+  const getUserFiles = useCallback(async (folder: string = "files") => {
     if (!currentUser) return [];
 
     try {
@@ -70,7 +98,7 @@ export const useFirebaseStorage = () => {
       });
       return [];
     }
-  };
+  }, [currentUser, toast]);
 
   const removeFile = async (filePath: string) => {
     try {
@@ -91,11 +119,45 @@ export const useFirebaseStorage = () => {
     }
   };
 
+  const backupFiles = async (folder: string = "files") => {
+    if (!currentUser) {
+      toast({
+        title: "Authentication required",
+        description: "You must be logged in to backup files",
+        variant: "destructive",
+      });
+      return null;
+    }
+
+    try {
+      setIsUploading(true);
+      const result = await backupUserFiles(currentUser.uid, folder);
+      
+      toast({
+        title: "Files backed up",
+        description: `${result.length} files have been backed up successfully.`,
+      });
+
+      return result;
+    } catch (error) {
+      console.error("File backup error:", error);
+      toast({
+        title: "Backup failed",
+        description: "Could not backup your files. Please try again.",
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   return {
     uploadFile: handleUpload,
     getFileURL,
     deleteFile: removeFile,
     listUserFiles: getUserFiles,
+    backupUserFiles: backupFiles,
     isUploading,
     progress,
   };
