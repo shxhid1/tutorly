@@ -21,6 +21,7 @@ import AIAssistant from "./pages/AIAssistant";
 import StudyTechniques from "./pages/StudyTechniques";
 import "./css/animations.css";
 import "./css/darkMode.css";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient({
@@ -42,20 +43,68 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
             <Route path="/home" element={<Navigate to="/dashboard" replace />} />
             <Route path="/landing" element={<Index />} />
-            <Route path="/library" element={<Library />} />
-            <Route path="/study-plans" element={<StudyPlans />} />
-            <Route path="/progress" element={<Progress />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/ai-assistant" element={<AIAssistant />} />
-            <Route path="/flashcards" element={<Flashcards />} />
-            <Route path="/quiz" element={<Quiz />} />
-            <Route path="/summaries" element={<Summaries />} />
-            <Route path="/micro-lessons" element={<MicroLessons />} />
-            <Route path="/study-techniques" element={<StudyTechniques />} />
+            <Route path="/library" element={
+              <ProtectedRoute>
+                <Library />
+              </ProtectedRoute>
+            } />
+            <Route path="/study-plans" element={
+              <ProtectedRoute>
+                <StudyPlans />
+              </ProtectedRoute>
+            } />
+            <Route path="/progress" element={
+              <ProtectedRoute>
+                <Progress />
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } />
+            <Route path="/chat" element={
+              <ProtectedRoute>
+                <Chat />
+              </ProtectedRoute>
+            } />
+            <Route path="/ai-assistant" element={
+              <ProtectedRoute>
+                <AIAssistant />
+              </ProtectedRoute>
+            } />
+            <Route path="/flashcards" element={
+              <ProtectedRoute>
+                <Flashcards />
+              </ProtectedRoute>
+            } />
+            <Route path="/quiz" element={
+              <ProtectedRoute>
+                <Quiz />
+              </ProtectedRoute>
+            } />
+            <Route path="/summaries" element={
+              <ProtectedRoute>
+                <Summaries />
+              </ProtectedRoute>
+            } />
+            <Route path="/micro-lessons" element={
+              <ProtectedRoute>
+                <MicroLessons />
+              </ProtectedRoute>
+            } />
+            <Route path="/study-techniques" element={
+              <ProtectedRoute>
+                <StudyTechniques />
+              </ProtectedRoute>
+            } />
             <Route path="/upload" element={<Navigate to="/library" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

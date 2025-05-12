@@ -1,13 +1,15 @@
 import { fetchAIResponse } from './aiClient';
 import * as pdfjs from 'pdfjs-dist';
+import { uploadFile } from './storage';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
-export async function fetchJinaSummary(file: File): Promise<string> {
+export async function fetchJinaSummary(file: File, userId?: string | null): Promise<{ summary: string, fileDetails?: any }> {
   try {
     console.log('Attempting to summarize PDF:', file.name);
 
     let extractedText = "";
+    let fileDetails = null;
 
     try {
       extractedText = await extractTextFromPDF(file);
@@ -16,6 +18,17 @@ export async function fetchJinaSummary(file: File): Promise<string> {
       if (!extractedText || extractedText.length < 200) {
         console.warn('Extracted text is too short or empty:', extractedText.length);
         throw new Error("Not enough readable text found in the PDF.");
+      }
+
+      // If user is authenticated, upload the file to Firebase Storage
+      if (userId) {
+        try {
+          fileDetails = await uploadFile(userId, file, "pdfs");
+          console.log("File uploaded to Firebase Storage:", fileDetails);
+        } catch (uploadError) {
+          console.error("Error uploading file to Firebase Storage:", uploadError);
+          // Continue with summary generation even if upload fails
+        }
       }
 
     } catch (pdfError) {
@@ -41,14 +54,23 @@ ${truncatedText}`;
     const summary = await fetchAIResponse(summaryPrompt);
 
     const cleanedSummary = summary.replace(/^\([^)]+\)\s➤\s/, 'Tutor AI: ');
-    return cleanedSummary;
+    return { 
+      summary: cleanedSummary, 
+      fileDetails 
+    };
 
   } catch (error) {
     console.error('Error generating summary:', error);
     if (error.message.includes('readable text')) {
-      return `⚠️ This PDF may be scanned or image-based and contains no readable text. Try another file.`;
+      return { 
+        summary: `⚠️ This PDF may be scanned or image-based and contains no readable text. Try another file.`,
+        fileDetails: null
+      };
     }
-    return "⚠️ Error processing document. Please try again with a different PDF file.";
+    return { 
+      summary: "⚠️ Error processing document. Please try again with a different PDF file.",
+      fileDetails: null
+    };
   }
 }
 
@@ -125,4 +147,3 @@ export async function checkPDFProcessable(file: File): Promise<{ processable: bo
     };
   }
 }
-

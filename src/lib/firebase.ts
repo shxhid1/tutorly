@@ -1,3 +1,4 @@
+
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -10,7 +11,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAbtpK4HYaaorQ2vaJq8s8Kk_vSxw_6fis",
   authDomain: "gettutorly.firebaseapp.com",
   projectId: "gettutorly",
-  storageBucket: "gettutorly.firebasestorage.app",
+  storageBucket: "gettutorly.appspot.com",
   messagingSenderId: "240379067662",
   appId: "1:240379067662:web:941dc77def55c03be3ab5f",
   measurementId: "G-MF9XX03TS0"
@@ -19,3 +20,5 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
+export { app };

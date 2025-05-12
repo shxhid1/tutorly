@@ -12,22 +12,31 @@ import {
   Zap, 
   MessageSquare, 
   FileText,
-  CheckCircle
+  CheckCircle,
+  LogIn
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginButton from "@/components/auth/LoginButton";
+import UserProfileButton from "@/components/auth/UserProfileButton";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   
   const handleGetStarted = () => {
-    setIsLoading(true);
-    // Simulate loading for better UX
-    setTimeout(() => {
-      setIsLoading(false);
+    if (currentUser) {
       navigate("/dashboard");
-    }, 800);
+    } else {
+      setIsLoading(true);
+      // Simulate loading for better UX
+      setTimeout(() => {
+        setIsLoading(false);
+        navigate("/dashboard");
+      }, 800);
+    }
   };
   
   return (
@@ -41,19 +50,19 @@ const Index = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button 
-              variant="ghost" 
-              onClick={handleGetStarted}
-              className="text-white hover:bg-gray-800"
-            >
-              Sign In
-            </Button>
-            <Button 
-              className="bg-purple-500 text-white hover:bg-purple-600 py-2 px-6 rounded-md font-semibold"
-              onClick={handleGetStarted}
-            >
-              Get Started
-            </Button>
+            {currentUser ? (
+              <UserProfileButton />
+            ) : (
+              <>
+                <LoginButton variant="ghost" />
+                <Button 
+                  className="bg-purple-500 text-white hover:bg-purple-600 py-2 px-6 rounded-md font-semibold"
+                  onClick={handleGetStarted}
+                >
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -81,24 +90,21 @@ const Index = () => {
                 </p>
                 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                  <Button 
-                    size="lg" 
-                    className="w-full sm:w-auto bg-purple-500 hover:bg-purple-600 text-white button-click-effect text-base font-semibold py-6 px-8 rounded-md shadow-lg"
-                    onClick={handleGetStarted}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <div className="flex items-center">
-                        <div className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-                        <span>Loading...</span>
-                      </div>
-                    ) : (
-                      <>
-                        <Zap className="mr-2 h-5 w-5" />
-                        Get Started
-                      </>
-                    )}
-                  </Button>
+                  {currentUser ? (
+                    <Button 
+                      size="lg" 
+                      className="w-full sm:w-auto bg-purple-500 hover:bg-purple-600 text-white button-click-effect text-base font-semibold py-6 px-8 rounded-md shadow-lg"
+                      onClick={() => navigate("/dashboard")}
+                    >
+                      <Zap className="mr-2 h-5 w-5" />
+                      Go to Dashboard
+                    </Button>
+                  ) : (
+                    <LoginButton 
+                      size="lg"
+                      variant="default"
+                    />
+                  )}
                   
                   <Button 
                     size="lg" 
@@ -124,6 +130,7 @@ const Index = () => {
           </div>
         </section>
         
+        {/* Rest of the sections remain unchanged */}
         {/* Features Section with improved color contrast */}
         <section className="py-20 px-4 bg-background dark:bg-background">
           <div className="container mx-auto max-w-6xl">
@@ -297,14 +304,21 @@ const Index = () => {
               Join thousands of students who are already studying smarter, not harder.
             </p>
             <div className="flex justify-center">
-              <Button 
-                size="lg" 
-                className="bg-purple-500 hover:bg-purple-600 text-white text-lg font-semibold shadow-lg py-3 px-8 rounded-md" 
-                onClick={handleGetStarted}
-              >
-                <Zap className="mr-2 h-5 w-5" />
-                Get Started with Tutorly
-              </Button>
+              {currentUser ? (
+                <Button 
+                  size="lg" 
+                  className="bg-purple-500 hover:bg-purple-600 text-white text-lg font-semibold shadow-lg py-3 px-8 rounded-md" 
+                  onClick={() => navigate("/dashboard")}
+                >
+                  <Zap className="mr-2 h-5 w-5" />
+                  Go to Your Dashboard
+                </Button>
+              ) : (
+                <LoginButton 
+                  size="lg"
+                  variant="default"
+                />
+              )}
             </div>
           </div>
         </section>
