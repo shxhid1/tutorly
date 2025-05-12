@@ -1,44 +1,22 @@
-
-// Import the functions you need from the SDKs
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getDatabase } from "firebase/database";
-import { getStorage } from "firebase/storage";
-import { getFunctions } from "firebase/functions";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAbtpK4HYaaorQ2vaJq8s8Kk_vSxw_6fis",
   authDomain: "gettutorly.firebaseapp.com",
+  databaseURL: "https://gettutorly-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "gettutorly",
-  storageBucket: "gettutorly.appspot.com",
+  storageBucket: "gettutorly.firebasestorage.app",
   messagingSenderId: "240379067662",
   appId: "1:240379067662:web:941dc77def55c03be3ab5f",
-  measurementId: "G-MF9XX03TS0",
-  databaseURL: "https://gettutorly-default-rtdb.firebaseio.com" // Add this for Realtime Database
+  measurementId: "G-MF9XX03TS0"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize services
-const auth = getAuth(app);
-const db = getFirestore(app);
-const rtdb = getDatabase(app);
-const storage = getStorage(app);
-const functions = getFunctions(app);
-
-// Initialize Analytics only in browser environment
-let analytics = null;
-if (typeof window !== 'undefined') {
-  try {
-    analytics = getAnalytics(app);
-  } catch (error) {
-    console.error("Analytics initialization failed:", error);
-  }
-}
-
-export { app, auth, db, rtdb, storage, functions, analytics };
+const analytics = getAnalytics(app);
