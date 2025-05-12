@@ -73,10 +73,12 @@ export const setupPhoneAuth = (elementId: string) => {
         // Handle reCAPTCHA expiration
         if (window.recaptchaVerifier) {
           // Clear the verifier instance to allow a fresh one to be created
-          window.recaptchaVerifier._reset && window.recaptchaVerifier._reset();
+          if (typeof window.recaptchaVerifier._reset === 'function') {
+            window.recaptchaVerifier._reset();
+          }
           window.recaptchaVerifier = undefined;
+          throw new Error("reCAPTCHA has expired. Please try again.");
         }
-        throw new Error("reCAPTCHA has expired. Please try again.");
       }
     });
     return window.recaptchaVerifier;
@@ -100,7 +102,9 @@ export const sendPhoneVerificationCode = async (phoneNumber: string) => {
     // Handle recaptcha error by recreating a fresh instance
     if (window.recaptchaVerifier) {
       // Clear the verifier instance to allow creating a new one
-      window.recaptchaVerifier._reset && window.recaptchaVerifier._reset();
+      if (typeof window.recaptchaVerifier._reset === 'function') {
+        window.recaptchaVerifier._reset();
+      }
       window.recaptchaVerifier = undefined;
     }
     throw error;
@@ -189,7 +193,7 @@ export const getAuthErrorMessage = (error: AuthError): string => {
 // Add TypeScript global declarations for window object
 declare global {
   interface Window {
-    recaptchaVerifier: RecaptchaVerifier & { _reset?: () => void } | undefined;
+    recaptchaVerifier?: RecaptchaVerifier & { _reset?: () => void };
     confirmationResult: any;
   }
 }

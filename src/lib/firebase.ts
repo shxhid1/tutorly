@@ -17,7 +17,7 @@ const firebaseConfig = {
   messagingSenderId: "240379067662",
   appId: "1:240379067662:web:941dc77def55c03be3ab5f",
   measurementId: "G-MF9XX03TS0",
-  databaseURL: "https://gettutorly-default-rtdb.asia-southeast1.firebasedatabase.app" // Updated from network logs
+  databaseURL: "https://gettutorly-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
 
 // Initialize Firebase

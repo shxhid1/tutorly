@@ -190,7 +190,7 @@ const getSummaryFromJina = async (text: string): Promise<SummaryResponse> => {
 };
 
 // Fallback summarization function
-const getFallbackSummary = (text: string): SummaryResponse => {
+export const getFallbackSummary = (text: string): SummaryResponse => {
   // Split text into sentences
   const sentences = text
     .replace(/([.?!])\s*(?=[A-Z])/g, "$1|")
