@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist",
+    "public": "app/dist",  // Update this path to match your folder structure
     "ignore": [
       "firebase.json",
       "**/.*",
