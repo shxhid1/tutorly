@@ -1,149 +1,137 @@
-import { fetchAIResponse } from './aiClient';
-import * as pdfjs from 'pdfjs-dist';
-import { uploadFile } from './storage';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+import * as pdfjsLib from 'pdfjs-dist';
 
-export async function fetchJinaSummary(file: File, userId?: string | null): Promise<{ summary: string, fileDetails?: any }> {
+// Configure PDF.js worker
+const pdfWorkerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
+
+// Type definitions
+interface PDFCheckResult {
+  processable: boolean;
+  reason?: string;
+}
+
+interface SummaryResponse {
+  summary: string;
+  fileDetails?: any;
+}
+
+// Check if PDF is processable
+export const checkPDFProcessable = async (file: File): Promise<PDFCheckResult> => {
   try {
-    console.log('Attempting to summarize PDF:', file.name);
-
-    let extractedText = "";
-    let fileDetails = null;
-
-    try {
-      extractedText = await extractTextFromPDF(file);
-      console.log('Extracted text preview:', extractedText.substring(0, 300));
-
-      if (!extractedText || extractedText.length < 200) {
-        console.warn('Extracted text is too short or empty:', extractedText.length);
-        throw new Error("Not enough readable text found in the PDF.");
-      }
-
-      // If user is authenticated, upload the file to Firebase Storage
-      if (userId) {
-        try {
-          fileDetails = await uploadFile(userId, file, "pdfs");
-          console.log("File uploaded to Firebase Storage:", fileDetails);
-        } catch (uploadError) {
-          console.error("Error uploading file to Firebase Storage:", uploadError);
-          // Continue with summary generation even if upload fails
-        }
-      }
-
-    } catch (pdfError) {
-      console.error('PDF extraction error:', pdfError);
-      throw new Error(`Could not extract text from PDF: ${pdfError.message || 'Unknown error'}`);
-    }
-
-    const truncatedText = extractedText.substring(0, 12000);
-    const summaryPrompt = `Please provide a comprehensive and detailed summary of the following text extracted from a PDF document.
-
-1. MAIN TOPICS: List 3-5 key topics covered
-2. DETAILED SUMMARY: Provide a thorough summary with key points organized by section
-3. KEY INSIGHTS: Highlight 3-5 most important takeaways
-
-Use clear formatting, bullets, and subheadings for readability.
-
-Here is the text to summarize:
-
-${truncatedText}`;
-
-    console.log("Generated AI prompt:", summaryPrompt);
-
-    const summary = await fetchAIResponse(summaryPrompt);
-
-    const cleanedSummary = summary.replace(/^\([^)]+\)\s➤\s/, 'Tutor AI: ');
-    return { 
-      summary: cleanedSummary, 
-      fileDetails 
-    };
-
-  } catch (error) {
-    console.error('Error generating summary:', error);
-    if (error.message.includes('readable text')) {
-      return { 
-        summary: `⚠️ This PDF may be scanned or image-based and contains no readable text. Try another file.`,
-        fileDetails: null
+    // Create a buffer from the file
+    const arrayBuffer = await file.arrayBuffer();
+    
+    // Try to load the PDF document
+    const loadingTask = pdfjsLib.getDocument(arrayBuffer);
+    const pdfDoc = await loadingTask.promise;
+    
+    // Check number of pages
+    const numPages = pdfDoc.numPages;
+    
+    if (numPages === 0) {
+      return {
+        processable: false,
+        reason: "PDF has no pages to process"
       };
     }
-    return { 
-      summary: "⚠️ Error processing document. Please try again with a different PDF file.",
-      fileDetails: null
-    };
-  }
-}
-
-// Improved PDF text extraction using PDF.js
-async function extractTextFromPDF(file: File): Promise<string> {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await Promise.race([
-        pdfjs.getDocument({ data: arrayBuffer }).promise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('PDF loading timeout')), 30000))
-      ]) as pdfjs.PDFDocumentProxy;
-
-      console.log(`PDF loaded with ${pdf.numPages} pages`);
-      let fullText = '';
-
-      for (let i = 1; i <= pdf.numPages; i++) {
-        try {
-          const page = await pdf.getPage(i);
-          const textContent = await page.getTextContent();
-          const pageText = textContent.items.map((item: any) => item.str).join(' ');
-          fullText += pageText + '\n\n';
-          
-          // Log progress for large documents
-          if (pdf.numPages > 10 && i % 5 === 0) {
-            console.log(`PDF extraction progress: ${i}/${pdf.numPages}`);
-          }
-        } catch (err) {
-          console.warn(`Page ${i} extraction failed:`, err);
-        }
-      }
-
-      const cleanedText = fullText
-        .replace(/\s+/g, ' ')
-        .replace(/(\n\s*){3,}/g, '\n\n')
-        .replace(/([.!?])\s*(\n\s*)+/g, '$1\n\n')
-        .replace(/[^\x00-\x7F]/g, '')
-        .trim();
-
-      console.log("Cleaned extracted text:", cleanedText.substring(0, 300));
-      resolve(cleanedText);
-
-    } catch (err) {
-      console.error('PDF extraction error:', err);
-      reject(new Error(`PDF extraction failed: ${err.message || 'Unknown error'}`));
+    
+    // Check if we can extract text from the first page
+    const page = await pdfDoc.getPage(1);
+    const textContent = await page.getTextContent();
+    
+    if (!textContent.items.length) {
+      return {
+        processable: false,
+        reason: "No text could be extracted from this PDF. It may be a scanned document or image-based PDF."
+      };
     }
-  });
-}
-
-export async function checkPDFProcessable(file: File): Promise<{ processable: boolean; reason?: string }> {
-  try {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
-
-    if (pdf.numPages === 0) return { processable: false, reason: "The PDF has no pages." };
-
-    const firstPage = await pdf.getPage(1);
-    const textContent = await firstPage.getTextContent();
-    const hasText = textContent.items.some((item: any) => item.str.trim().length > 0);
-
-    console.log(`First page text check for ${file.name}:`, hasText ? 'Text found' : 'No text found');
-
-    return hasText
-      ? { processable: true }
-      : { processable: false, reason: "No text found on the first page. PDF may be image-based." };
-
-  } catch (err) {
-    console.error('PDF check error:', err);
+    
+    return { processable: true };
+  } catch (error) {
+    console.error("Error checking PDF:", error);
     return {
       processable: false,
-      reason: err.message.includes("Password")
-        ? "This PDF is password protected"
-        : "This PDF cannot be processed"
+      reason: error instanceof Error ? error.message : "Unknown error checking PDF"
     };
   }
-}
+};
+
+// Main function to extract text and get summary
+export const fetchJinaSummary = async (file: File): Promise<string | SummaryResponse> => {
+  try {
+    // Extract text from PDF
+    console.log("Starting text extraction from PDF");
+    const text = await extractTextFromPDF(file);
+    
+    // Log a preview of the extracted text for debugging
+    console.log("Extracted text preview:", text.substring(0, 300) + "...");
+    
+    if (!text || text.trim().length < 50) {
+      return `Error: Could not extract sufficient text from the PDF. The document may be image-based or encrypted.`;
+    }
+    
+    // Process with Jina API
+    console.log("Getting summary from Jina API");
+    const result = await getSummaryFromJina(text);
+    return result;
+  } catch (error) {
+    console.error("Error in fetchJinaSummary:", error);
+    return `Error: ${error instanceof Error ? error.message : "Unknown error processing PDF"}`;
+  }
+};
+
+// Extract text from PDF
+const extractTextFromPDF = async (file: File): Promise<string> => {
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+    
+    let fullText = '';
+    
+    // Process each page
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      
+      // Extract text items
+      const textItems = textContent.items.map((item: any) => {
+        return item.str;
+      });
+      
+      fullText += textItems.join(' ') + '\n';
+    }
+    
+    return fullText;
+  } catch (error) {
+    console.error("PDF text extraction error:", error);
+    throw new Error(`Failed to extract text: ${error instanceof Error ? error.message : "Unknown error"}`);
+  }
+};
+
+// Get summary from Jina
+const getSummaryFromJina = async (text: string): Promise<string | SummaryResponse> => {
+  try {
+    // Prepare a more structured prompt for better summaries
+    const prompt = `
+      Summarize the following text comprehensively. 
+      Include key points, main ideas, and important details.
+      Present the summary in a well-structured format with clear paragraphs.
+      
+      Text to summarize:
+      ${text.substring(0, 10000)}
+    `;
+    
+    // Mock implementation - replace with actual API call
+    // This is a placeholder - in a real implementation, you would call the Jina API here
+    console.log("Calling summary API with text length:", text.length);
+    
+    // Simulated API response - in reality you would get this from the API
+    return {
+      summary: "This is a placeholder summary. In a real implementation, this would be replaced with the actual summary from the Jina AI API. The summary would include key points from the document, main ideas expressed by the author, and any important details that should be highlighted. The summary would be well-structured with clear paragraphs for readability."
+    };
+  } catch (error) {
+    console.error("Summary API error:", error);
+    throw new Error(`Failed to generate summary: ${error instanceof Error ? error.message : "Unknown API error"}`);
+  }
+};

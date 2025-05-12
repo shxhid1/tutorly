@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -176,7 +177,12 @@ const Summaries = () => {
       
       // Process PDF and generate summary
       console.log("Starting summary generation for:", selectedFile.name);
-      const summary = await fetchJinaSummary(selectedFile);
+      const summaryResponse = await fetchJinaSummary(selectedFile);
+      
+      // Extract the summary text from the response
+      const summary = typeof summaryResponse === 'string' 
+        ? summaryResponse 
+        : summaryResponse.summary;
       
       // Check if the response is an error message
       if (summary.startsWith('Error:')) {
