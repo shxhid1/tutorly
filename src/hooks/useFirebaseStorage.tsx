@@ -55,7 +55,7 @@ export const useFirebaseStorage = () => {
           console.error("Upload error:", error);
           toast({
             title: "Upload failed",
-            description: `Failed to upload ${file.name}. ${error.message}`,
+            description: `Failed to upload ${file.name}. ${error instanceof Error ? error.message : 'Unknown error'}`,
             variant: "destructive",
           });
           setIsUploading(false);

@@ -1,6 +1,7 @@
+
 // Import the functions you need from the SDKs
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
@@ -30,14 +31,26 @@ const rtdb = getDatabase(app);
 const storage = getStorage(app);
 const functions = getFunctions(app);
 
-// Initialize Analytics only in browser environment
+// Initialize Analytics only in browser environment with proper checks
 let analytics = null;
-if (typeof window !== 'undefined') {
-  try {
-    analytics = getAnalytics(app);
-  } catch (error) {
-    console.error("Analytics initialization failed:", error);
+const initAnalytics = async () => {
+  if (typeof window !== 'undefined') {
+    try {
+      // Check if analytics is supported in this browser environment
+      const isAnalyticsSupported = await isSupported();
+      if (isAnalyticsSupported) {
+        analytics = getAnalytics(app);
+        console.log("Firebase Analytics initialized successfully");
+      } else {
+        console.log("Firebase Analytics is not supported in this environment");
+      }
+    } catch (error) {
+      console.error("Analytics initialization failed:", error);
+    }
   }
-}
+};
+
+// Initialize analytics
+initAnalytics();
 
 export { app, auth, db, rtdb, storage, functions, analytics };

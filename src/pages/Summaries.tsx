@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -10,12 +9,14 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
-import { fetchJinaSummary, checkPDFProcessable } from "@/lib/jinaReader";
+import { fetchJinaSummary, checkPDFProcessable, storeSummary } from "@/lib/jinaReader";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useAuth } from "@/contexts/AuthContext";
+import { useFirebaseStorage } from "@/hooks/useFirebaseStorage";
 
 interface Summary {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   type: "quick" | "deep";
@@ -23,6 +24,7 @@ interface Summary {
   readTime: string;
   content?: string;
   fileName?: string;
+  fileUrl?: string;
 }
 
 // Sample PDF for testing (you can replace this with a known working PDF URL)
@@ -41,6 +43,9 @@ const Summaries = () => {
   const [isLoadingSample, setIsLoadingSample] = useState(false);
   const { toast } = useToast();
   const { theme } = useTheme();
+  const { currentUser } = useAuth();
+  const { uploadFile: uploadToStorage, progress: storageProgress } = useFirebaseStorage();
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
   
   const [summaries, setSummaries] = useState<Summary[]>([
     { 
@@ -109,11 +114,31 @@ const Summaries = () => {
     setSummaryResult(null);
     setSelectedFile(null);
     setProcessingError(null);
+    setFileUrl(null);
   };
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
+      setProcessingError(null); // Clear any previous errors
+    }
+  };
+  
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(true);
+  };
+  
+  const handleDragLeave = () => {
+    setDragActive(false);
+  };
+  
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setSelectedFile(e.dataTransfer.files[0]);
       setProcessingError(null); // Clear any previous errors
     }
   };
@@ -126,6 +151,16 @@ const Summaries = () => {
       toast({
         title: "No file selected",
         description: "Please select a file to upload",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Check if user is authenticated
+    if (!currentUser) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to upload documents",
         variant: "destructive"
       });
       return;
@@ -148,9 +183,9 @@ const Summaries = () => {
     // Show initial upload progress
     const interval = setInterval(() => {
       setUploadProgress(prev => {
-        if (prev >= 90) {
+        if (prev >= 25) {
           clearInterval(interval);
-          return 90;
+          return 25; // Only go to 25% for file checking
         }
         return prev + 5;
       });
@@ -175,28 +210,56 @@ const Summaries = () => {
         return;
       }
       
+      // Upload file to Firebase Storage
+      setUploadProgress(30);
+      let fileDetails = null;
+      
+      if (currentUser) {
+        fileDetails = await uploadToStorage(selectedFile, "summaries");
+        if (!fileDetails) {
+          throw new Error("File upload to storage failed");
+        }
+        setFileUrl(fileDetails.fileUrl);
+      }
+      
+      // Update progress
+      setUploadProgress(70);
+      
       // Process PDF and generate summary
       console.log("Starting summary generation for:", selectedFile.name);
       const summaryResponse = await fetchJinaSummary(selectedFile);
       
       // Extract the summary text from the response
-      const summary = typeof summaryResponse === 'string' 
-        ? summaryResponse 
-        : summaryResponse.summary;
-      
-      // Check if the response is an error message
-      if (summary.startsWith('Error:')) {
-        throw new Error(summary);
+      let summaryText = "";
+      if (typeof summaryResponse === 'string') {
+        summaryText = summaryResponse;
+      } else {
+        summaryText = summaryResponse.summary;
       }
       
-      console.log("Summary result:", summary.substring(0, 100) + "...");
+      // Check if the response is an error message
+      if (typeof summaryText === 'string' && summaryText.startsWith('Error:')) {
+        throw new Error(summaryText);
+      }
+      
+      console.log("Summary result:", typeof summaryText === 'string' ? summaryText.substring(0, 100) + "..." : "Summary object received");
       
       // Complete the progress
       clearInterval(interval);
       setUploadProgress(100);
       
       // Set the summary result and keep dialog open
-      setSummaryResult(summary);
+      setSummaryResult(summaryText);
+      
+      // If we have a file URL and user is authenticated, store the summary in Firestore
+      if (fileUrl && currentUser && typeof summaryText === 'string') {
+        await storeSummary(
+          currentUser.uid, 
+          summaryText,
+          selectedFile.name,
+          fileUrl
+        );
+      }
       
       // Show success toast
       toast({
@@ -209,7 +272,7 @@ const Summaries = () => {
       setUploadProgress(0);
       
       // Set a more descriptive error message
-      const errorMessage = error.message || "Could not process your PDF. Please try again with a different document.";
+      const errorMessage = error instanceof Error ? error.message : "Could not process your PDF. Please try again with a different document.";
       setProcessingError(errorMessage);
       
       toast({
@@ -264,7 +327,8 @@ const Summaries = () => {
       created: "Just now",
       readTime: `${Math.max(1, Math.floor(summaryResult.length / 1000))} min read`,
       content: summaryResult,
-      fileName: selectedFile.name
+      fileName: selectedFile.name,
+      fileUrl: fileUrl || undefined
     };
     
     // Add the new summary to the list
@@ -275,6 +339,7 @@ const Summaries = () => {
     setSummaryResult(null);
     setSelectedFile(null);
     setProcessingError(null);
+    setFileUrl(null);
     
     // Show success notification
     toast({
@@ -288,25 +353,6 @@ const Summaries = () => {
     setShowSummaryDialog(true);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragActive(true);
-  };
-  
-  const handleDragLeave = () => {
-    setDragActive(false);
-  };
-  
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragActive(false);
-    
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setSelectedFile(e.dataTransfer.files[0]);
-      setProcessingError(null); // Clear any previous errors
-    }
-  };
-  
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <Navbar />
@@ -484,7 +530,9 @@ const Summaries = () => {
                   <div className="space-y-2">
                     <Progress value={uploadProgress} className="h-2" />
                     <p className="text-xs text-center text-gray-600 dark:text-gray-300">
-                      {uploadProgress < 100 ? 'Processing document...' : 'Generating summary...'}
+                      {uploadProgress < 30 ? 'Checking document...' : 
+                       uploadProgress < 70 ? 'Uploading document...' :
+                       uploadProgress < 100 ? 'Generating summary...' : 'Summary ready!'}
                     </p>
                   </div>
                 )}
@@ -511,6 +559,7 @@ const Summaries = () => {
                   setSelectedFile(null);
                   setIsUploading(false);
                   setProcessingError(null);
+                  setFileUrl(null);
                 }} 
                 disabled={isUploading}
                 className="text-gray-800 dark:text-white bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"

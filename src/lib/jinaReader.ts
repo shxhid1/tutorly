@@ -1,9 +1,14 @@
 
 import * as pdfjsLib from 'pdfjs-dist';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from './firebase';
 
-// Configure PDF.js worker
-const pdfWorkerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
+// Configure PDF.js worker properly using npm package
+import { GlobalWorkerOptions } from 'pdfjs-dist';
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.entry';
+
+// Set the worker source to use the npm package instead of CDN
+GlobalWorkerOptions.workerSrc = pdfWorker;
 
 // Type definitions
 interface PDFCheckResult {
@@ -54,6 +59,24 @@ export const checkPDFProcessable = async (file: File): Promise<PDFCheckResult> =
       processable: false,
       reason: error instanceof Error ? error.message : "Unknown error checking PDF"
     };
+  }
+};
+
+// Store summary in Firestore
+export const storeSummary = async (userId: string, summary: string, fileName: string, fileUrl: string) => {
+  try {
+    const summaryCollection = collection(db, 'summaries');
+    const docRef = await addDoc(summaryCollection, {
+      userId,
+      summary,
+      fileName,
+      fileUrl,
+      createdAt: serverTimestamp()
+    });
+    return docRef.id;
+  } catch (error) {
+    console.error("Error storing summary:", error);
+    throw error;
   }
 };
 
@@ -110,7 +133,7 @@ const extractTextFromPDF = async (file: File): Promise<string> => {
 };
 
 // Get summary from Jina
-const getSummaryFromJina = async (text: string): Promise<string | SummaryResponse> => {
+const getSummaryFromJina = async (text: string): Promise<SummaryResponse> => {
   try {
     // Prepare a more structured prompt for better summaries
     const prompt = `

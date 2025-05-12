@@ -23,7 +23,11 @@ export const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     return result.user;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.code === 'auth/popup-closed-by-user') {
+      console.log("Sign-in popup was closed by the user");
+      throw new Error("Sign-in was cancelled. Please try again.");
+    }
     console.error("Google sign-in error:", error);
     throw error;
   }
@@ -64,6 +68,11 @@ export const setupPhoneAuth = (elementId: string) => {
       size: 'invisible',
       callback: () => {
         // reCAPTCHA solved, allow signInWithPhoneNumber
+      },
+      'expired-callback': () => {
+        // Reset the reCAPTCHA
+        window.recaptchaVerifier?.reset();
+        throw new Error("reCAPTCHA has expired. Please try again.");
       }
     });
     return window.recaptchaVerifier;
@@ -84,6 +93,8 @@ export const sendPhoneVerificationCode = async (phoneNumber: string) => {
     return confirmationResult;
   } catch (error) {
     console.error("Phone verification error:", error);
+    // Reset reCAPTCHA to allow user to try again
+    window.recaptchaVerifier?.reset();
     throw error;
   }
 };
@@ -154,6 +165,14 @@ export const getAuthErrorMessage = (error: AuthError): string => {
       return 'Invalid phone number format.';
     case 'auth/too-many-requests':
       return 'Too many attempts. Please try again later.';
+    case 'auth/popup-closed-by-user':
+      return 'Sign-in was cancelled. Please try again.';
+    case 'auth/popup-blocked':
+      return 'Sign-in popup was blocked by your browser. Please allow popups for this site.';
+    case 'auth/cancelled-popup-request':
+      return 'The authentication process was cancelled.';
+    case 'auth/network-request-failed':
+      return 'Network error. Please check your internet connection and try again.';
     default:
       return 'An error occurred during authentication.';
   }
