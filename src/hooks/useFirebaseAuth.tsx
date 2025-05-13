@@ -45,22 +45,16 @@ export const useFirebaseAuth = () => {
     checkAuth();
   }, []);
 
-  // Google Sign In - Temporarily disabled but we'll handle the error properly
+  // Google Sign In
   const signIn = async () => {
     try {
       setLoading(true);
       setAuthError(null);
-      
-      // This will throw a controlled error since Google auth is disabled
-      // but we'll handle it properly for TypeScript
       const user = await signInWithGoogle();
+      setCurrentUser(user);
       
-      // This code won't execute because signInWithGoogle throws an error,
-      // but we need it for when Google auth is re-enabled
+      // Create/update user profile in Firestore
       if (user) {
-        setCurrentUser(user);
-        
-        // Create/update user profile in Firestore
         await createUserProfile(user.uid, {
           displayName: user.displayName,
           email: user.email,
@@ -68,14 +62,15 @@ export const useFirebaseAuth = () => {
           lastLogin: new Date().toISOString()
         });
         
+        // Fetch the user profile
         const profile = await getUserProfile(user.uid);
         setUserProfile(profile);
-        
-        toast({
-          title: "Welcome!",
-          description: `Signed in as ${user.displayName || user.email}`,
-        });
       }
+      
+      toast({
+        title: "Welcome!",
+        description: `Signed in as ${user?.displayName || user?.email}`,
+      });
       
       return user;
     } catch (error: any) {
@@ -83,7 +78,7 @@ export const useFirebaseAuth = () => {
       setAuthError(errorMessage);
       toast({
         title: "Sign in failed",
-        description: errorMessage,
+        description: "Could not sign in with Google. Please try again.",
         variant: "destructive",
       });
       throw error;

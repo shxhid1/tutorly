@@ -2,7 +2,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 interface LoginButtonProps {
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
@@ -10,13 +9,11 @@ interface LoginButtonProps {
 }
 
 const LoginButton = ({ variant = "default", size = "default" }: LoginButtonProps) => {
-  const { loading, emailSignIn } = useAuth();
-  const navigate = useNavigate();
+  const { signIn, loading } = useAuth();
 
   const handleSignIn = async () => {
     try {
-      // For development, just redirect to dashboard without authentication
-      navigate("/dashboard");
+      await signIn();
     } catch (error) {
       console.error("Sign in error:", error);
     }
@@ -29,10 +26,17 @@ const LoginButton = ({ variant = "default", size = "default" }: LoginButtonProps
       onClick={handleSignIn}
       disabled={loading}
     >
-      <span className="flex items-center gap-2">
-        <LogIn size={16} />
-        Sign in
-      </span>
+      {loading ? (
+        <span className="flex items-center gap-2">
+          <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
+          Signing in...
+        </span>
+      ) : (
+        <span className="flex items-center gap-2">
+          <LogIn size={16} />
+          Sign in with Google
+        </span>
+      )}
     </Button>
   );
 };

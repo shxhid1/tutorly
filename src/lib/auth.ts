@@ -17,19 +17,17 @@ import {
 } from "firebase/auth";
 import { app, auth } from "./firebase";
 
-// Google authentication (temporarily disabled)
+// Google authentication
 export const signInWithGoogle = async () => {
   try {
-    // Google authentication temporarily disabled
-    throw new Error("Google authentication is temporarily disabled. Please use email/password or phone authentication.");
-    
-    // Original code is commented out but preserved for easy re-enabling
-    /*
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     return result.user;
-    */
   } catch (error: any) {
+    if (error.code === 'auth/popup-closed-by-user') {
+      console.log("Sign-in popup was closed by the user");
+      throw new Error("Sign-in was cancelled. Please try again.");
+    }
     console.error("Google sign-in error:", error);
     throw error;
   }

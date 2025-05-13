@@ -9,9 +9,6 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { currentUser, loading } = useAuth();
   const location = useLocation();
-  
-  // Development flag to bypass authentication
-  const bypassAuthInDevelopment = true;
 
   if (loading) {
     return (
@@ -21,13 +18,12 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  // Allow access without authentication in development mode
-  if (bypassAuthInDevelopment || currentUser) {
-    return <>{children}</>;
+  if (!currentUser) {
+    // Redirect to login page with return URL
+    return <Navigate to="/" state={{ from: location.pathname }} replace />;
   }
 
-  // Redirect to login page with return URL
-  return <Navigate to="/" state={{ from: location.pathname }} replace />;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

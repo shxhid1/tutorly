@@ -27,12 +27,16 @@ const Index = () => {
   const { currentUser } = useAuth();
   
   const handleGetStarted = () => {
-    setIsLoading(true);
-    // Simulate loading for better UX, then navigate to dashboard
-    setTimeout(() => {
-      setIsLoading(false);
+    if (currentUser) {
       navigate("/dashboard");
-    }, 800);
+    } else {
+      setIsLoading(true);
+      // Simulate loading for better UX
+      setTimeout(() => {
+        setIsLoading(false);
+        navigate("/dashboard");
+      }, 800);
+    }
   };
   
   return (
