@@ -9,14 +9,11 @@ interface LoginButtonProps {
 }
 
 const LoginButton = ({ variant = "default", size = "default" }: LoginButtonProps) => {
-  const { signIn, loading } = useAuth();
+  const { loading } = useAuth();
 
   const handleSignIn = async () => {
-    try {
-      await signIn();
-    } catch (error) {
-      console.error("Sign in error:", error);
-    }
+    // Temporarily disabled Google auth
+    alert("Google authentication is temporarily disabled. Please use email/password or phone authentication.");
   };
 
   return (
@@ -24,19 +21,11 @@ const LoginButton = ({ variant = "default", size = "default" }: LoginButtonProps
       variant={variant} 
       size={size}
       onClick={handleSignIn}
-      disabled={loading}
     >
-      {loading ? (
-        <span className="flex items-center gap-2">
-          <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
-          Signing in...
-        </span>
-      ) : (
-        <span className="flex items-center gap-2">
-          <LogIn size={16} />
-          Sign in with Google
-        </span>
-      )}
+      <span className="flex items-center gap-2">
+        <LogIn size={16} />
+        Sign in
+      </span>
     </Button>
   );
 };

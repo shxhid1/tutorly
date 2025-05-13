@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogIn, User, Mail, Lock, Phone, AlertCircle } from "lucide-react";
+import { User, Mail, Lock, Phone, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const AuthForm = () => {
@@ -22,7 +21,7 @@ const AuthForm = () => {
   const [verificationSent, setVerificationSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const { signIn, signUp, emailSignIn, phoneAuth, forgotPassword, loading } = useAuth();
+  const { signUp, emailSignIn, phoneAuth, forgotPassword, loading } = useAuth();
 
   // Setup recaptcha when component mounts
   const recaptchaContainerId = "recaptcha-container";
@@ -33,15 +32,6 @@ const AuthForm = () => {
       ...formData,
       [name]: value
     });
-  };
-
-  const handleGoogleSignIn = async () => {
-    setError(null);
-    try {
-      await signIn();
-    } catch (error) {
-      // Error is handled by the hook
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -110,15 +100,7 @@ const AuthForm = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <Button 
-            variant="outline" 
-            className="w-full" 
-            onClick={handleGoogleSignIn} 
-            disabled={loading}
-          >
-            <LogIn className="mr-2 h-4 w-4" />
-            Sign in with Google
-          </Button>
+          {/* Google sign-in button temporarily removed */}
           
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
