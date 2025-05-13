@@ -1,14 +1,15 @@
+
 import * as pdfjsLib from 'pdfjs-dist';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from './firebase';
 
 // Configure PDF.js worker properly
 import { GlobalWorkerOptions } from 'pdfjs-dist';
-// Fix the import to use a non-default import
-import * as pdfWorkerPath from 'pdfjs-dist/build/pdf.worker.entry';
+// Using the correct import format for the worker
+import 'pdfjs-dist/build/pdf.worker.entry';
 
-// Set the worker source correctly
-GlobalWorkerOptions.workerSrc = pdfWorkerPath;
+// Set the worker source correctly - we don't need to assign it as the import statement above registers the worker
+GlobalWorkerOptions.workerSrc = pdfjsLib.GlobalWorkerOptions.workerSrc;
 
 // Type definitions
 interface PDFCheckResult {
