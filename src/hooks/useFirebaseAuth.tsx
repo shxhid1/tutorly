@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { User } from "firebase/auth";
 import { useToast } from "@/components/ui/use-toast";
@@ -45,16 +44,18 @@ export const useFirebaseAuth = () => {
     checkAuth();
   }, []);
 
-  // Google Sign In
+  // Google Sign In - Temporarily disabled
   const signIn = async () => {
     try {
       setLoading(true);
       setAuthError(null);
-      const user = await signInWithGoogle();
-      setCurrentUser(user);
       
-      // Create/update user profile in Firestore
+      // Call the signInWithGoogle function which will now throw a controlled error
+      const user = await signInWithGoogle();
+      
+      // This code won't execute while Google auth is disabled, but we'll keep it for when it's re-enabled
       if (user) {
+        setCurrentUser(user);
         await createUserProfile(user.uid, {
           displayName: user.displayName,
           email: user.email,
@@ -62,15 +63,14 @@ export const useFirebaseAuth = () => {
           lastLogin: new Date().toISOString()
         });
         
-        // Fetch the user profile
         const profile = await getUserProfile(user.uid);
         setUserProfile(profile);
+        
+        toast({
+          title: "Welcome!",
+          description: `Signed in as ${user?.displayName || user?.email}`,
+        });
       }
-      
-      toast({
-        title: "Welcome!",
-        description: `Signed in as ${user?.displayName || user?.email}`,
-      });
       
       return user;
     } catch (error: any) {
@@ -78,7 +78,7 @@ export const useFirebaseAuth = () => {
       setAuthError(errorMessage);
       toast({
         title: "Sign in failed",
-        description: "Could not sign in with Google. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
       throw error;
