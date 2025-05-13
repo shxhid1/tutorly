@@ -2,6 +2,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface LoginButtonProps {
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
@@ -9,11 +10,16 @@ interface LoginButtonProps {
 }
 
 const LoginButton = ({ variant = "default", size = "default" }: LoginButtonProps) => {
-  const { loading } = useAuth();
+  const { loading, emailSignIn } = useAuth();
+  const navigate = useNavigate();
 
   const handleSignIn = async () => {
-    // Temporarily disabled Google auth
-    alert("Google authentication is temporarily disabled. Please use email/password or phone authentication.");
+    try {
+      // For development, just redirect to dashboard without authentication
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Sign in error:", error);
+    }
   };
 
   return (
@@ -21,6 +27,7 @@ const LoginButton = ({ variant = "default", size = "default" }: LoginButtonProps
       variant={variant} 
       size={size}
       onClick={handleSignIn}
+      disabled={loading}
     >
       <span className="flex items-center gap-2">
         <LogIn size={16} />

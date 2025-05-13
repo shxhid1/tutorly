@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { User } from "firebase/auth";
 import { useToast } from "@/components/ui/use-toast";
@@ -44,16 +45,18 @@ export const useFirebaseAuth = () => {
     checkAuth();
   }, []);
 
-  // Google Sign In - Temporarily disabled
+  // Google Sign In - Temporarily disabled but we'll handle the error properly
   const signIn = async () => {
     try {
       setLoading(true);
       setAuthError(null);
       
-      // Call the signInWithGoogle function which will now throw a controlled error
+      // This will throw a controlled error since Google auth is disabled
+      // but we'll handle it properly for TypeScript
       const user = await signInWithGoogle();
       
-      // TypeScript needs type assertion here since it thinks signInWithGoogle never returns
+      // This code won't execute because signInWithGoogle throws an error,
+      // but we need it for when Google auth is re-enabled
       if (user) {
         setCurrentUser(user);
         
