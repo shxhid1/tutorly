@@ -53,9 +53,11 @@ export const useFirebaseAuth = () => {
       // Call the signInWithGoogle function which will now throw a controlled error
       const user = await signInWithGoogle();
       
-      // This code won't execute while Google auth is disabled, but we'll keep it for when it's re-enabled
+      // TypeScript needs type assertion here since it thinks signInWithGoogle never returns
       if (user) {
         setCurrentUser(user);
+        
+        // Create/update user profile in Firestore
         await createUserProfile(user.uid, {
           displayName: user.displayName,
           email: user.email,
@@ -68,7 +70,7 @@ export const useFirebaseAuth = () => {
         
         toast({
           title: "Welcome!",
-          description: `Signed in as ${user?.displayName || user?.email}`,
+          description: `Signed in as ${user.displayName || user.email}`,
         });
       }
       
