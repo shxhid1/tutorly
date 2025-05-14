@@ -9,116 +9,83 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Auth helpers
-export const signUp = async (email: string, password: string, displayName: string) => {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        display_name: displayName
-      }
-    }
-  });
-  
-  if (error) throw error;
-  return data.user;
-};
+// Storage helpers
+export const uploadFile = async (userId: string, file: File, folder: string = 'files') => {
+  try {
+    const filePath = `${userId}/${folder}/${Date.now()}_${file.name}`;
+    const { data, error } = await supabase.storage
+      .from('summaries')
+      .upload(filePath, file);
 
-export const signIn = async (email: string, password: string) => {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-  
-  if (error) throw error;
-  return data.user;
-};
+    if (error) throw error;
 
-export const signOut = async () => {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
-};
+    const { data: { publicUrl } } = supabase.storage
+      .from('summaries')
+      .getPublicUrl(filePath);
 
-export const getCurrentUser = async () => {
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error) throw error;
-  return user;
+    return {
+      filePath,
+      fileUrl: publicUrl,
+      fileName: file.name,
+      contentType: file.type,
+      size: file.size
+    };
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw error;
+  }
 };
 
 // Database helpers
-export const createUserProfile = async (userId: string, userData: any) => {
-  const { error } = await supabase
-    .from('users')
-    .upsert({
-      id: userId,
-      ...userData,
-      updated_at: new Date().toISOString()
-    });
-  
-  if (error) throw error;
-  return true;
+export const saveSummary = async (userId: string, summary: string, fileName: string, fileUrl: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('summaries')
+      .insert([{
+        user_id: userId,
+        title: fileName.replace(/\.[^/.]+$/, ""),
+        content: summary,
+        file_name: fileName,
+        file_url: fileUrl
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error saving summary:', error);
+    throw error;
+  }
 };
 
-export const getUserProfile = async (userId: string) => {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', userId)
-    .single();
-  
-  if (error) throw error;
-  return data;
+export const getSummaries = async (userId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('summaries')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching summaries:', error);
+    throw error;
+  }
 };
 
-// Storage helpers
-export const uploadFile = async (userId: string, file: File, folder: string = 'files') => {
-  const filePath = `${userId}/${folder}/${Date.now()}_${file.name}`;
-  
-  const { data, error } = await supabase.storage
-    .from('user-files')
-    .upload(filePath, file);
-  
-  if (error) throw error;
-  
-  const { data: { publicUrl } } = supabase.storage
-    .from('user-files')
-    .getPublicUrl(filePath);
-  
-  return {
-    filePath,
-    fileUrl: publicUrl,
-    fileName: file.name,
-    contentType: file.type,
-    size: file.size
-  };
-};
+export const deleteSummary = async (summaryId: string) => {
+  try {
+    const { error } = await supabase
+      .from('summaries')
+      .delete()
+      .eq('id', summaryId);
 
-export const deleteFile = async (filePath: string) => {
-  const { error } = await supabase.storage
-    .from('user-files')
-    .remove([filePath]);
-  
-  if (error) throw error;
-  return true;
-};
-
-export const listUserFiles = async (userId: string, folder: string = 'files') => {
-  const { data, error } = await supabase.storage
-    .from('user-files')
-    .list(`${userId}/${folder}`);
-  
-  if (error) throw error;
-  
-  return Promise.all(data.map(async (file) => {
-    const { data: { publicUrl } } = supabase.storage
-      .from('user-files')
-      .getPublicUrl(file.name);
-      
-    return {
-      name: file.name,
-      fullPath: `${userId}/${folder}/${file.name}`,
-      url: publicUrl
-    };
-  }));
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('Error deleting summary:', error);
+    throw error;
+  }
 };

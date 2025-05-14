@@ -1,14 +1,11 @@
-
 import * as pdfjsLib from 'pdfjs-dist';
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from './firebase';
+import { saveSummary, uploadFile } from './supabase';
 
 // Configure PDF.js worker properly
 import { GlobalWorkerOptions } from 'pdfjs-dist';
-// Using the correct import format for the worker
 import 'pdfjs-dist/build/pdf.worker.entry';
 
-// Set the worker source correctly - we don't need to assign it as the import statement above registers the worker
+// Set the worker source correctly
 GlobalWorkerOptions.workerSrc = pdfjsLib.GlobalWorkerOptions.workerSrc;
 
 // Type definitions
@@ -25,14 +22,10 @@ interface SummaryResponse {
 // Check if PDF is processable
 export const checkPDFProcessable = async (file: File): Promise<PDFCheckResult> => {
   try {
-    // Create a buffer from the file
     const arrayBuffer = await file.arrayBuffer();
-    
-    // Try to load the PDF document
     const loadingTask = pdfjsLib.getDocument(arrayBuffer);
     const pdfDoc = await loadingTask.promise;
     
-    // Check number of pages
     const numPages = pdfDoc.numPages;
     
     if (numPages === 0) {
@@ -42,7 +35,6 @@ export const checkPDFProcessable = async (file: File): Promise<PDFCheckResult> =
       };
     }
     
-    // Check if we can extract text from the first page
     const page = await pdfDoc.getPage(1);
     const textContent = await page.getTextContent();
     
@@ -63,18 +55,10 @@ export const checkPDFProcessable = async (file: File): Promise<PDFCheckResult> =
   }
 };
 
-// Store summary in Firestore
-export const storeSummary = async (userId: string, summary: string, fileName: string, fileUrl: string) => {
+// Store summary in Supabase
+export const storeSummaryInDB = async (userId: string, summary: string, fileName: string, fileUrl: string) => {
   try {
-    const summaryCollection = collection(db, 'summaries');
-    const docRef = await addDoc(summaryCollection, {
-      userId,
-      summary,
-      fileName,
-      fileUrl,
-      createdAt: serverTimestamp()
-    });
-    return docRef.id;
+    return await saveSummary(userId, summary, fileName, fileUrl);
   } catch (error) {
     console.error("Error storing summary:", error);
     throw error;
@@ -84,18 +68,15 @@ export const storeSummary = async (userId: string, summary: string, fileName: st
 // Main function to extract text and get summary
 export const fetchJinaSummary = async (file: File): Promise<string | SummaryResponse> => {
   try {
-    // Extract text from PDF
     console.log("Starting text extraction from PDF");
     const text = await extractTextFromPDF(file);
     
-    // Log a preview of the extracted text for debugging
     console.log("Extracted text preview:", text.substring(0, 300) + "...");
     
     if (!text || text.trim().length < 50) {
       return `Error: Could not extract sufficient text from the PDF. The document may be image-based or encrypted.`;
     }
     
-    // Process with Jina API
     console.log("Getting summary from Jina API");
     const result = await getSummaryFromJina(text);
     return result;
@@ -113,12 +94,10 @@ const extractTextFromPDF = async (file: File): Promise<string> => {
     
     let fullText = '';
     
-    // Process each page
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
       
-      // Extract text items
       const textItems = textContent.items.map((item: any) => {
         return item.str;
       });
@@ -136,7 +115,6 @@ const extractTextFromPDF = async (file: File): Promise<string> => {
 // Get summary from Jina
 const getSummaryFromJina = async (text: string): Promise<SummaryResponse> => {
   try {
-    // Prepare a more structured prompt for better summaries
     const prompt = `
       Summarize the following text comprehensively. 
       Include key points, main ideas, and important details.
@@ -146,19 +124,17 @@ const getSummaryFromJina = async (text: string): Promise<SummaryResponse> => {
       ${text.substring(0, 10000)}
     `;
     
-    // Implement actual API call to Jina AI
     const apiUrl = 'https://api.jina.ai/v1/chat/completions';
     
     try {
-      // Try to make a real API call to Jina
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.JINA_API_KEY || ''}`
+          'Authorization': `Bearer ${import.meta.env.VITE_JINA_API_KEY || ''}`
         },
         body: JSON.stringify({
-          model: 'jina-summary-model',  // Replace with actual model name
+          model: 'jina-summary-model',
           messages: [
             { role: 'system', content: 'You are a helpful summarization assistant.' },
             { role: 'user', content: prompt }
@@ -166,7 +142,6 @@ const getSummaryFromJina = async (text: string): Promise<SummaryResponse> => {
           temperature: 0.3,
           max_tokens: 1000
         }),
-        // Add timeout to prevent hanging
         signal: AbortSignal.timeout(15000)
       });
       
@@ -176,7 +151,6 @@ const getSummaryFromJina = async (text: string): Promise<SummaryResponse> => {
           summary: data.choices[0].message.content,
         };
       } else {
-        // If API call fails, use fallback summarization
         console.error("Jina API request failed, using fallback summary");
         return getFallbackSummary(text);
       }
@@ -192,24 +166,21 @@ const getSummaryFromJina = async (text: string): Promise<SummaryResponse> => {
 
 // Fallback summarization function
 export const getFallbackSummary = (text: string): SummaryResponse => {
-  // Split text into sentences
   const sentences = text
     .replace(/([.?!])\s*(?=[A-Z])/g, "$1|")
     .split("|")
-    .filter(sentence => sentence.trim().length > 20); // Filter out very short sentences
+    .filter(sentence => sentence.trim().length > 20);
   
-  // Select representative sentences for the summary
   const summaryLength = Math.min(10, Math.ceil(sentences.length / 5));
   const step = Math.max(1, Math.floor(sentences.length / summaryLength));
   
   let selectedSentences = [];
   for (let i = 0; i < sentences.length && selectedSentences.length < summaryLength; i += step) {
-    if (sentences[i] && sentences[i].length > 30) { // Ensure sentence is substantial
+    if (sentences[i] && sentences[i].length > 30) {
       selectedSentences.push(sentences[i]);
     }
   }
   
-  // If we don't have enough sentences, add more from the beginning
   if (selectedSentences.length < summaryLength && sentences.length > summaryLength) {
     for (let i = 0; i < sentences.length && selectedSentences.length < summaryLength; i++) {
       if (!selectedSentences.includes(sentences[i])) {
@@ -218,7 +189,6 @@ export const getFallbackSummary = (text: string): SummaryResponse => {
     }
   }
   
-  // Create the fallback summary
   const summary = "Summary (generated offline):\n\n" + selectedSentences.join(' ');
   
   return { summary };
