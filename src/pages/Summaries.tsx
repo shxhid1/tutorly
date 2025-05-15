@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
-import { fetchJinaSummary, checkPDFProcessable, storeSummary } from "@/lib/jinaReader";
+import { fetchJinaSummary, checkPDFProcessable, storeSummaryInDB } from "@/lib/jinaReader";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
@@ -253,7 +253,7 @@ const Summaries = () => {
       
       // If we have a file URL and user is authenticated, store the summary in Firestore
       if (fileUrl && currentUser && typeof summaryText === 'string') {
-        await storeSummary(
+        await storeSummaryInDB(
           currentUser.uid, 
           summaryText,
           selectedFile.name,
